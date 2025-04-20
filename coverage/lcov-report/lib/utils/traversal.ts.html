@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for src/lib/media.ts</title>
+    <title>Code coverage report for lib/utils/traversal.ts</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../prettify.css" />
     <link rel="stylesheet" href="../../base.css" />
@@ -19,34 +19,34 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../index.html">All files</a> / <a href="index.html">src/lib</a> media.ts</h1>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">lib/utils</a> traversal.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">5.26% </span>
+                <span class="strong">82.14% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>2/38</span>
+                <span class='fraction'>23/28</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">10% </span>
+                <span class="strong">80.64% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>1/10</span>
+                <span class='fraction'>25/31</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">33.33% </span>
+                <span class="strong">80% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/3</span>
+                <span class='fraction'>4/5</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">5.26% </span>
+                <span class="strong">85.18% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>2/38</span>
+                <span class='fraction'>23/27</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line low'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -187,7 +187,10 @@
 <a name='L122'></a><a href='#L122'>122</a>
 <a name='L123'></a><a href='#L123'>123</a>
 <a name='L124'></a><a href='#L124'>124</a>
-<a name='L125'></a><a href='#L125'>125</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L125'></a><a href='#L125'>125</a>
+<a name='L126'></a><a href='#L126'>126</a>
+<a name='L127'></a><a href='#L127'>127</a>
+<a name='L128'></a><a href='#L128'>128</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -204,20 +207,39 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">85x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">85x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">85x</span>
+<span class="cline-any cline-yes">50x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">72x</span>
+<span class="cline-any cline-yes">72x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -226,82 +248,60 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">72x</span>
+<span class="cline-any cline-yes">72x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">50x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">35x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">72x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">72x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">72x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">71x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">69x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">69x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">66x</span>
+<span class="cline-any cline-yes">34x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">32x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -309,131 +309,140 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">66x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/**
- * Media query handling for js2css conversion
+ * Utility for traversing and transforming nested objects
  */
-import { MediaQueryObject, MediaQueries, StyleObject } from './types.js'
-import { indent } from './utils.js'
-import { processCssObject, cssObjectToString } from './css-object.js'
+&nbsp;
+import { CssStyles, CssValue } from '../types/index.js'
 &nbsp;
 /**
- * Resolves named media queries to their actual CSS media query strings
- * @param key - Media query key (may start with @ or @media)
- * @param mediaQueries - Dictionary of named media queries
- * @returns Resolved media query string
+ * Type for node visitor functions
  */
-export function <span class="fstat-no" title="function not covered" >resolveMediaQuery(</span>
-  key: string,
-  mediaQueries: MediaQueries
-): string {
-  // Remove @ or @media prefix
-  const mediaName = <span class="cstat-no" title="statement not covered" >key.replace(/^@media\s+/, '').replace(/^@/, '')</span>
-&nbsp;
-  // Check if it's a named media query
-<span class="cstat-no" title="statement not covered" >  <span class="missing-if-branch" title="if path not taken" >I</span>if (mediaQueries &amp;&amp; mediaName in mediaQueries) {</span>
-<span class="cstat-no" title="statement not covered" >    return mediaQueries[mediaName]</span>
-  }
-&nbsp;
-  // It's already a proper media query
-<span class="cstat-no" title="statement not covered" >  return mediaName</span>
-}
+export type NodeVisitor&lt;T&gt; = (
+  node: any,
+  path: string,
+  root: any,
+  index: number
+) =&gt; T
 &nbsp;
 /**
- * Processes media query blocks into CSS strings
- * @param mediaBlocks - Media query blocks
- * @param mediaQueries - Dictionary of named media queries
- * @returns CSS string representing all media queries
+ * Traverses a nested object and applies a visitor function to each node
+ * @param node - The object to traverse
+ * @param visitor - Function to call for each node
+ * @param path - Current path in the object (for tracking)
+ * @param root - Root object (for reference)
+ * @param index - Current index in array (if applicable)
+ * @param separator - Path separator character
+ * @returns The result of the visitor function on the current node
  */
-export function processMediaQueries(
-  mediaBlocks: Record&lt;string, StyleObject&gt;,
-  mediaQueries: MediaQueries
-): string {
-  if (Object.keys(mediaBlocks).length === 0) {
-    return ''
+export function traverseObject&lt;T&gt;(
+  node: any,
+  visitor: NodeVisitor&lt;T&gt;,
+  path = '',
+  root?: any,
+  index = -1,
+  separator = '\\'
+): T {
+  const realRoot = root || node
+&nbsp;
+  // Handle arrays
+  <span class="missing-if-branch" title="if path not taken" >I</span>if (Array.isArray(node)) {
+    const processedItems = <span class="cstat-no" title="statement not covered" >node.map(<span class="fstat-no" title="function not covered" >(i</span>tem, idx) =&gt;</span>
+<span class="cstat-no" title="statement not covered" >      traverseObject(item, visitor, path, realRoot, idx, separator)</span>
+    )
+<span class="cstat-no" title="statement not covered" >    return visitor(processedItems, path, realRoot, index)</span>
   }
 &nbsp;
-  let result = <span class="cstat-no" title="statement not covered" >''</span>
-  const processedMediaQueries: Record&lt;string, Record&lt;string, StyleObject&gt;&gt; = <span class="cstat-no" title="statement not covered" >{}</span>
-&nbsp;
-  // Group by actual media query
-<span class="cstat-no" title="statement not covered" >  for (const key in mediaBlocks) {</span>
-    const resolvedQuery = <span class="cstat-no" title="statement not covered" >resolveMediaQuery(key, mediaQueries)</span>
-&nbsp;
-<span class="cstat-no" title="statement not covered" >    <span class="missing-if-branch" title="if path not taken" >I</span>if (!processedMediaQueries[resolvedQuery]) {</span>
-<span class="cstat-no" title="statement not covered" >      processedMediaQueries[resolvedQuery] = {}</span>
-    }
-&nbsp;
-    // Merge selectors for this media query
-<span class="cstat-no" title="statement not covered" >    Object.assign(processedMediaQueries[resolvedQuery], mediaBlocks[key])</span>
-  }
-&nbsp;
-  // Process each media query
-<span class="cstat-no" title="statement not covered" >  for (const mediaQuery in processedMediaQueries) {</span>
-    const styles = <span class="cstat-no" title="statement not covered" >processedMediaQueries[mediaQuery]</span>
-    const { cssObject } = <span class="cstat-no" title="statement not covered" >processCssObject(styles)</span>
-    const cssString = <span class="cstat-no" title="statement not covered" >cssObjectToString(cssObject)</span>
-&nbsp;
-<span class="cstat-no" title="statement not covered" >    <span class="missing-if-branch" title="if path not taken" >I</span>if (cssString) {</span>
-<span class="cstat-no" title="statement not covered" >      result += `@media ${mediaQuery} {\n${indent(cssString)}\n}\n\n`</span>
-    }
-  }
-&nbsp;
-<span class="cstat-no" title="statement not covered" >  return result.trim()</span>
-}
-&nbsp;
-/**
- * Handles nested media queries
- * @param mediaBlocks - Media query blocks
- * @param mediaQueries - Dictionary of named media queries
- * @returns CSS string for nested media queries
- */
-export function <span class="fstat-no" title="function not covered" >processNestedMediaQueries(</span>
-  mediaBlocks: Record&lt;string, StyleObject&gt;,
-  mediaQueries: MediaQueries
-): string {
-<span class="cstat-no" title="statement not covered" >  <span class="missing-if-branch" title="if path not taken" >I</span>if (Object.keys(mediaBlocks).length === 0) {</span>
-<span class="cstat-no" title="statement not covered" >    return ''</span>
-  }
-&nbsp;
-  let result = <span class="cstat-no" title="statement not covered" >''</span>
-&nbsp;
-  // Process each media block
-<span class="cstat-no" title="statement not covered" >  for (const key in mediaBlocks) {</span>
-    const styles = <span class="cstat-no" title="statement not covered" >mediaBlocks[key]</span>
-    const { cssObject, mediaBlocks: nestedMediaBlocks } =
-<span class="cstat-no" title="statement not covered" >      processCssObject(styles)</span>
-&nbsp;
-    // Handle the direct styles
-    const cssString = <span class="cstat-no" title="statement not covered" >cssObjectToString(cssObject)</span>
-&nbsp;
-    // Get the resolved media query
-    const mediaQuery = <span class="cstat-no" title="statement not covered" >resolveMediaQuery(key, mediaQueries)</span>
-&nbsp;
-<span class="cstat-no" title="statement not covered" >    <span class="missing-if-branch" title="if path not taken" >I</span>if (cssString) {</span>
-<span class="cstat-no" title="statement not covered" >      result += `@media ${mediaQuery} {\n${indent(cssString)}\n}\n\n`</span>
-    }
-&nbsp;
-    // Handle nested media queries
-<span class="cstat-no" title="statement not covered" >    <span class="missing-if-branch" title="if path not taken" >I</span>if (Object.keys(nestedMediaBlocks).length &gt; 0) {</span>
-<span class="cstat-no" title="statement not covered" >      for (const nestedKey in nestedMediaBlocks) {</span>
-        const nestedMediaQuery = <span class="cstat-no" title="statement not covered" >resolveMediaQuery(nestedKey, mediaQueries)</span>
-        const { cssObject: nestedCssObject } = <span class="cstat-no" title="statement not covered" >processCssObject(</span>
-          nestedMediaBlocks[nestedKey]
+  // Handle objects (but not null)
+  if (node !== null &amp;&amp; typeof node === 'object') {
+    const processedObject = Object.keys(node).reduce&lt;Record&lt;string, any&gt;&gt;(
+      (result, key) =&gt; {
+        const newPath = path ? `${path}${separator}${key}` : key
+        const processedValue = traverseObject(
+          node[key],
+          visitor,
+          newPath,
+          realRoot,
+          index,
+          separator
         )
-        const nestedCssString = <span class="cstat-no" title="statement not covered" >cssObjectToString(nestedCssObject)</span>
 &nbsp;
-<span class="cstat-no" title="statement not covered" >        <span class="missing-if-branch" title="if path not taken" >I</span>if (nestedCssString) {</span>
-<span class="cstat-no" title="statement not covered" >          result += `@media ${mediaQuery} {\n${indent(</span>
-            `@media ${nestedMediaQuery} {\n${indent(nestedCssString)}\n}`
-          )}\n}\n\n`
-        }
-      }
-    }
+        result[key] = processedValue
+        return result
+      },
+      {}
+    )
+&nbsp;
+    return visitor(processedObject, path, realRoot, index)
   }
 &nbsp;
-<span class="cstat-no" title="statement not covered" >  return result.trim()</span>
+  // Handle primitive values
+  return visitor(node, path, realRoot, index)
+}
+&nbsp;
+/**
+ * Determines the type of a node in the CSS object
+ * @param node - The node to check
+ * @param path - Current path in the object
+ * @returns The identified node type as a string
+ */
+export function determineNodeType(node: any, path?: string): string {
+  <span class="missing-if-branch" title="if path not taken" >I</span>if (!path) <span class="cstat-no" title="statement not covered" >return 'unknown'</span>
+&nbsp;
+  const lastKey = path.split('\\').pop() || <span class="branch-1 cbranch-no" title="branch not covered" >''</span>
+&nbsp;
+  // Layer statement
+  if (/^@layer/.test(lastKey) &amp;&amp; typeof node === 'string') {
+    return 'layer statement'
+  }
+&nbsp;
+  // Layer block
+  if (/^@layer/.test(lastKey) &amp;&amp; typeof node === 'object' &amp;&amp; node !== null) {
+    return 'layer block'
+  }
+&nbsp;
+  // Container query
+  <span class="missing-if-branch" title="if path not taken" >I</span>if (
+    /^@container/.test(lastKey) &amp;&amp;
+<span class="branch-1 cbranch-no" title="branch not covered" >    typeof node === 'object' </span>&amp;&amp;
+<span class="branch-2 cbranch-no" title="branch not covered" >    node !== null</span>
+  ) {
+<span class="cstat-no" title="statement not covered" >    return 'container query block'</span>
+  }
+&nbsp;
+  // Media query or prefix
+  if (/^@/.test(lastKey)) {
+    return 'media query or prefix'
+  }
+&nbsp;
+  // CSS property-value pair (end value)
+  if (isPrimitiveValue(node)) {
+    return 'selector'
+  }
+&nbsp;
+  return 'unknown'
+}
+&nbsp;
+/**
+ * Checks if a value is a primitive that can be used as a CSS property value
+ * @param value - Value to check
+ * @returns True if the value is a primitive
+ */
+function isPrimitiveValue(value: any): boolean {
+  return (
+    value === null ||
+    typeof value === 'string' ||
+    typeof value === 'number' ||
+    typeof value === 'boolean'
+  )
 }
 &nbsp;</pre></td></tr></table></pre>
 
@@ -442,7 +451,7 @@ export function <span class="fstat-no" title="function not covered" >processNest
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-04-20T16:13:24.112Z
+                at 2025-04-20T17:26:42.483Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
