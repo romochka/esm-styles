@@ -3,7 +3,7 @@
  */
 
 import { CssStyles, MediaQueries, CssValue } from '../types/index.js'
-import { indent } from './common.js'
+import { indent, jsKeyToCssKey } from './common.js'
 import { obj2css } from './obj2css.js'
 import { isEndValue } from './common.js'
 
@@ -49,7 +49,10 @@ export function processMediaQueries(
       return ''
     }
 
-    const stylesCss = obj2css(styles as Record<string, any>)
+    // Process the styles to convert camelCase properties to kebab-case
+    const processedStyles = processStylesForMedia(styles as Record<string, any>)
+
+    const stylesCss = obj2css(processedStyles)
 
     if (!stylesCss.trim()) {
       return ''
@@ -61,6 +64,40 @@ export function processMediaQueries(
 
   // Join all media query blocks with newlines
   return mediaCssStrings.filter((css) => css).join('\n\n')
+}
+
+/**
+ * Processes styles for media queries to ensure camelCase is converted to kebab-case
+ * @param styles - Style object to process
+ * @returns Processed style object with converted property names
+ */
+function processStylesForMedia(
+  styles: Record<string, any>
+): Record<string, any> {
+  const result: Record<string, any> = {}
+
+  // Process each selector in the styles
+  Object.keys(styles).forEach((selector) => {
+    const selectorStyles = styles[selector]
+
+    // Skip if not an object
+    if (isEndValue(selectorStyles)) {
+      result[selector] = selectorStyles
+      return
+    }
+
+    const processedProps: Record<string, any> = {}
+
+    // Convert each property name to kebab-case
+    Object.keys(selectorStyles).forEach((prop) => {
+      const cssKey = jsKeyToCssKey(prop)
+      processedProps[cssKey] = selectorStyles[prop]
+    })
+
+    result[selector] = processedProps
+  })
+
+  return result
 }
 
 /**

@@ -36,5 +36,6 @@ const styles = {
 const css = getCss(styles)
 
 // Print the generated CSS
+console.log('\nSource object:', JSON.stringify(styles, null, 2))
 console.log('\nGenerated CSS:')
 console.log(css)

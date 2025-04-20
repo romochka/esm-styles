@@ -46,8 +46,22 @@ export function getCss(
     const pathParts = path.split('\\')
     const key = pathParts.pop() || ''
 
+    // Skip processing media query nodes that are nested within selectors
+    // as they will be handled separately in the media query section
+    const isNestedMediaQuery = pathParts.some(
+      (part) =>
+        part.startsWith('@media ') ||
+        (part.startsWith('@') &&
+          mediaQueries[part.replace(/^@\s*/, '')] !== undefined)
+    )
+
     switch (nodeType) {
       case 'selector': {
+        // Skip if this is inside a media query - it will be handled separately
+        if (isNestedMediaQuery) {
+          break
+        }
+
         // Handle CSS property-value pairs
         const selector = joinSelectors(pathParts)
 

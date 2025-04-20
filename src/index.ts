@@ -18,5 +18,5 @@ export { processMediaQueries } from './lib/utils/media.js'
 export { obj2css, prettifyCss } from './lib/utils/obj2css.js'
 
 export function greet(): string {
-  return 'Hello from esm-styles!'
+  return 'esm-styles 0.1.3'
 }
