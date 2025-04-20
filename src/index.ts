@@ -6,7 +6,8 @@
 
 // Export types
 export * from './lib/types/index.js'
+export * from './lib/index.js'
 
 export function greet(): string {
-  return 'esm-styles 0.1.3'
+  return 'esm-styles 0.1.4'
 }
