@@ -29,6 +29,7 @@ const styleObject = {
 const documentationExample = {
   p: {
     fontSize: '1rem',
+    '@layer a': { fontWeight: 300 },
 
     '@media screen and (max-width: 768px)': {
       fontSize: `${14 / 16}rem`,
@@ -44,6 +45,12 @@ const documentationExample = {
       '@media screen and (max-width: 768px)': {
         fontSize: '14px',
       },
+    },
+
+    '@layer a, b': '',
+
+    '@dark': {
+      fontSize: '14px',
     },
   },
 }
