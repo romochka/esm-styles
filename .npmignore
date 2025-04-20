@@ -1,0 +1,28 @@
+# Directories
+node_modules/
+coverage/
+src/
+test/
+tests/
+legacy-code/
+example-project/
+doc/
+.vscode/
+.github/
+
+# Config files
+.eslintrc*
+tsconfig.json
+jest.config.js
+.gitignore
+.git
+
+# Misc files
+*.log
+.DS_Store
+*.tgz
+.env*
+task*.md
+
+# Source maps
+*.map 

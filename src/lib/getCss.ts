@@ -35,7 +35,7 @@ export function getCss(
   const layerStatements: string[] = []
   let layerObject: CssStyles = {}
   let containerObject: CssStyles = {}
-  let mediaObject: CssStyles = {}
+  const mediaObject: CssStyles = {}
   let prefixObject: CssStyles = {}
 
   // Process the object by traversing it and handling different node types
@@ -147,10 +147,19 @@ export function getCss(
             break
           }
 
-          const mediaQueryObject = {
-            ['@media ' + mediaQuery]: { [selector]: node },
+          // Store the media query with the selector and node
+          // This way we collect all the rules for each media query
+          const mediaQueryKey = '@media ' + mediaQuery
+
+          if (!mediaObject[mediaQueryKey]) {
+            mediaObject[mediaQueryKey] = {}
           }
-          mediaObject = mergeDeep(mediaObject, mediaQueryObject)
+
+          // Add the selector and its rules to this media query
+          mediaObject[mediaQueryKey] = mergeDeep(
+            mediaObject[mediaQueryKey] as CssStyles,
+            { [selector]: node }
+          )
         }
         break
       }
