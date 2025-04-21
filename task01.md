@@ -1,3 +1,5 @@
+## Task 1 - completed
+
 The task is to rewrite from the ground up the function `getCss` from legacy code.
 
 The function converts a js object to plain CSS as described in [translation.md](./doc/translation.md).
