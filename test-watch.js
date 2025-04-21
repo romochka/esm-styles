@@ -3,8 +3,8 @@ import chokidar from 'chokidar'
 import fg from 'fast-glob'
 // import path from 'path'
 
-const relPattern = 'sample-styles/source/**/*.styles.mjs'
-const absPattern = process.cwd() + '/sample-styles/source/**/*.styles.mjs'
+const relPattern = 'sample-styles/source/*.js'
+const absPattern = process.cwd() + '/sample-styles/source/*.js'
 
 // const relPatternOutside = '../test/**/*.styles.mjs'
 // const absPatternOutside = path.join(process.cwd(), '../test', '/**/*.styles.mjs')
@@ -38,4 +38,4 @@ watcher
     console.log(`[test-watch] Event: ${event} on ${file}`)
   })
 
-console.log(await fg('sample-styles/source/**/*.styles.mjs'))
+console.log(await fg(relPattern))
