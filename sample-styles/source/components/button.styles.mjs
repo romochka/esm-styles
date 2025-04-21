@@ -9,6 +9,6 @@ export const button = {
     color: 'white',
   },
   secondary: {
-    backgroundColor: 'green',
+    backgroundColor: 'orange',
   },
 }

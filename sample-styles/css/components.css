@@ -5,14 +5,14 @@ button primary {
   
 }
 button secondary {
-  background-color: green;
+  background-color: orange;
   
 }
 button {
   background-color: red;
   color: white;
   padding: 10px 20px;
-  border-radius: 6px;
+  border-radius: 9px;
   
 }
 }

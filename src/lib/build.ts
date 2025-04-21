@@ -1,6 +1,7 @@
 import { getCss } from './index.js'
 import path from 'node:path'
 import fs from 'node:fs/promises'
+import { inspect } from 'node:util'
 
 export async function build(
   configPath = 'esm-styles.config.js'
@@ -26,8 +27,11 @@ export async function build(
   for (const layer of layers) {
     const inputFile = path.join(sourcePath, `${layer}${suffix}`)
     const outputFile = path.join(outputPath, `${layer}.css`)
-    // Import the JS file as ESM
-    const stylesObj = (await import(pathToFileUrl(inputFile).href)).default
+    // Import the JS file as ESM, bust cache with query param
+    const fileUrl = pathToFileUrl(inputFile).href + `?update=${Date.now()}`
+    console.log('importing', fileUrl)
+    const stylesObj = (await import(fileUrl)).default
+    console.log('imported', inspect(stylesObj, { depth: 10 }))
     const css = getCss(stylesObj)
     const wrappedCss = `@layer ${layer} {\n${css}\n}`
     await fs.writeFile(outputFile, wrappedCss, 'utf8')
