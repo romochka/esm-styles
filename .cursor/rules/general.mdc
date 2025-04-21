@@ -1,0 +1,6 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+Prefer kebabs case for file names: getCss() --> get-css.ts
