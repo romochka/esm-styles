@@ -1,6 +1,6 @@
 # Task 4
 
-Update style compiler to support named media queries and selectors.
+Update style compiler to support shorthands for media queries and selectors.
 
 ## Config file
 
@@ -155,3 +155,5 @@ translates to:
   }
 }
 ```
+
+_Note_: selectors in generated css files must be prefixed with `globalRootSelector` value from the config file, which is `:root` by default.
