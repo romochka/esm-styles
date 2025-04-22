@@ -2,9 +2,11 @@ import { app } from './layout/app.styles.mjs'
 
 export default {
   body: {
-    margin: 0,
-    padding: 0,
-
+    'main, aside': {
+      'input, textarea, button': {
+        outline: 'none',
+      },
+    },
     'div#app': app,
   },
 }

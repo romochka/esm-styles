@@ -22,6 +22,7 @@ async function main() {
   }
 
   try {
+    console.log('Build v0.0.2')
     await build(configPath)
     console.log('Build completed successfully.')
   } catch (err) {
