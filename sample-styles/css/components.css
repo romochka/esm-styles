@@ -1,11 +1,33 @@
 @layer components {
-button primary {
+button.primary {
   background-color: blue;
-  color: white;
+  color: yellow;
   
 }
-button secondary {
+button.secondary {
   background-color: orange;
+  
+}
+button .icon, button > svg {
+  width: 20px;
+  height: 20px;
+  
+}
+button + p {
+  color: green;
+  
+}
+button ~ p {
+  color: purple;
+  
+}
+button:has(.icon)::after {
+  content: '\000078';
+  
+}
+button:has(.icon) {
+  border-radius: 50%;
+  --moz-border-radius: 50%;
   
 }
 button {

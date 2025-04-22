@@ -2,6 +2,10 @@ export default {
   main: {
     fontSize: '16px',
 
+    xx: {
+      fontSize: '14px',
+    },
+
     '@twilight': {
       borderColor: 'black',
     },

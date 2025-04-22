@@ -147,7 +147,7 @@ const HTML_TAGS = new Set([
   'xmp',
 ])
 
-export const isHtmlTag: IsHtmlTag = (key) => {
+const isHtmlTag = (key: string) => {
   // Only match if the key is a plain tag name (no underscores, no special chars)
   return HTML_TAGS.has(key)
 }
@@ -178,14 +178,25 @@ export const joinSelectorPath = (path: string[][]): string[] => {
       } else if (part.startsWith('_')) {
         return acc + (acc ? ' ' : '') + '.' + part.slice(1)
       } else if (
+        part.startsWith('>') ||
+        part.startsWith('+') ||
+        part.startsWith('~')
+      ) {
+        // Combinators: always join with a space
+        return acc + ' ' + part
+      } else if (
         part.startsWith(':') ||
         part.startsWith('::') ||
         part.startsWith('#') ||
-        part.startsWith('[')
+        part.startsWith('[') ||
+        part.startsWith('.')
       ) {
         return acc + part
-      } else {
+      } else if (isHtmlTag(part)) {
         return acc + (acc ? ' ' : '') + part
+      } else {
+        // Not a tag, not a special selector: treat as class
+        return acc + (acc ? '' : '') + '.' + part
       }
     }, '')
   )
