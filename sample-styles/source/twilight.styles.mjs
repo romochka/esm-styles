@@ -1,6 +1,7 @@
 export default {
   paper: {
     bright: '#dfdfdf',
-    tinted: '#bababa',
+    tinted: '#bbbbbb',
+    toilet: '#553300',
   },
 }

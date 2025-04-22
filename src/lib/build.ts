@@ -1,6 +1,7 @@
 import { getCss } from './index.js'
 import { getCssVariables } from './utils/index.js'
 import { getMediaShorthands } from './utils/media-shorthand.js'
+import { isEndValue } from './utils/index.js'
 import path from 'node:path'
 import fs from 'node:fs/promises'
 import { inspect } from 'node:util'
@@ -9,6 +10,11 @@ import _ from 'lodash'
 export async function build(
   configPath = 'esm-styles.config.js'
 ): Promise<void> {
+  // --- Supporting module generation ---
+  // Debug: log mergedSets and sets
+  // console.log('[DEBUG] sets:', sets)
+  // console.log('[DEBUG] mergedSets:', inspect(mergedSets, { depth: 10 }))
+
   // 1. Load config
   const configFile = path.isAbsolute(configPath)
     ? configPath
@@ -51,6 +57,8 @@ export async function build(
     for (const mediaType of Object.keys(config.media)) {
       const sets = config.media[mediaType] // e.g. ['light', 'twilight', 'dark']
       let prevVarsObj = {}
+      // Collect all merged sets for supporting module
+      const mergedSets: Record<string, any> = {}
       for (const setName of sets) {
         // Inheritance: merge with previous
         const inputFile = path.join(sourcePath, `${setName}${suffix}`)
@@ -61,6 +69,7 @@ export async function build(
           (await import(fileUrl)).default
         )
         prevVarsObj = varsObj
+        mergedSets[setName] = _.cloneDeep(varsObj)
         // For each selector config for this set
         const selectorConfigs =
           config.mediaSelectors?.[mediaType]?.[setName] || []
@@ -92,6 +101,86 @@ export async function build(
           })
         }
       }
+      // --- Supporting module generation ---
+      // Debug: log mergedSets and sets
+      console.log('[DEBUG] sets:', sets)
+      console.log('[DEBUG] mergedSets:', inspect(mergedSets, { depth: 10 }))
+
+      // Define the recursive function here so it has access to sets and mergedSets
+      const buildSupportingModule = (path: string[], isRoot: boolean): any => {
+        const allKeys = new Set<string>()
+        for (const set of sets) {
+          const v =
+            path.length === 0 ? mergedSets[set] : _.get(mergedSets[set], path)
+          if (v && typeof v === 'object' && !Array.isArray(v)) {
+            Object.keys(v).forEach((k) => allKeys.add(k))
+          } else if (v !== undefined && !isRoot) {
+            allKeys.add('') // placeholder for leaf, but only at non-root
+          }
+        }
+        // Debug: show allKeys and values at this path
+        console.log(
+          '[DEBUG] path:',
+          path.join('.'),
+          'allKeys:',
+          Array.from(allKeys)
+        )
+        for (const set of sets) {
+          const v =
+            path.length === 0 ? mergedSets[set] : _.get(mergedSets[set], path)
+          console.log(
+            '[DEBUG] set:',
+            set,
+            'path:',
+            path.join('.'),
+            'value:',
+            JSON.stringify(v)
+          )
+        }
+        const result: Record<string, any> = {}
+        for (const key of allKeys) {
+          if (key === '') {
+            // Only possible at non-root
+            const varName =
+              '--' + path.map((k: string) => k.replace(/_/g, '-')).join('-')
+            const leaf: Record<string, any> = { var: varName }
+            for (let i = 0; i < sets.length; i++) {
+              const v =
+                path.length === 0
+                  ? mergedSets[sets[i]]
+                  : _.get(mergedSets[sets[i]], path)
+              if (isEndValue(v)) {
+                leaf[sets[i]] = v
+              }
+            }
+            if (Object.keys(leaf).length > 1) {
+              return leaf
+            }
+          } else {
+            const child = buildSupportingModule([...path, key], false)
+            if (child && Object.keys(child).length > 0) {
+              result[key] = child
+            }
+          }
+        }
+        // Debug log for each recursion
+        console.log(
+          '[DEBUG] path:',
+          path.join('.'),
+          'result:',
+          JSON.stringify(result, null, 2)
+        )
+        return result
+      }
+
+      const supportingModuleObj = buildSupportingModule([], true)
+      const supportingModulePath = path.join(sourcePath, `$${mediaType}.mjs`)
+      const moduleContent = `export default ${JSON.stringify(
+        supportingModuleObj,
+        null,
+        2
+      )}\n`
+      await fs.writeFile(supportingModulePath, moduleContent, 'utf8')
     }
   }
 

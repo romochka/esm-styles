@@ -7,5 +7,13 @@ export const isEndValue: IsEndValue = (value) => {
   if (Array.isArray(value)) {
     return value.every((v) => typeof v === 'string' || typeof v === 'number')
   }
+  if (
+    typeof value === 'object' &&
+    value !== null &&
+    'var' in value &&
+    typeof value.var === 'string'
+  ) {
+    return true
+  }
   return false
 }

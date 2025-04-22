@@ -31,7 +31,7 @@ button:has(.icon) {
   
 }
 button {
-  background-color: red;
+  background-color: var(--paper-bright);
   color: white;
   padding: 10px 20px;
   border-radius: 9px;

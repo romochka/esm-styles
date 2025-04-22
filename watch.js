@@ -19,6 +19,8 @@ const nodemonArgs = [
   sourcePath,
   '--ext',
   'mjs',
+  '--ignore',
+  path.join(sourcePath, '$*.mjs'),
   '--exec',
   `node dist/build.js ${configPath}`,
 ]
@@ -27,4 +29,4 @@ console.log('[esm-styles] Running:', 'nodemon', ...nodemonArgs)
 
 const nodemon = spawn('nodemon', nodemonArgs, { stdio: 'inherit' })
 
-nodemon.on('exit', code => process.exit(code))
+nodemon.on('exit', (code) => process.exit(code))

@@ -67,3 +67,5 @@ export type IsHtmlTag = (key: string) => boolean
 export type IsSpecialSelector = (key: string) => boolean
 
 export type IsClassSelector = (key: string) => boolean
+
+// End values can be string, number, array of such, or an object with a 'var' property and variable set keys.

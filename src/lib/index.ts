@@ -43,7 +43,17 @@ function flatWalk(
     const value = obj[key]
     if (utils.isEndValue(value)) {
       const cssKey = utils.jsKeyToCssKey(key)
-      props[cssKey] = cssKey === 'content' ? utils.contentValue(value) : value
+      if (
+        typeof value === 'object' &&
+        value !== null &&
+        'var' in value &&
+        typeof value.var === 'string'
+      ) {
+        // Use CSS variable reference
+        props[cssKey] = `var(${value.var})`
+      } else {
+        props[cssKey] = cssKey === 'content' ? utils.contentValue(value) : value
+      }
     } else if (typeof value === 'object' && value !== null) {
       if (key.startsWith('@media ')) {
         // Recursively walk value, collecting rules for this media block
@@ -260,10 +270,10 @@ export function getCss(
     options
   )
   if (typeof console !== 'undefined') {
-    console.log(
-      '[esm-styles] flatWalk result:',
-      JSON.stringify(result, null, 2)
-    )
+    // console.log(
+    //   '[esm-styles] flatWalk result:',
+    //   JSON.stringify(result, null, 2)
+    // )
   }
   let css = ''
   css += renderRules(result.rules)

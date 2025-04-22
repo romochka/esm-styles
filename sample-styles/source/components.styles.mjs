@@ -1,6 +1,8 @@
+import $theme from './$theme.mjs'
+
 export default {
   button: {
-    backgroundColor: 'red',
+    backgroundColor: $theme.paper.bright,
     color: 'white',
     padding: '10px 20px',
     borderRadius: '9px',
