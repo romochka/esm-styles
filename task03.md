@@ -25,13 +25,19 @@ the goal is to allow select needed variable sets by class name and/or by media q
 
 ### new parameters
 
+**`globalRootSelector`** - root selector for variables.
+
+```js
+globalRootSelector: ':root',
+```
+
 **`globalVariables`** - file name of the file that default-exports a js object of css variables. Uses basePath, sourcePath and sourceFilesSuffix params.
 
 ```js
 globalVariables: 'global',
 ```
 
-means that the file `global.styles.mjs` is present in the `basePath/sourcePath` directory, and the object default-exported from this file should be converted into css with ":root" selector, stored in the `basePath/outputPath` directory with name `global.css` and imported into the main css file.
+means that the file `global.styles.mjs` is present in the `basePath/sourcePath` directory, and the object default-exported from this file should be converted into css wrapped with `globalRootSelector`, stored in the `basePath/outputPath` directory with name `global.css` and imported into the main css file.
 
 Sample [global.styles.mjs](./sample-styles/source/global.styles.mjs) must be converted to `global.css`:
 
@@ -79,17 +85,17 @@ mediaSelectors: {
   theme: {
     light: [
       {
-        selector: ':root.auto',
+        selector: '.auto',
         mediaQuery: 'screen and (prefers-color-scheme: light)',
         prefix: 'auto',
       },
       {
-        selector: ':root.light',
+        selector: '.light',
       },
     ],
     twilight: [
       {
-        selector: ':root.twilight',
+        selector: '.twilight',
       },
     ],
     ...
@@ -103,7 +109,7 @@ This means that for the media of `theme` type we have following rules for variab
 _`light` set_  
 each object in `mediaSelectors.theme.light` array must be used to produce a single css file this way:
 
-- css variables must be grouped under `selector` property value;
+- css variables must be wrapped with selector `globalRootSelector` plus selector from `selector` property, if exists;
 - name of the css file must be `light.theme.css` (`{variableSet}.{mediaType}.css`);
 - if `prefix` property is present, this prefix must be added to the beginning of the file name;
 - if `mediaQuery` property is present, this media query must be added to the end of the import statement.
@@ -135,7 +141,7 @@ and the main css file must contain two import statements:
 @import 'auto.light.theme.css' screen and (prefers-color-scheme: light);
 ```
 
-The twilight theme has only one selector and no media query nor prefix, so there must be only one file:
+The twilight theme has only one media selector object without media query and prefix, so there must be only one file:
 
 `twilight.theme.css`
 

@@ -475,8 +475,8 @@ Nested media queries also supported:
 
 ## T12
 
-Named media queries.
-Named media queries are defined in `config.js` and should be used as `@media-name`:
+Named media queries and media selectors.
+Named media queries and selectors are described in `esm-styles.config.js` and should be used as `@media-name`:
 
 `source.styles.js`
 
@@ -537,7 +537,7 @@ div {
 
 Note: for the name `@dark` is also configured in `config.js` as "media prefix" to include same styles for both auto- and user-selected dark mode.
 
-Unfortunately, for now, there is a bug which won't allow to use media prefixes inside named media queries.
+In the legacy code there is a bug which won't allow to use media prefixes inside named media queries.
 
 This doesn't work:
 

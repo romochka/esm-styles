@@ -1,3 +1,8 @@
+const breakpoints = {
+  phone: 499,
+  tablet: 1024,
+}
+
 export default {
   basePath: './sample-styles', // relative to build command call location
   sourcePath: 'source', // prefixed with basePath
@@ -14,6 +19,8 @@ export default {
 
   globalVariables: 'global',
 
+  globalRootSelector: ':root',
+
   // media
 
   media: {
@@ -25,49 +32,55 @@ export default {
     theme: {
       light: [
         {
-          selector: ':root.auto',
+          selector: '.auto',
           mediaQuery: 'screen and (prefers-color-scheme: light)',
           prefix: 'auto',
         },
         {
-          selector: ':root.light',
+          selector: '.light',
         },
       ],
       twilight: [
         {
-          selector: ':root.twilight',
+          selector: '.twilight',
         },
       ],
       dark: [
         {
-          selector: ':root.auto',
+          selector: '.auto',
           mediaQuery: 'screen and (prefers-color-scheme: dark)',
           prefix: 'auto',
         },
         {
-          selector: ':root.dark',
+          selector: '.dark',
         },
       ],
     },
     device: {
       phone: [
         {
-          selector: ':root',
-          mediaQuery: 'screen and (max-width: 499px)',
+          mediaQuery: `screen and (max-width: ${breakpoints.phone}px)`,
         },
       ],
       tablet: [
         {
-          selector: ':root',
-          mediaQuery: 'screen and (min-width: 500px) and (max-width: 839px)',
+          mediaQuery: `screen and (min-width: ${
+            breakpoints.phone + 1
+          }px) and (max-width: ${breakpoints.tablet}px)`,
         },
       ],
       notebook: [
         {
-          selector: ':root',
-          mediaQuery: 'screen and (min-width: 840px)',
+          mediaQuery: `screen and (min-width: ${breakpoints.tablet + 1}px)`,
         },
       ],
     },
+  },
+
+  mediaQueries: {
+    'small-phone': `(max-width: ${breakpoints.phone}px)`,
+    'min-tablet': `(min-width: ${breakpoints.phone + 1}px)`,
+    'max-tablet': `(max-width: ${breakpoints.tablet}px)`,
+    'min-notebook': `(min-width: ${breakpoints.tablet + 1}px)`,
   },
 }
