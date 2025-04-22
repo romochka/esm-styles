@@ -4,7 +4,7 @@ import { build } from './lib/build.js'
 async function main() {
   const args = process.argv.slice(2)
   const configPath =
-    args.find(arg => !arg.startsWith('-')) || 'esm-styles.config.js'
+    args.find((arg) => !arg.startsWith('-')) || 'esm-styles.config.js'
   const watch = args.includes('--watch') || args.includes('-w')
 
   if (watch) {
@@ -22,7 +22,7 @@ async function main() {
   }
 
   try {
-    console.log('Build v0.0.2')
+    console.log('Build v0.0.3')
     await build(configPath)
     console.log('Build completed successfully.')
   } catch (err) {

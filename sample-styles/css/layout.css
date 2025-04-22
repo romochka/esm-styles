@@ -1,52 +1,60 @@
 @layer layout {
-  body main input,
-  body main textarea,
-  body main button,
-  body aside input,
-  body aside textarea,
-  body aside button {
-    outline: none;
-  }
-  body div#app main,
-  body div#app aside {
-    display: flex;
-  }
-  body div#app p {
-    margin-block: 0;
-  }
+body main input, body main textarea, body main button, body aside input, body aside textarea, body aside button {
+  outline: none;
+  
+}
+body div#app main, body div#app aside {
+  display: flex;
+  
+}
+body div#app p {
+  margin-block: 0;
+  
+}
+body div#app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  
+}
+@media screen and (prefers-color-scheme: light) {
   body div#app {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-  }
-  @media screen and (prefers-color-scheme: light) {
-    body div#app {
-      background-color: green;
-    }
-  }
-  @media (max-width: 499px) {
-    body div#app {
-      min-height: 100dvh;
-    }
-    body div#app p {
-      margin-block: 1em;
-    }
-    @media screen and (prefers-color-scheme: light) {
-      body div#app {
-        background-color: white;
-      }
-    }
-    @media screen and (prefers-color-scheme: dark) {
-      body div#app main,
-      body div#app aside {
-        display: grid;
-      }
-      body div#app {
-        background-color: black;
-      }
-      body div#app p {
-        margin-inline: auto;
-      }
-    }
-  }
+  background-color: green;
+  
+}
+
+}
+@media (max-width: 499px) {
+  body div#app {
+  min-height: 100dvh;
+  
+}
+body div#app p {
+  margin-block: 1em;
+  
+}
+@media screen and (prefers-color-scheme: light) {
+  body div#app {
+  background-color: white;
+  
+}
+
+}
+@media screen and (prefers-color-scheme: dark) {
+  body div#app main, body div#app aside {
+  display: grid;
+  
+}
+body div#app {
+  background-color: black;
+  
+}
+body div#app p {
+  margin-inline: auto;
+  
+}
+
+}
+
+}
 }

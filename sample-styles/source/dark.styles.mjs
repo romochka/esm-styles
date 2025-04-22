@@ -7,4 +7,7 @@ export default {
     bright: '#ffffff',
     faded: '#b3b3b3',
   },
+  surface: {
+    bright: '#000000',
+  },
 }

@@ -1,7 +1,7 @@
 @import 'global.css';
 @import 'phone.device.css' screen and (max-width: 499px);
-@import 'tablet.device.css' screen and (min-width: 500px) and (max-width: 839px);
-@import 'notebook.device.css' screen and (min-width: 840px);
+@import 'tablet.device.css' screen and (min-width: 500px) and (max-width: 1024px);
+@import 'notebook.device.css' screen and (min-width: 1025px);
 @import 'auto.light.theme.css' screen and (prefers-color-scheme: light);
 @import 'light.theme.css';
 @import 'twilight.theme.css';

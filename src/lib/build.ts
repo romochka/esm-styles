@@ -36,7 +36,8 @@ export async function build(
     const fileUrl = pathToFileUrl(inputFile).href + `?update=${Date.now()}`
     const varsObj = (await import(fileUrl)).default
     const cssVars = getCssVariables(varsObj)
-    const wrappedCss = `:root {\n${cssVars}\n}`
+    const rootSelector = config.globalRootSelector || ':root'
+    const wrappedCss = `${rootSelector} {\n${cssVars}\n}`
     await fs.writeFile(outputFile, wrappedCss, 'utf8')
     cssFiles.push({ type: 'global', file: 'global.css' })
   }
@@ -66,7 +67,17 @@ export async function build(
           const fileName = `${prefixPart}${setName}.${mediaType}.css`
           const outputFile = path.join(outputPath, fileName)
           const cssVars = getCssVariables(varsObj)
-          let block = `${selector} {\n${cssVars}\n}`
+          const rootSelector = config.globalRootSelector || ':root'
+          let fullSelector = rootSelector
+          if (selector) {
+            // If selector starts with combinator or pseudo, don't add space
+            if (/^[.:#[]./.test(selector)) {
+              fullSelector = `${rootSelector}${selector}`
+            } else {
+              fullSelector = `${rootSelector} ${selector}`
+            }
+          }
+          let block = `${fullSelector} {\n${cssVars}\n}`
           if (mediaQuery) {
             block = `@media ${mediaQuery} {\n${block}\n}`
           }
@@ -99,8 +110,8 @@ export async function build(
   const mainCssPath = path.join(outputPath, mainCssFile)
   // Compose imports for variable sets
   const varImports = cssFiles
-    .filter(f => f.type === 'global' || f.type === 'media')
-    .map(f => {
+    .filter((f) => f.type === 'global' || f.type === 'media')
+    .map((f) => {
       if (f.mediaQuery) {
         return `@import '${f.file}' ${f.mediaQuery};`
       }
@@ -108,12 +119,12 @@ export async function build(
     })
     .join('\n')
   // Compose imports for layers
-  const layerFiles = cssFiles.filter(f => f.layer).map(f => f.file)
+  const layerFiles = cssFiles.filter((f) => f.layer).map((f) => f.file)
   const layerNames = cssFiles
-    .filter(f => f.layer)
-    .map(f => f.layer)
+    .filter((f) => f.layer)
+    .map((f) => f.layer)
     .join(', ')
-  const layerImports = layerFiles.map(f => `@import '${f}';`).join('\n')
+  const layerImports = layerFiles.map((f) => `@import '${f}';`).join('\n')
   const mainCss =
     [varImports, layerNames ? `@layer ${layerNames};` : '', layerImports]
       .filter(Boolean)
