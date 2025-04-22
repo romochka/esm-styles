@@ -1,4 +1,3 @@
-@media screen and (prefers-color-scheme: dark) {
 :root.auto {
 --paper-bright: #000000;
 --paper-tinted: #323232;
@@ -6,5 +5,4 @@
 --ink-faded: #b3b3b3;
 --ink-accent: #ff0000;
 --surface-bright: #000000;
-}
 }

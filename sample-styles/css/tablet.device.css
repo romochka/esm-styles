@@ -1,7 +1,5 @@
-@media screen and (min-width: 500px) and (max-width: 1024px) {
 :root {
 --radius-sm: 6px;
 --radius-md: 12px;
 --radius-lg: 20px;
-}
 }

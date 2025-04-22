@@ -77,10 +77,7 @@ export async function build(
               fullSelector = `${rootSelector} ${selector}`
             }
           }
-          let block = `${fullSelector} {\n${cssVars}\n}`
-          if (mediaQuery) {
-            block = `@media ${mediaQuery} {\n${block}\n}`
-          }
+          const block = `${fullSelector} {\n${cssVars}\n}`
           await fs.writeFile(outputFile, block, 'utf8')
           cssFiles.push({
             type: 'media',

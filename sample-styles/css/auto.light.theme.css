@@ -1,9 +1,7 @@
-@media screen and (prefers-color-scheme: light) {
 :root.auto {
 --paper-bright: #ffffff;
 --paper-tinted: #f0f0f0;
 --ink-bright: #000000;
 --ink-faded: #333333;
 --ink-accent: #ff0000;
-}
 }

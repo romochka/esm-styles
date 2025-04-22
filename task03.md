@@ -1,4 +1,4 @@
-# Task 3
+# Task 3 (completed)
 
 Update style compiler to support global and media-dependent css variable sets.
 
