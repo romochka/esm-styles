@@ -25,7 +25,7 @@ the goal is to allow select needed variable sets by class name and/or by media q
 
 ### new parameters
 
-**`globalVariables`** - file name of the file that default-exports a js object of css variables. Uses basePath, sourcePath and sourceFilesSuffix as described in [prev task](./task02.md).
+**`globalVariables`** - file name of the file that default-exports a js object of css variables. Uses basePath, sourcePath and sourceFilesSuffix params.
 
 ```js
 globalVariables: 'global',
@@ -100,13 +100,13 @@ mediaSelectors: {
 
 This means that for the media of `theme` type we have following rules for variable sets:
 
-_`light` set_
+_`light` set_  
 each object in `mediaSelectors.theme.light` array must be used to produce a single css file this way:
 
 - css variables must be grouped under `selector` property value;
 - name of the css file must be `light.theme.css` (`{variableSet}.{mediaType}.css`);
 - if `prefix` property is present, this prefix must be added to the beginning of the file name;
-- if `mediaQuery` property is present, this media query must be added to the beginning of the import statement.
+- if `mediaQuery` property is present, this media query must be added to the end of the import statement.
 
 this means that the light set must be present in two files:
 
