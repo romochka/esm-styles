@@ -19,6 +19,8 @@ import * as utils from './utils/index.js'
 
 // Available utilities: utils.isHtmlTag, utils.isClassSelector, utils.isSpecialSelector, utils.joinSelectorPath, utils.jsKeyToCssKey, utils.contentValue, utils.cartesianProduct, utils.prettifyCssString, utils.isEndValue
 
+// Refer to doc/translation.md in package root for more details
+
 interface WalkResult {
   rules: { selector: string; declarations: CssRuleObject }[]
   media: Record<string, WalkResult>
@@ -52,7 +54,7 @@ function walk(
         walk(value, selectorPath, result.layers[key])
       } else {
         // Handle comma-separated selectors as alternatives in this segment
-        const parts = key.split(',').map(k => k.trim())
+        const parts = key.split(',').map((k) => k.trim())
         walk(value, [...selectorPath, parts], result)
       }
     }
