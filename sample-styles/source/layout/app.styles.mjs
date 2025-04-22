@@ -12,7 +12,7 @@ export const app = {
   },
 
   '@media (max-width: 499px)': {
-    minHeight: '100dvh',
+    minHeight: '99dvh',
 
     '@media screen and (prefers-color-scheme: light)': {
       backgroundColor: 'white',

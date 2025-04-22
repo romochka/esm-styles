@@ -1,12 +1,49 @@
-import { app } from './layout/app.styles.mjs'
-
 export default {
-  body: {
-    'main, aside': {
-      'input, textarea, button': {
-        outline: 'none',
-      },
+  main: {
+    fontSize: '16px',
+
+    '@twilight': {
+      borderColor: 'black',
     },
-    'div#app': app,
+
+    '@light': {
+      borderColor: 'white',
+      fontWeight: 500,
+    },
+  },
+
+  aside: {
+    color: 'purple',
+
+    '@twilight': {
+      borderColor: 'maroon',
+    },
+
+    '@light': {
+      borderColor: 'white',
+    },
+
+    '@phone': {
+      color: 'pink',
+    },
+    '@tablet': {
+      color: 'yellow',
+    },
+    '@min-notebook': {
+      color: 'silver',
+    },
+  },
+
+  'main, aside': {
+    padding: 0,
+    '@phone': {
+      padding: '10px',
+    },
+    '@tablet': {
+      padding: '20px',
+    },
+    '@min-notebook': {
+      padding: '30px',
+    },
   },
 }

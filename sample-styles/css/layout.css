@@ -1,59 +1,75 @@
 @layer layout {
-body main input, body main textarea, body main button, body aside input, body aside textarea, body aside button {
-  outline: none;
+:root.twilight main {
+  border-color: black;
   
 }
-body div#app main, body div#app aside {
-  display: flex;
+:root.light main {
+  border-color: white;
+  font-weight: 500;
   
 }
-body div#app p {
-  margin-block: 0;
+main {
+  font-size: 16px;
   
 }
-body div#app {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
+:root.twilight aside {
+  border-color: maroon;
   
 }
-@media screen and (prefers-color-scheme: light) {
-  body div#app {
-  background-color: green;
+:root.light aside {
+  border-color: white;
   
 }
-
-}
-@media (max-width: 499px) {
-  body div#app {
-  min-height: 100dvh;
+aside {
+  color: purple;
   
 }
-body div#app p {
-  margin-block: 1em;
+main, aside {
+  padding: 0;
   
 }
 @media screen and (prefers-color-scheme: light) {
-  body div#app {
-  background-color: white;
+  :root.auto main {
+  border-color: white;
+  font-weight: 500;
+  
+}
+:root.auto aside {
+  border-color: white;
   
 }
 
 }
-@media screen and (prefers-color-scheme: dark) {
-  body div#app main, body div#app aside {
-  display: grid;
+@media screen and (max-width: 499px) {
+  aside {
+  color: pink;
   
 }
-body div#app {
-  background-color: black;
-  
-}
-body div#app p {
-  margin-inline: auto;
+main, aside {
+  padding: 10px;
   
 }
 
+}
+@media screen and (min-width: 500px) and (max-width: 1024px) {
+  aside {
+  color: yellow;
+  
+}
+main, aside {
+  padding: 20px;
+  
+}
+
+}
+@media (min-width: 1025px) {
+  aside {
+  color: silver;
+  
+}
+main, aside {
+  padding: 30px;
+  
 }
 
 }

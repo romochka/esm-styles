@@ -1,5 +1,6 @@
 import { getCss } from './index.js'
 import { getCssVariables } from './utils/index.js'
+import { getMediaShorthands } from './utils/media-shorthand.js'
 import path from 'node:path'
 import fs from 'node:fs/promises'
 import { inspect } from 'node:util'
@@ -20,6 +21,9 @@ export async function build(
   const suffix = config.sourceFilesSuffix || '.styles.mjs'
   const layers = config.layers || []
   const mainCssFile = config.mainCssFile || 'styles.css'
+
+  // Merge media shorthands
+  const mediaShorthands = getMediaShorthands(config)
 
   // Ensure output directory exists
   await fs.mkdir(outputPath, { recursive: true })
@@ -97,7 +101,11 @@ export async function build(
     const outputFile = path.join(outputPath, `${layer}.css`)
     const fileUrl = pathToFileUrl(inputFile).href + `?update=${Date.now()}`
     const stylesObj = (await import(fileUrl)).default
-    const css = getCss(stylesObj)
+    // Always call getCss for the layer object, so media queries are rendered
+    const css = getCss(stylesObj, {
+      ...mediaShorthands,
+      globalRootSelector: config.globalRootSelector,
+    })
     const wrappedCss = `@layer ${layer} {\n${css}\n}`
     await fs.writeFile(outputFile, wrappedCss, 'utf8')
     cssFiles.push({ layer, file: `${layer}.css` })

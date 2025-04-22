@@ -8,6 +8,11 @@ export interface GetCssOptions {
   mediaQueries?: Record<string, string>
   mediaPrefixes?: Record<string, string>
   auto?: Record<string, string[]>
+  globalRootSelector?: string
+  selectorShorthands?: Record<
+    string,
+    { selector?: string; mediaQuery?: string; prefix?: string }[]
+  >
 }
 
 export type CssString = string
@@ -20,7 +25,7 @@ export type CssAstNode =
   | { type: 'group'; children: CssAstNode[] }
   | { type: 'at-rule'; name: string; params: string; children: CssAstNode[] }
 
-export type SelectorPath = string[]
+export type SelectorPath = string[][]
 
 export type WalkCallback = (node: any, path: SelectorPath) => void
 

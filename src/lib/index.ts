@@ -21,50 +21,131 @@ import * as utils from './utils/index.js'
 
 // Refer to doc/translation.md in package root for more details
 
-interface WalkResult {
+// --- FLATTENED MEDIA COLLECTION ---
+
+interface FlatWalkResult {
   rules: { selector: string; declarations: CssRuleObject }[]
-  media: Record<string, WalkResult>
-  layers: Record<string, WalkResult>
+  media: Record<string, { selector: string; declarations: CssRuleObject }[]>
+  layers: Record<string, FlatWalkResult>
 }
 
-type SelectorPath = string[][] // Each segment can be a list of alternatives
+type SelectorPath = string[][]
 
-function walk(
+function flatWalk(
   obj: CssJsObject,
   selectorPath: SelectorPath = [],
-  result: WalkResult = { rules: [], media: {}, layers: {} }
-): WalkResult {
+  result: FlatWalkResult = { rules: [], media: {}, layers: {} },
+  options: GetCssOptions = {},
+  currentMedia: string[] = []
+): FlatWalkResult {
   const props: CssRuleObject = {}
   for (const key in obj) {
     const value = obj[key]
     if (utils.isEndValue(value)) {
-      // Property: convert key to kebab-case, handle content
       const cssKey = utils.jsKeyToCssKey(key)
       props[cssKey] = cssKey === 'content' ? utils.contentValue(value) : value
     } else if (typeof value === 'object' && value !== null) {
       if (key.startsWith('@media ')) {
-        // Media query block
-        if (!result.media[key])
-          result.media[key] = { rules: [], media: {}, layers: {} }
-        walk(value, selectorPath, result.media[key])
+        // Recursively walk value, collecting rules for this media block
+        const nested = flatWalk(
+          value,
+          selectorPath,
+          { rules: [], media: {}, layers: {} },
+          options,
+          [...currentMedia, key]
+        )
+        const mediaKey = [...currentMedia, key].join(' && ')
+        if (!result.media[mediaKey]) result.media[mediaKey] = []
+        result.media[mediaKey].push(...nested.rules)
+        // Also merge any nested media
+        for (const nestedMediaKey in nested.media) {
+          if (!result.media[nestedMediaKey]) result.media[nestedMediaKey] = []
+          result.media[nestedMediaKey].push(...nested.media[nestedMediaKey])
+        }
       } else if (key.startsWith('@layer ')) {
-        // Layer block
         if (!result.layers[key])
           result.layers[key] = { rules: [], media: {}, layers: {} }
-        walk(value, selectorPath, result.layers[key])
+        flatWalk(value, selectorPath, result.layers[key], options, currentMedia)
+      } else if (key.startsWith('@')) {
+        // Other special keys (shorthands, etc.)
+        const shorthand = key.slice(1)
+        let handled = false
+        if (options.mediaQueries && options.mediaQueries[shorthand]) {
+          const mediaKey = `@media ${options.mediaQueries[shorthand]}`
+          flatWalk(value, selectorPath, result, options, [
+            ...currentMedia,
+            mediaKey,
+          ])
+          handled = true
+        }
+        if (
+          options.selectorShorthands &&
+          options.selectorShorthands[shorthand]
+        ) {
+          const root = options.globalRootSelector || ':root'
+          for (const entry of options.selectorShorthands[shorthand]) {
+            if (entry.selector && !entry.mediaQuery) {
+              flatWalk(
+                value,
+                [[root + entry.selector], ...selectorPath],
+                result,
+                options,
+                currentMedia
+              )
+              handled = true
+            }
+            if (entry.selector && entry.mediaQuery) {
+              const mediaKey = `@media ${entry.mediaQuery}`
+              flatWalk(
+                value,
+                [[root + entry.selector], ...selectorPath],
+                result,
+                options,
+                [...currentMedia, mediaKey]
+              )
+              handled = true
+            }
+            if (!entry.selector && entry.mediaQuery) {
+              const mediaKey = `@media ${entry.mediaQuery}`
+              flatWalk(value, selectorPath, result, options, [
+                ...currentMedia,
+                mediaKey,
+              ])
+              handled = true
+            }
+          }
+        }
+        if (!handled) {
+          if (key.startsWith('@media') || key.startsWith('@layer')) {
+            // skip
+          } else {
+            const parts = key.split(',').map((k) => k.trim())
+            flatWalk(
+              value,
+              [...selectorPath, parts],
+              result,
+              options,
+              currentMedia
+            )
+          }
+        }
       } else {
-        // Handle comma-separated selectors as alternatives in this segment
+        // Always treat as selector segment if not a special key
         const parts = key.split(',').map((k) => k.trim())
-        walk(value, [...selectorPath, parts], result)
+        flatWalk(value, [...selectorPath, parts], result, options, currentMedia)
       }
     }
   }
   if (Object.keys(props).length > 0) {
-    // Expand all selector combinations using cartesianProduct
-    const allPaths = utils.cartesianProduct(selectorPath)
-    for (const path of allPaths) {
-      const selector = utils.joinSelectorPath(path)
-      result.rules.push({ selector, declarations: { ...props } })
+    const selectors = utils.joinSelectorPath(selectorPath)
+    for (const selector of selectors) {
+      if (currentMedia.length === 0) {
+        result.rules.push({ selector, declarations: { ...props } })
+      } else {
+        const mediaKey = currentMedia.join(' && ')
+        if (!result.media[mediaKey]) result.media[mediaKey] = []
+        result.media[mediaKey].push({ selector, declarations: { ...props } })
+      }
     }
   }
   return result
@@ -74,7 +155,6 @@ function renderRules(
   rules: { selector: string; declarations: CssRuleObject }[]
 ): string {
   let css = ''
-  // Group rules by their declarations (stringified)
   const groups: Record<string, string[]> = {}
   for (const rule of rules) {
     const declKey = JSON.stringify(rule.declarations)
@@ -93,39 +173,101 @@ function renderRules(
   return css
 }
 
-function renderMedia(media: Record<string, WalkResult>): string {
-  let css = ''
-  for (const key in media) {
-    css += `${key} {\n`
-    css += renderRules(media[key].rules)
-    css += renderMedia(media[key].media)
-    css += renderLayers(media[key].layers)
-    css += '}\n'
-  }
-  return css
-}
-
-function renderLayers(layers: Record<string, WalkResult>): string {
+function renderLayers(layers: Record<string, FlatWalkResult>): string {
   let css = ''
   for (const key in layers) {
     css += `${key} {\n`
     css += renderRules(layers[key].rules)
-    css += renderMedia(layers[key].media)
+    css += renderFlatMedia(layers[key].media)
     css += renderLayers(layers[key].layers)
     css += '}\n'
   }
   return css
 }
 
+function renderFlatMedia(
+  media: Record<string, { selector: string; declarations: CssRuleObject }[]>
+): string {
+  let css = ''
+  for (const key in media) {
+    // If the key contains '&&', recursively nest the media blocks
+    const mediaParts = key.split(' && ')
+    if (mediaParts.length > 1) {
+      css += mediaParts.reduceRight(
+        (inner, part) => `${part} {\n${inner}\n}`,
+        renderFlatMedia({ ['']: media[key] })
+      )
+    } else if (key === '') {
+      // Render rules directly, no block
+      // Group rules by their declarations (stringified)
+      const groups: Record<string, string[]> = {}
+      for (const rule of media[key]) {
+        const declKey = JSON.stringify(rule.declarations)
+        if (!groups[declKey]) groups[declKey] = []
+        groups[declKey].push(rule.selector)
+      }
+      for (const declKey in groups) {
+        const selectors = groups[declKey].join(', ')
+        const declarations: CssRuleObject = JSON.parse(declKey)
+        css += `${selectors} {\n`
+        for (const k in declarations) {
+          css += `  ${k}: ${declarations[k]};\n`
+        }
+        css += '}\n'
+      }
+    } else {
+      css += `${key} {\n`
+      // Group rules by their declarations (stringified)
+      const groups: Record<string, string[]> = {}
+      for (const rule of media[key]) {
+        const declKey = JSON.stringify(rule.declarations)
+        if (!groups[declKey]) groups[declKey] = []
+        groups[declKey].push(rule.selector)
+      }
+      for (const declKey in groups) {
+        const selectors = groups[declKey].join(', ')
+        const declarations: CssRuleObject = JSON.parse(declKey)
+        css += `${selectors} {\n`
+        for (const k in declarations) {
+          css += `  ${k}: ${declarations[k]};\n`
+        }
+        css += '}\n'
+      }
+      css += '}\n'
+    }
+  }
+  return css
+}
+
+function mergeMedia(
+  target: Record<string, { selector: string; declarations: CssRuleObject }[]>,
+  source: Record<string, { selector: string; declarations: CssRuleObject }[]>
+) {
+  for (const key in source) {
+    if (!target[key]) target[key] = []
+    target[key].push(...source[key])
+  }
+}
+
 export function getCss(
   styles: CssJsObject,
   options: GetCssOptions = {}
 ): CssString {
-  // Walk and collect rules, media, and layers
-  const result = walk(styles)
+  const result = flatWalk(
+    styles,
+    [],
+    { rules: [], media: {}, layers: {} },
+    options
+  )
+  if (typeof console !== 'undefined') {
+    console.log(
+      '[esm-styles] flatWalk result:',
+      JSON.stringify(result, null, 2)
+    )
+  }
   let css = ''
   css += renderRules(result.rules)
-  css += renderMedia(result.media)
+  css += renderFlatMedia(result.media)
   css += renderLayers(result.layers)
   return utils.prettifyCssString(css)
 }

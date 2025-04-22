@@ -6,6 +6,8 @@ import type {
   JoinSelectorPath,
   SelectorPath,
 } from '../types/index.js'
+import { CartesianProduct } from '../types/index.js'
+import * as utils from './cartesian.js'
 
 // List of standard HTML tags (not exhaustive, but covers common cases)
 const HTML_TAGS = new Set([
@@ -165,25 +167,26 @@ export const isClassSelector: IsClassSelector = (key) => {
   return key.startsWith('_')
 }
 
-export const joinSelectorPath: JoinSelectorPath = (path: SelectorPath) => {
-  // Join selector path, handling underscores for class/descendant class
-  return path.reduce((acc, part, i) => {
-    if (part.startsWith('__')) {
-      // descendant class: .foo
-      return acc + (acc ? ' ' : '') + '.' + part.slice(2)
-    } else if (part.startsWith('_')) {
-      // class: .foo
-      return acc + (acc ? ' ' : '') + '.' + part.slice(1)
-    } else if (
-      part.startsWith(':') ||
-      part.startsWith('::') ||
-      part.startsWith('#') ||
-      part.startsWith('[')
-    ) {
-      // Pseudo, id, or attribute: join directly to previous
-      return acc + part
-    } else {
-      return acc + (acc ? ' ' : '') + part
-    }
-  }, '')
+export const joinSelectorPath = (path: string[][]): string[] => {
+  // Compute cartesian product of all segments
+  const combos = utils.cartesianProduct(path)
+  // Join each combination into a selector string
+  return combos.map((parts) =>
+    parts.reduce((acc, part) => {
+      if (part.startsWith('__')) {
+        return acc + (acc ? ' ' : '') + '.' + part.slice(2)
+      } else if (part.startsWith('_')) {
+        return acc + (acc ? ' ' : '') + '.' + part.slice(1)
+      } else if (
+        part.startsWith(':') ||
+        part.startsWith('::') ||
+        part.startsWith('#') ||
+        part.startsWith('[')
+      ) {
+        return acc + part
+      } else {
+        return acc + (acc ? ' ' : '') + part
+      }
+    }, '')
+  )
 }
