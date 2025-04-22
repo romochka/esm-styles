@@ -1,0 +1,7 @@
+@media screen and (min-width: 840px) {
+:root {
+--radius-sm: 10px;
+--radius-md: 15px;
+--radius-lg: 25px;
+}
+}
