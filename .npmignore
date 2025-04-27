@@ -9,6 +9,7 @@ example-project/
 doc/
 .vscode/
 .github/
+.cursor
 
 # Config files
 .eslintrc*

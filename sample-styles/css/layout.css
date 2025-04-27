@@ -1,80 +1,80 @@
 @layer layout {
 main.xx {
   font-size: 14px;
-  
 }
+
 :root.twilight main {
   border-color: black;
-  
 }
+
 :root.light main {
   border-color: white;
   font-weight: 500;
-  
 }
+
 main {
   font-size: 16px;
-  
 }
+
 :root.twilight aside {
   border-color: maroon;
-  
 }
+
 :root.light aside {
   border-color: white;
-  
 }
+
 aside {
   color: purple;
-  
 }
-main, aside {
+
+main,
+aside {
   padding: 0;
-  
 }
+
 @media screen and (prefers-color-scheme: light) {
   :root.auto main {
-  border-color: white;
-  font-weight: 500;
-  
-}
-:root.auto aside {
-  border-color: white;
-  
+    border-color: white;
+    font-weight: 500;
+  }
+
+  :root.auto aside {
+    border-color: white;
+  }
 }
 
-}
 @media screen and (max-width: 499px) {
   aside {
-  color: pink;
-  
-}
-main, aside {
-  padding: 10px;
-  
+    color: pink;
+  }
+
+  main,
+  aside {
+    padding: 10px;
+  }
 }
 
-}
 @media screen and (min-width: 500px) and (max-width: 1024px) {
   aside {
-  color: yellow;
-  
-}
-main, aside {
-  padding: 20px;
-  
+    color: yellow;
+  }
+
+  main,
+  aside {
+    padding: 20px;
+  }
 }
 
-}
 @media (min-width: 1025px) {
   aside {
-  color: silver;
-  
-}
-main, aside {
-  padding: 30px;
-  
+    color: silver;
+  }
+
+  main,
+  aside {
+    padding: 30px;
+  }
 }
 
-}
 }

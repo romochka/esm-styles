@@ -2,39 +2,40 @@
 button.primary {
   background-color: blue;
   color: yellow;
-  
 }
+
 button.secondary {
   background-color: orange;
-  
 }
-button .icon, button > svg {
+
+button .icon,
+button>svg {
   width: 20px;
   height: 20px;
-  
 }
-button + p {
+
+button+p {
   color: green;
-  
 }
-button ~ p {
+
+button~p {
   color: purple;
-  
 }
+
 button:has(.icon)::after {
   content: '\000078';
-  
 }
+
 button:has(.icon) {
   border-radius: 50%;
   --moz-border-radius: 50%;
-  
 }
+
 button {
   background-color: var(--paper-bright);
   color: white;
   padding: 10px 20px;
   border-radius: 9px;
-  
 }
+
 }
