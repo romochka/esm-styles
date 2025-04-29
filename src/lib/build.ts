@@ -220,7 +220,7 @@ export async function build(
     .join(', ')
   const layerImports = layerFiles.map((f) => `@import '${f}';`).join('\n')
   const mainCss =
-    [varImports, layerNames ? `@layer ${layerNames};` : '', layerImports]
+    [layerNames ? `@layer ${layerNames};` : '', layerImports, varImports]
       .filter(Boolean)
       .join('\n') + '\n'
   await fs.writeFile(mainCssPath, mainCss, 'utf8')

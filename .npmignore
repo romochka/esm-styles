@@ -10,6 +10,8 @@ doc/
 .vscode/
 .github/
 .cursor
+sample-styles/
+sample2/
 
 # Config files
 .eslintrc*

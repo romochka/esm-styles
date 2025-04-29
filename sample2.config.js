@@ -1,0 +1,86 @@
+const breakpoints = {
+  phone: 499,
+  tablet: 1024,
+}
+
+export default {
+  basePath: './sample2', // relative to build command call location
+  sourcePath: 'source', // prefixed with basePath
+  outputPath: 'css', // prefixed with basePath
+  sourceFilesSuffix: '.styles.mjs',
+
+  // input
+
+  layers: ['defaults', 'components', 'layout'],
+
+  // output
+
+  mainCssFile: 'styles.css',
+
+  globalVariables: 'global',
+
+  globalRootSelector: ':root',
+
+  // media
+
+  media: {
+    device: ['phone', 'tablet', 'notebook'], // "media type": ["set of variables 1", ...]
+    theme: ['light', 'twilight', 'dark'],
+  },
+
+  mediaSelectors: {
+    theme: {
+      light: [
+        {
+          selector: '.auto',
+          mediaQuery: 'screen and (prefers-color-scheme: light)',
+          prefix: 'auto',
+        },
+        {
+          selector: '.light',
+        },
+      ],
+      twilight: [
+        {
+          selector: '.twilight',
+        },
+      ],
+      dark: [
+        {
+          selector: '.auto',
+          mediaQuery: 'screen and (prefers-color-scheme: dark)',
+          prefix: 'auto',
+        },
+        {
+          selector: '.dark',
+        },
+      ],
+    },
+    device: {
+      phone: [
+        {
+          mediaQuery: `screen and (max-width: ${breakpoints.phone}px)`,
+        },
+      ],
+      tablet: [
+        {
+          mediaQuery: `screen and (min-width: ${
+            breakpoints.phone + 1
+          }px) and (max-width: ${breakpoints.tablet}px)`,
+        },
+      ],
+      notebook: [
+        {
+          mediaQuery: `screen and (min-width: ${breakpoints.tablet + 1}px)`,
+        },
+      ],
+    },
+  },
+
+  mediaQueries: {
+    'small-phone': `(max-width: ${breakpoints.phone}px)`,
+    'min-tablet': `(min-width: ${breakpoints.phone + 1}px)`,
+    'max-tablet': `(max-width: ${breakpoints.tablet}px)`,
+    'min-notebook': `(min-width: ${breakpoints.tablet + 1}px)`,
+  },
+}

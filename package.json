@@ -1,6 +1,6 @@
 {
   "name": "esm-styles",
-  "version": "0.1.5",
+  "version": "0.1.7",
   "description": "A library for working with ESM styles",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -29,7 +29,8 @@
     "node": ">=14.16"
   },
   "bin": {
-    "build": "dist/build.js"
+    "build": "dist/build.js",
+    "watch": "dist/watch.js"
   },
   "devDependencies": {
     "@types/jest": "^29.5.14",
