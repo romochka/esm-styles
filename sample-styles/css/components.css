@@ -9,7 +9,8 @@ button.secondary {
 }
 
 button .icon,
-button>svg {
+button svg,
+button svg.icon {
   width: 20px;
   height: 20px;
 }

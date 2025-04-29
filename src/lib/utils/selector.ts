@@ -194,10 +194,15 @@ export const joinSelectorPath = (path: string[][]): string[] => {
         return acc + part
       } else if (isHtmlTag(part)) {
         return acc + (acc ? ' ' : '') + part
-      } else {
-        // Not a tag, not a special selector: treat as class
-        return acc + (acc ? '' : '') + '.' + part
+      } else if (/^([a-z][a-z0-9]*)\.(.+)/.test(part)) {
+        // If part matches 'tag.class...' and tag is an HTML tag
+        const match = part.match(/^([a-z][a-z0-9]*)\.(.+)/)
+        if (match && isHtmlTag(match[1])) {
+          return acc + (acc ? ' ' : '') + match[1] + '.' + match[2]
+        }
       }
+      // Not a tag, not a special selector: treat as class
+      return acc + (acc ? '' : '') + '.' + part
     }, '')
   )
 }

@@ -1,3 +1,7 @@
+@layer defaults, components, layout;
+@import 'defaults.css';
+@import 'components.css';
+@import 'layout.css';
 @import 'global.css';
 @import 'phone.device.css' screen and (max-width: 499px);
 @import 'tablet.device.css' screen and (min-width: 500px) and (max-width: 1024px);
@@ -7,7 +11,3 @@
 @import 'twilight.theme.css';
 @import 'auto.dark.theme.css' screen and (prefers-color-scheme: dark);
 @import 'dark.theme.css';
-@layer defaults, components, layout;
-@import 'defaults.css';
-@import 'components.css';
-@import 'layout.css';

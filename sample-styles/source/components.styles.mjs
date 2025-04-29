@@ -21,7 +21,12 @@ export default {
       height: '20px',
     },
 
-    '> svg': {
+    svg: {
+      width: '20px',
+      height: '20px',
+    },
+
+    'svg.icon': {
       width: '20px',
       height: '20px',
     },
