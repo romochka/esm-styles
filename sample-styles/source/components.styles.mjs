@@ -1,6 +1,13 @@
 import $theme from './$theme.mjs'
 
 export default {
+  '*': {
+    boxSizing: 'border-box',
+  },
+  'div > *': {
+    boxSizing: 'padding-box',
+    fontSize: '16px',
+  },
   button: {
     backgroundColor: $theme.paper.bright,
     color: 'white',
@@ -47,6 +54,21 @@ export default {
       },
 
       '--moz-border-radius': '50%',
+    },
+
+    '@dark': {
+      backgroundColor: $theme.paper.tinted,
+    },
+  },
+
+  player: {
+    backgroundColor: $theme.paper.bright,
+    color: 'white',
+    padding: '10px 20px',
+    borderRadius: '9px',
+
+    '@dark': {
+      backgroundColor: $theme.paper.tinted,
     },
   },
 }

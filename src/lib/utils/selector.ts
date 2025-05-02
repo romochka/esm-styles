@@ -152,6 +152,23 @@ const isHtmlTag = (key: string) => {
   return HTML_TAGS.has(key)
 }
 
+// Check if selector starts with an HTML tag followed by a combinator or other selector parts
+export const startsWithHtmlTag = (selector: string): boolean => {
+  // Common combinators and selector parts that might follow a tag
+  const combinators = [' ', '>', '+', '~', ':', '[', '.']
+
+  // Check if the selector starts with an HTML tag followed by a combinator
+  for (const tag of HTML_TAGS) {
+    if (selector === tag) return true
+    for (const combinator of combinators) {
+      if (selector.startsWith(tag + combinator)) {
+        return true
+      }
+    }
+  }
+  return false
+}
+
 export const isSpecialSelector: IsSpecialSelector = (key) => {
   // Pseudo-classes/elements, id, attribute selectors
   return (
@@ -172,8 +189,14 @@ export const joinSelectorPath = (path: string[][]): string[] => {
   const combos = utils.cartesianProduct(path)
   // Join each combination into a selector string
   return combos.map((parts) =>
-    parts.reduce((acc, part) => {
-      if (part.startsWith('__')) {
+    parts.reduce((acc, part, idx) => {
+      // Check if previous part is a root selector
+      const prev = idx > 0 ? parts[idx - 1] : null
+      const isPrevRoot = prev && (prev === ':root' || prev.startsWith(':root.'))
+      if (part === '*') {
+        // Universal selector
+        return acc + (acc ? ' ' : '') + '*'
+      } else if (part.startsWith('__')) {
         return acc + (acc ? ' ' : '') + '.' + part.slice(2)
       } else if (part.startsWith('_')) {
         return acc + (acc ? ' ' : '') + '.' + part.slice(1)
@@ -194,6 +217,9 @@ export const joinSelectorPath = (path: string[][]): string[] => {
         return acc + part
       } else if (isHtmlTag(part)) {
         return acc + (acc ? ' ' : '') + part
+      } else if (startsWithHtmlTag(part)) {
+        // Handle compound selectors that start with HTML tags (e.g., 'div > *')
+        return acc + (acc ? ' ' : '') + part
       } else if (/^([a-z][a-z0-9]*)\.(.+)/.test(part)) {
         // If part matches 'tag.class...' and tag is an HTML tag
         const match = part.match(/^([a-z][a-z0-9]*)\.(.+)/)
@@ -201,7 +227,11 @@ export const joinSelectorPath = (path: string[][]): string[] => {
           return acc + (acc ? ' ' : '') + match[1] + '.' + match[2]
         }
       }
-      // Not a tag, not a special selector: treat as class
+      // Not a tag, not a special selector: treat as class or custom element
+      // If previous part is a root selector, insert a space
+      if (isPrevRoot) {
+        return acc + ' ' + '.' + part
+      }
       return acc + (acc ? '' : '') + '.' + part
     }, '')
   )

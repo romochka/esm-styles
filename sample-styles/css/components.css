@@ -1,4 +1,13 @@
 @layer components {
+* {
+  box-sizing: border-box;
+}
+
+div>* {
+  box-sizing: padding-box;
+  font-size: 16px;
+}
+
 button.primary {
   background-color: blue;
   color: yellow;
@@ -32,11 +41,25 @@ button:has(.icon) {
   --moz-border-radius: 50%;
 }
 
-button {
+:root.dark button,
+:root.dark .player {
+  background-color: var(--paper-tinted);
+}
+
+button,
+.player {
   background-color: var(--paper-bright);
   color: white;
   padding: 10px 20px;
   border-radius: 9px;
+}
+
+@media screen and (prefers-color-scheme: dark) {
+
+  :root.auto button,
+  :root.auto .player {
+    background-color: var(--paper-tinted);
+  }
 }
 
 }
