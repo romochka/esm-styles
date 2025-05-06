@@ -9,6 +9,18 @@ import type {
 import { CartesianProduct } from '../types/index.js'
 import * as utils from './cartesian.js'
 
+const svgTags = [
+  'circle',
+  'ellipse',
+  'g',
+  'line',
+  'polygon',
+  'polyline',
+  'path',
+  'rect',
+  'text',
+]
+
 // List of standard HTML tags (not exhaustive, but covers common cases)
 const HTML_TAGS = new Set([
   'html',
@@ -145,6 +157,7 @@ const HTML_TAGS = new Set([
   'strike',
   'tt',
   'xmp',
+  ...svgTags,
 ])
 
 const isHtmlTag = (key: string) => {

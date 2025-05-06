@@ -3,63 +3,65 @@
   box-sizing: border-box;
 }
 
-div>* {
-  box-sizing: padding-box;
-  font-size: 16px;
-}
+div.bgimage {
+  background-image: url("data:image/svg+xml;utf8,<svg width=" 7" height=" 7" viewBox=" 0 0 7 7" xmlns=" http: //www.w3.org/2000/svg"><circle cx="3.5" cy="3.5" r="3.5" fill="red"/></svg>");
+  }
 
-button.primary {
-  background-color: blue;
-  color: yellow;
-}
+  div > * {
+    box-sizing: padding-box;
+    font-size: 16px;
+  }
 
-button.secondary {
-  background-color: orange;
-}
+  svg circle {
+    fill: red;
+  }
 
-button .icon,
-button svg,
-button svg.icon {
-  width: 20px;
-  height: 20px;
-}
+  button.primary {
+    background-color: blue;
+    color: yellow;
+  }
 
-button+p {
-  color: green;
-}
+  button.secondary {
+    background-color: orange;
+  }
 
-button~p {
-  color: purple;
-}
+  button .icon, button svg, button svg.icon {
+    width: 20px;
+    height: 20px;
+  }
 
-button:has(.icon)::after {
-  content: '\000078';
-}
+  button + p {
+    color: green;
+  }
 
-button:has(.icon) {
-  border-radius: 50%;
-  --moz-border-radius: 50%;
-}
+  button ~ p {
+    color: purple;
+  }
 
-:root.dark button,
-:root.dark .player {
-  background-color: var(--paper-tinted);
-}
+  button:has(.icon)::after {
+    content: '\000078';
+  }
 
-button,
-.player {
-  background-color: var(--paper-bright);
-  color: white;
-  padding: 10px 20px;
-  border-radius: 9px;
-}
+  button:has(.icon) {
+    border-radius: 50%;
+    --moz-border-radius: 50%;
+  }
 
-@media screen and (prefers-color-scheme: dark) {
-
-  :root.auto button,
-  :root.auto .player {
+  :root.dark button, :root.dark .player {
     background-color: var(--paper-tinted);
   }
-}
+
+  button, .player {
+    background-color: var(--paper-bright);
+    color: white;
+    padding: 10px 20px;
+    border-radius: 9px;
+  }
+
+  @media screen and (prefers-color-scheme: dark) {
+    :root.auto button, :root.auto .player {
+      background-color: var(--paper-tinted);
+    }
+  }
 
 }
