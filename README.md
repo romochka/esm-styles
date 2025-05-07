@@ -385,6 +385,14 @@ The build process wraps each in an appropriate layer and generates a main CSS fi
 
 Missing variables in one theme automatically inherit from the previous theme in the configuration.
 
+## Additional documentation
+
+For humans: [doc/usage-guide.md](doc/usage-guide.md)
+
+For AI assistants: [doc/ai-guide.md](doc/ai-guide.md)
+
+API reference: [doc/api-reference.md](doc/api-reference.md)
+
 ## License
 
 MIT
