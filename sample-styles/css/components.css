@@ -3,6 +3,14 @@
   box-sizing: border-box;
 }
 
+div.should-keep-text {
+  content: '\000061\000074\000074\000072\000028\000064\000061\000074\000061\00002d\000072\000065\000070\00006c\000069\000063\000061\000074\000065\000064\00002d\000076\000061\00006c\000075\000065\000029\000020\000022\000020\000022';
+}
+
+div.should-convert-to-css-unicode-format {
+  content: '\0000a0';
+}
+
 div.bgimage {
   background-image: url('data:image/svg+xml;utf8,<svg width="7" height="7" viewBox="0 0 7 7" xmlns="http://www.w3.org/2000/svg"><circle cx="3.5" cy="3.5" r="3.5" fill="red"/></svg>');
 }

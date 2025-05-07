@@ -4,6 +4,12 @@ export default {
   '*': {
     boxSizing: 'border-box',
   },
+  'div.should-keep-text': {
+    content: 'attr(data-replicated-value) " "',
+  },
+  'div.should-convert-to-css-unicode-format': {
+    content: '\u00a0',
+  },
   'div.bgimage': {
     backgroundImage:
       'url(\'data:image/svg+xml;utf8,<svg width="7" height="7" viewBox="0 0 7 7" xmlns="http://www.w3.org/2000/svg"><circle cx="3.5" cy="3.5" r="3.5" fill="red"/></svg>\')',
