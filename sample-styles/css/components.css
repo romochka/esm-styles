@@ -4,7 +4,7 @@
 }
 
 div.should-keep-text {
-  content: '\000061\000074\000074\000072\000028\000064\000061\000074\000061\00002d\000072\000065\000070\00006c\000069\000063\000061\000074\000065\000064\00002d\000076\000061\00006c\000075\000065\000029\000020\000022\000020\000022';
+  content: attr(data-replicated-value) " ";
 }
 
 div.should-convert-to-css-unicode-format {
@@ -49,7 +49,7 @@ button~p {
 }
 
 button:has(.icon)::after {
-  content: '\000078';
+  content: x;
 }
 
 button:has(.icon) {

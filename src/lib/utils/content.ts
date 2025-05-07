@@ -5,9 +5,9 @@ export const contentValue: ContentValue = (value) => {
   if (typeof value !== 'string') return value
   // If already quoted, return as is
   if (/^'.*'$/.test(value) || /^".*"$/.test(value)) return value
-  // If all characters are printable ASCII, return as quoted string
+  // If all characters are printable ASCII, return as it is
   if (/^[\x20-\x7E]*$/.test(value)) {
-    return `'${value}'`
+    return value
   }
   // Otherwise, convert each character to CSS unicode escape: \00xxxx
   const unicode = value
