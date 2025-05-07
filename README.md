@@ -1,10 +1,10 @@
 # ESM Styles
 
-A modern CSS-in-JS solution for JavaScript/TypeScript projects, with features designed for large-scale applications.
+A CSS-in-JS solution for JavaScript/TypeScript projects.
 
 ## Features
 
-- JavaScript/TypeScript to CSS conversion with an intuitive object syntax
+- JavaScript to CSS conversion with an intuitive object syntax
 - Build CSS from organized source files with a simple CLI
 - CSS layering support for proper style encapsulation
 - Media query and device/theme selectors with shorthands
@@ -48,13 +48,19 @@ export default {
 Build your styles by creating a configuration file and running the CLI:
 
 ```bash
-npx esm-styles build
+npx build
 ```
 
 Or specify a custom config:
 
 ```bash
-npx esm-styles build path/to/config.js
+npx build path/to/config.js
+```
+
+Watch for changes:
+
+```bash
+npx watch
 ```
 
 ### Configuration

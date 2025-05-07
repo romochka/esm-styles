@@ -50,5 +50,10 @@
   },
   "dependencies": {
     "js-beautify": "^1.15.4"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/romochka/esm-styles.git"
+  },
+  "homepage": "https://github.com/romochka/esm-styles#readme"
 }
