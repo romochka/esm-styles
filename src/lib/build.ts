@@ -103,8 +103,8 @@ export async function build(
       }
       // --- Supporting module generation ---
       // Debug: log mergedSets and sets
-      console.log('[DEBUG] sets:', sets)
-      console.log('[DEBUG] mergedSets:', inspect(mergedSets, { depth: 10 }))
+      // console.log('[DEBUG] sets:', sets)
+      // console.log('[DEBUG] mergedSets:', inspect(mergedSets, { depth: 10 }))
 
       // Define the recursive function here so it has access to sets and mergedSets
       const buildSupportingModule = (path: string[], isRoot: boolean): any => {
@@ -119,24 +119,24 @@ export async function build(
           }
         }
         // Debug: show allKeys and values at this path
-        console.log(
-          '[DEBUG] path:',
-          path.join('.'),
-          'allKeys:',
-          Array.from(allKeys)
-        )
-        for (const set of sets) {
-          const v =
-            path.length === 0 ? mergedSets[set] : _.get(mergedSets[set], path)
-          console.log(
-            '[DEBUG] set:',
-            set,
-            'path:',
-            path.join('.'),
-            'value:',
-            JSON.stringify(v)
-          )
-        }
+        // console.log(
+        //   '[DEBUG] path:',
+        //   path.join('.'),
+        //   'allKeys:',
+        //   Array.from(allKeys)
+        // )
+        // for (const set of sets) {
+        //   const v =
+        //     path.length === 0 ? mergedSets[set] : _.get(mergedSets[set], path)
+        // console.log(
+        //   '[DEBUG] set:',
+        //   set,
+        //   'path:',
+        //   path.join('.'),
+        //   'value:',
+        //   JSON.stringify(v)
+        // )
+        // }
         const result: Record<string, any> = {}
         for (const key of allKeys) {
           if (key === '') {
@@ -164,12 +164,12 @@ export async function build(
           }
         }
         // Debug log for each recursion
-        console.log(
-          '[DEBUG] path:',
-          path.join('.'),
-          'result:',
-          JSON.stringify(result, null, 2)
-        )
+        // console.log(
+        //   '[DEBUG] path:',
+        //   path.join('.'),
+        //   'result:',
+        //   JSON.stringify(result, null, 2)
+        // )
         return result
       }
 

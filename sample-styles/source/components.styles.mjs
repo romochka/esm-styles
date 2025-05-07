@@ -6,7 +6,7 @@ export default {
   },
   'div.bgimage': {
     backgroundImage:
-      'url("data:image/svg+xml;utf8,<svg width="7" height="7" viewBox="0 0 7 7" xmlns="http://www.w3.org/2000/svg"><circle cx="3.5" cy="3.5" r="3.5" fill="red"/></svg>")',
+      'url(\'data:image/svg+xml;utf8,<svg width="7" height="7" viewBox="0 0 7 7" xmlns="http://www.w3.org/2000/svg"><circle cx="3.5" cy="3.5" r="3.5" fill="red"/></svg>\')',
   },
   'div > *': {
     boxSizing: 'padding-box',

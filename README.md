@@ -1,6 +1,15 @@
 # ESM Styles
 
-A TypeScript library for converting JavaScript objects to CSS strings, allowing for a cleaner syntax when writing CSS-in-JS.
+A modern CSS-in-JS solution for JavaScript/TypeScript projects, with features designed for large-scale applications.
+
+## Features
+
+- JavaScript/TypeScript to CSS conversion with an intuitive object syntax
+- Build CSS from organized source files with a simple CLI
+- CSS layering support for proper style encapsulation
+- Media query and device/theme selectors with shorthands
+- CSS variables with inheritance between themes
+- Supporting modules for easy CSS variable usage
 
 ## Installation
 
@@ -10,145 +19,371 @@ npm install esm-styles
 
 ## Usage
 
-### Basic Usage
+### Basic Concept
 
-```javascript
-import { getCss } from 'esm-styles'
+ESM Styles lets you write CSS in JavaScript objects with a natural syntax that converts to proper CSS:
 
-const styles = {
-  body: {
-    margin: 0,
-    padding: 0,
-    fontFamily: 'sans-serif',
+```js
+// component.styles.mjs
+export default {
+  button: {
+    backgroundColor: '#4285f4',
+    color: 'white',
+    padding: '10px 20px',
+    borderRadius: '4px',
 
-    header: {
-      backgroundColor: '#333',
-      color: 'white',
-      padding: '1rem',
+    ':hover': {
+      backgroundColor: '#3367d6',
     },
-
-    'main, article': {
-      maxWidth: '800px',
-      margin: '0 auto',
-      padding: '1rem',
-    },
-
-    footer: {
-      textAlign: 'center',
-      padding: '1rem',
-      backgroundColor: '#f5f5f5',
-    },
-  },
-}
-
-const css = getCss(styles)
-console.log(css)
-```
-
-This will output CSS with nested selectors properly expanded:
-
-```css
-body {
-  margin: 0;
-  padding: 0;
-  font-family: sans-serif;
-}
-
-body header {
-  background-color: #333;
-  color: white;
-  padding: 1rem;
-}
-
-body main,
-body article {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 1rem;
-}
-
-body footer {
-  text-align: center;
-  padding: 1rem;
-  background-color: #f5f5f5;
-}
-```
-
-### Advanced Features
-
-#### Media Queries
-
-```javascript
-import { getCss } from 'esm-styles'
-
-const styles = {
-  body: {
-    fontSize: '16px',
 
     '@media (max-width: 768px)': {
-      fontSize: '14px',
+      padding: '8px 16px',
     },
   },
 }
-
-const css = getCss(styles)
 ```
 
-#### Named Media Queries
+### CLI Usage
 
-```javascript
-import { getCss } from 'esm-styles'
+Build your styles by creating a configuration file and running the CLI:
 
-const styles = {
-  container: {
-    width: '1200px',
-    '@tablet': {
-      width: '100%',
-      padding: '0 20px',
+```bash
+npx esm-styles build
+```
+
+Or specify a custom config:
+
+```bash
+npx esm-styles build path/to/config.js
+```
+
+### Configuration
+
+Create a `esm-styles.config.js` in your project root (or use a custom path):
+
+```js
+export default {
+  basePath: './src/styles',
+  sourcePath: 'source',
+  outputPath: 'css',
+  sourceFilesSuffix: '.styles.mjs',
+
+  // Input layers
+  layers: ['defaults', 'components', 'layout'],
+
+  // Output
+  mainCssFile: 'styles.css',
+
+  // Global variables
+  globalVariables: 'global',
+  globalRootSelector: ':root',
+
+  // Media types and queries
+  media: {
+    theme: ['light', 'dark'],
+    device: ['mobile', 'tablet', 'desktop'],
+  },
+
+  mediaSelectors: {
+    theme: {
+      light: [
+        {
+          selector: '.light',
+        },
+        {
+          selector: '.auto',
+          mediaQuery: 'screen and (prefers-color-scheme: light)',
+          prefix: 'auto',
+        },
+      ],
+      dark: [
+        {
+          selector: '.dark',
+        },
+        {
+          selector: '.auto',
+          mediaQuery: 'screen and (prefers-color-scheme: dark)',
+          prefix: 'auto',
+        },
+      ],
     },
-    '@mobile': {
-      padding: '0 10px',
+    // Device selectors
+    device: {
+      mobile: [
+        {
+          mediaQuery: 'screen and (max-width: 767px)',
+        },
+      ],
+      tablet: [
+        {
+          mediaQuery: 'screen and (min-width: 768px) and (max-width: 1024px)',
+        },
+      ],
+      desktop: [
+        {
+          mediaQuery: 'screen and (min-width: 1025px)',
+        },
+      ],
     },
   },
-}
 
-const mediaQueries = {
-  tablet: '(max-width: 1024px)',
-  mobile: '(max-width: 480px)',
+  // Media query shorthands
+  mediaQueries: {
+    mobile: '(max-width: 767px)',
+    tablet: '(min-width: 768px) and (max-width: 1024px)',
+    desktop: '(min-width: 1025px)',
+  },
 }
-
-const css = getCss(styles, mediaQueries)
 ```
 
-#### Class and Tag Selectors
+## JS to CSS Translation
 
-```javascript
-import { getCss } from 'esm-styles'
+### Basic Selectors
 
-const styles = {
-  // Tag selector (div)
-  div: {
-    margin: '10px',
+```js
+{
+  p: {
+    fontSize: '16px',
+    color: 'black',
 
-    // Nested tag selector (p inside div)
-    p: {
-      lineHeight: 1.5,
+    a: {
+      color: 'blue'
     },
 
-    // Class selector (with underscore prefix)
+    strong: {
+      fontWeight: 'bold'
+    }
+  }
+}
+```
+
+Compiles to:
+
+```css
+p {
+  font-size: 16px;
+  color: black;
+}
+
+p a {
+  color: blue;
+}
+
+p strong {
+  font-weight: bold;
+}
+```
+
+### Class Selectors
+
+```js
+{
+  // Class selectors for non-HTML tag names
+  header: {
+    backgroundColor: '#f5f5f5',
+    padding: '20px'
+  },
+
+  // Class on HTML tag using underscore prefix
+  p: {
     _highlight: {
-      backgroundColor: 'yellow',
-    },
+      backgroundColor: 'yellow'
+    }
+  }
+}
+```
 
-    // Descendant class selector (with double underscore)
-    __text: {
-      color: 'blue',
-    },
-  },
+Compiles to:
+
+```css
+.header {
+  background-color: #f5f5f5;
+  padding: 20px;
 }
 
-const css = getCss(styles)
+p.highlight {
+  background-color: yellow;
+}
 ```
+
+### Double Underscore for Descendant Class Selector
+
+```js
+{
+  modal: {
+    position: 'relative',
+
+    __close: {
+      position: 'absolute',
+      top: '10px',
+      right: '10px'
+    }
+  }
+}
+```
+
+Compiles to:
+
+```css
+.modal {
+  position: relative;
+}
+
+.modal .close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+```
+
+### Multiple Selectors
+
+```js
+{
+  'button, .btn': {
+    padding: '10px 20px'
+  },
+
+  'input[type="text"], input[type="email"]': {
+    borderRadius: '4px'
+  }
+}
+```
+
+### Nested Media Queries
+
+```js
+{
+  card: {
+    display: 'flex',
+
+    '@media (max-width: 768px)': {
+      flexDirection: 'column',
+
+      '@media (orientation: portrait)': {
+        padding: '10px'
+      }
+    }
+  }
+}
+```
+
+### Named Media Queries
+
+```js
+{
+  main: {
+    display: 'grid',
+
+    '@mobile': {
+      display: 'flex',
+      flexDirection: 'column'
+    },
+
+    '@desktop': {
+      gridTemplateColumns: 'repeat(3, 1fr)'
+    }
+  }
+}
+```
+
+### Theme Support
+
+```js
+{
+  card: {
+    backgroundColor: 'white',
+    color: 'black',
+
+    '@dark': {
+      backgroundColor: '#222',
+      color: 'white'
+    }
+  }
+}
+```
+
+### CSS Variables
+
+Define variables in a global variables file:
+
+```js
+// global.styles.mjs
+export default {
+  colors: {
+    primary: '#4285f4',
+    secondary: '#34a853',
+    error: '#ea4335',
+  },
+  spacing: {
+    sm: '8px',
+    md: '16px',
+    lg: '24px',
+  },
+}
+```
+
+Define theme-specific variables:
+
+```js
+// light.styles.mjs
+export default {
+  paper: {
+    bright: '#ffffff',
+    tinted: '#f0f0f0',
+  },
+  ink: {
+    bright: '#000000',
+    faded: '#333333',
+    accent: '#ff0000',
+  },
+}
+```
+
+```js
+// dark.styles.mjs
+export default {
+  paper: {
+    bright: '#000000',
+    tinted: '#323232',
+  },
+  ink: {
+    bright: '#ffffff',
+    faded: '#b3b3b3',
+  },
+}
+```
+
+Use with supporting modules:
+
+```js
+// component.styles.mjs
+import $theme from './$theme.mjs'
+
+export default {
+  button: {
+    backgroundColor: $theme.paper.bright,
+    color: $theme.ink.bright,
+    padding: '10px 20px',
+  },
+}
+```
+
+## Advanced Features
+
+### Layering
+
+Organize your styles in layers for better control over specificity:
+
+```js
+// defaults.styles.mjs, components.styles.mjs, layout.styles.mjs
+```
+
+The build process wraps each in an appropriate layer and generates a main CSS file with proper import order.
+
+### CSS Variable Inheritance
+
+Missing variables in one theme automatically inherit from the previous theme in the configuration.
 
 ## License
 

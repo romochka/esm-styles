@@ -4,64 +4,70 @@
 }
 
 div.bgimage {
-  background-image: url("data:image/svg+xml;utf8,<svg width=" 7" height=" 7" viewBox=" 0 0 7 7" xmlns=" http: //www.w3.org/2000/svg"><circle cx="3.5" cy="3.5" r="3.5" fill="red"/></svg>");
-  }
+  background-image: url('data:image/svg+xml;utf8,<svg width="7" height="7" viewBox="0 0 7 7" xmlns="http://www.w3.org/2000/svg"><circle cx="3.5" cy="3.5" r="3.5" fill="red"/></svg>');
+}
 
-  div > * {
-    box-sizing: padding-box;
-    font-size: 16px;
-  }
+div>* {
+  box-sizing: padding-box;
+  font-size: 16px;
+}
 
-  svg circle {
-    fill: red;
-  }
+svg circle {
+  fill: red;
+}
 
-  button.primary {
-    background-color: blue;
-    color: yellow;
-  }
+button.primary {
+  background-color: blue;
+  color: yellow;
+}
 
-  button.secondary {
-    background-color: orange;
-  }
+button.secondary {
+  background-color: orange;
+}
 
-  button .icon, button svg, button svg.icon {
-    width: 20px;
-    height: 20px;
-  }
+button .icon,
+button svg,
+button svg.icon {
+  width: 20px;
+  height: 20px;
+}
 
-  button + p {
-    color: green;
-  }
+button+p {
+  color: green;
+}
 
-  button ~ p {
-    color: purple;
-  }
+button~p {
+  color: purple;
+}
 
-  button:has(.icon)::after {
-    content: '\000078';
-  }
+button:has(.icon)::after {
+  content: '\000078';
+}
 
-  button:has(.icon) {
-    border-radius: 50%;
-    --moz-border-radius: 50%;
-  }
+button:has(.icon) {
+  border-radius: 50%;
+  --moz-border-radius: 50%;
+}
 
-  :root.dark button, :root.dark .player {
+:root.dark button,
+:root.dark .player {
+  background-color: var(--paper-tinted);
+}
+
+button,
+.player {
+  background-color: var(--paper-bright);
+  color: white;
+  padding: 10px 20px;
+  border-radius: 9px;
+}
+
+@media screen and (prefers-color-scheme: dark) {
+
+  :root.auto button,
+  :root.auto .player {
     background-color: var(--paper-tinted);
   }
-
-  button, .player {
-    background-color: var(--paper-bright);
-    color: white;
-    padding: 10px 20px;
-    border-radius: 9px;
-  }
-
-  @media screen and (prefers-color-scheme: dark) {
-    :root.auto button, :root.auto .player {
-      background-color: var(--paper-tinted);
-    }
-  }
+}
 
 }

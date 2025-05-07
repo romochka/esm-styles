@@ -1,4 +1,4 @@
-# Task 5
+# Task 5 (completed)
 
 Introduce supporting modules for CSS variables.
 

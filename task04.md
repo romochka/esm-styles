@@ -1,4 +1,4 @@
-# Task 4
+# Task 4 (completed)
 
 Update style compiler to support shorthands for media queries and selectors.
 
