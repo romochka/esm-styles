@@ -4,6 +4,9 @@ export default {
   '*': {
     boxSizing: 'border-box',
   },
+  'div.should-extract-var': {
+    border: `1px solid ${$theme.paper.bright}`, // should be replaced with var(--paper-bright)
+  },
   'div.should-keep-text': {
     content: 'attr(data-replicated-value) " "',
   },

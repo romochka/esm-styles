@@ -3,6 +3,10 @@
   box-sizing: border-box;
 }
 
+div.should-extract-var {
+  border: 1px solid [object Object];
+}
+
 div.should-keep-text {
   content: attr(data-replicated-value) " ";
 }
