@@ -3,12 +3,25 @@
   box-sizing: border-box;
 }
 
-div.should-extract-var {
-  border: 1px solid [object Object];
+div.should-use-var {
+  color: var(--paper-bright);
+  border: 1px solid var(--paper-tinted);
 }
 
 div.should-keep-text {
   content: attr(data-replicated-value) " ";
+}
+
+div.should-keep-keywords {
+  content: normal;
+}
+
+div.should-wrap-in-quotes {
+  content: ' ';
+}
+
+div.should-handle-values-with-spaces {
+  content: "👋 " / "waving hand";
 }
 
 div.should-convert-to-css-unicode-format {
@@ -53,7 +66,7 @@ button~p {
 }
 
 button:has(.icon)::after {
-  content: x;
+  content: 'x';
 }
 
 button:has(.icon) {

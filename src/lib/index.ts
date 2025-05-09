@@ -6,6 +6,7 @@ import type {
   CssRuleObject,
 } from './types/index.js'
 import * as utils from './utils/index.js'
+import { toCssValue } from './utils/to-css-value.js'
 
 // getCss implementation plan:
 // 1. Recursively walk the input object.
@@ -43,16 +44,10 @@ function flatWalk(
     const value = obj[key]
     if (utils.isEndValue(value)) {
       const cssKey = utils.jsKeyToCssKey(key)
-      if (
-        typeof value === 'object' &&
-        value !== null &&
-        'var' in value &&
-        typeof value.var === 'string'
-      ) {
-        // Use CSS variable reference
-        props[cssKey] = `var(${value.var})`
+      if (cssKey === 'content') {
+        props[cssKey] = utils.contentValue(toCssValue(value))
       } else {
-        props[cssKey] = cssKey === 'content' ? utils.contentValue(value) : value
+        props[cssKey] = toCssValue(value)
       }
     } else if (typeof value === 'object' && value !== null) {
       if (key.startsWith('@media ')) {

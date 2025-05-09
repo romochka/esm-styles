@@ -143,7 +143,10 @@ export async function build(
             // Only possible at non-root
             const varName =
               '--' + path.map((k: string) => k.replace(/_/g, '-')).join('-')
-            const leaf: Record<string, any> = { var: varName }
+            const leaf: Record<string, any> = {
+              var: `var(${varName})`,
+              name: varName,
+            }
             for (let i = 0; i < sets.length; i++) {
               const v =
                 path.length === 0

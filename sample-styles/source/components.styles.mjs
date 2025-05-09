@@ -4,11 +4,21 @@ export default {
   '*': {
     boxSizing: 'border-box',
   },
-  'div.should-extract-var': {
-    border: `1px solid ${$theme.paper.bright}`, // should be replaced with var(--paper-bright)
+  'div.should-use-var': {
+    color: $theme.paper.bright,
+    border: `1px solid ${$theme.paper.tinted.var}`, // should be replaced with var(--paper-bright)
   },
   'div.should-keep-text': {
     content: 'attr(data-replicated-value) " "',
+  },
+  'div.should-keep-keywords': {
+    content: 'normal',
+  },
+  'div.should-wrap-in-quotes': {
+    content: ' ',
+  },
+  'div.should-handle-values-with-spaces': {
+    content: '"👋 " / "waving hand"',
   },
   'div.should-convert-to-css-unicode-format': {
     content: '\u00a0',
