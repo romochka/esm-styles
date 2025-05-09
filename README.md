@@ -133,11 +133,12 @@ export default {
     },
   },
 
-  // Media query shorthands
+  // Media query shorthands (in addition to media.device and media.theme names)
   mediaQueries: {
-    mobile: '(max-width: 767px)',
-    tablet: '(min-width: 768px) and (max-width: 1024px)',
-    desktop: '(min-width: 1025px)',
+    'min-tablet': '(min-width: 768px)',
+    'max-tablet': '(max-width: 1024px)',
+    hover: '(hover: hover)',
+    // ...whatever you want
   },
 }
 ```
