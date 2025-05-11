@@ -195,7 +195,7 @@ p strong {
       fontSize: '16px',
     },
     _video: {
-      // video is a tag, but the class is meant
+      // video is a tag, but the class is meant, use single underscore prefix
       aspectRatio: 1.77,
     }
   }
@@ -205,13 +205,16 @@ p strong {
 Compiles to:
 
 ```css
-.header {
-  background-color: #f5f5f5;
-  padding: 20px;
+div.highlighted {
+  border: 1px solid red;
 }
 
-p.highlight {
-  background-color: yellow;
+div p {
+  font-size: 16px;
+}
+
+div.video {
+  aspect-ratio: 1.77;
 }
 ```
 

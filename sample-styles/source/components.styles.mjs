@@ -3,6 +3,40 @@ import $theme from './$theme.mjs'
 export default {
   // doc tests
 
+  a: {
+    'div#main': {
+      fontFamily: 'sans-serif',
+    },
+  },
+
+  card: {
+    display: 'flex',
+
+    '@media (max-width: 768px)': {
+      flexDirection: 'column',
+
+      '@media (orientation: portrait)': {
+        padding: '10px',
+      },
+    },
+  },
+
+  'button, .btn': {
+    padding: '10px 20px',
+  },
+
+  'input[type="text"], input[type="email"]': {
+    borderRadius: '4px',
+  },
+  modal: {
+    position: 'relative',
+
+    __close: {
+      position: 'absolute',
+      top: '10px',
+      right: '10px',
+    },
+  },
   'doc-tests': {
     p: {
       fontSize: '16px',
@@ -20,9 +54,20 @@ export default {
         backgroundColor: 'yellow',
       },
     },
-    header: {
-      backgroundColor: '#f5f5f5',
-      padding: '20px',
+
+    div: {
+      highlighted: {
+        // highlighted is not a tag
+        border: '1px solid red',
+      },
+      p: {
+        // p is a tag
+        fontSize: '16px',
+      },
+      _video: {
+        // video is a tag, but the class is meant
+        aspectRatio: 1.77,
+      },
     },
   },
 

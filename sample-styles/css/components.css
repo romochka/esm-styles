@@ -1,4 +1,32 @@
 @layer components {
+a.div#main {
+  font-family: sans-serif;
+}
+
+.card {
+  display: flex;
+}
+
+button,
+.btn {
+  padding: 10px 20px;
+}
+
+input[type="text"],
+input[type="email"] {
+  border-radius: 4px;
+}
+
+.modal .close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+.modal {
+  position: relative;
+}
+
 .doc-tests p a {
   color: blue;
 }
@@ -7,7 +35,7 @@
   font-weight: bold;
 }
 
-.doc-tests p .highlight {
+.doc-tests p.highlight {
   background-color: yellow;
 }
 
@@ -16,17 +44,21 @@
   color: black;
 }
 
-.doc-tests header {
-  background-color: #f5f5f5;
-  padding: 20px;
+.doc-tests div.highlighted {
+  border: 1px solid red;
+}
+
+.doc-tests div p {
+  font-size: 16px;
+}
+
+.doc-tests div.video,
+div.should-handle-underscore.video {
+  aspect-ratio: 1.77;
 }
 
 * {
   box-sizing: border-box;
-}
-
-div.should-handle-underscore .video {
-  aspect-ratio: 1.77;
 }
 
 div.should-use-var {
@@ -111,6 +143,21 @@ button,
   color: white;
   padding: 10px 20px;
   border-radius: 9px;
+}
+
+@media (max-width: 768px) {
+  .card {
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 768px) {
+  @media (orientation: portrait) {
+    .card {
+      padding: 10px;
+    }
+
+  }
 }
 
 @media screen and (prefers-color-scheme: dark) {

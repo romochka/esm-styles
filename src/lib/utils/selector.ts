@@ -212,7 +212,16 @@ export const joinSelectorPath = (path: string[][]): string[] => {
       } else if (part.startsWith('__')) {
         return acc + (acc ? ' ' : '') + '.' + part.slice(2)
       } else if (part.startsWith('_')) {
-        return acc + (acc ? ' ' : '') + '.' + part.slice(1)
+        // Attach class directly to previous part unless prev is combinator or root
+        const combinators = ['>', '+', '~']
+        const isPrevCombinator =
+          prev && combinators.some((c) => prev.startsWith(c))
+        if (isPrevRoot || isPrevCombinator || !acc) {
+          return acc + (acc ? ' ' : '') + '.' + part.slice(1)
+        } else {
+          // Attach directly (no space)
+          return acc + '.' + part.slice(1)
+        }
       } else if (
         part.startsWith('>') ||
         part.startsWith('+') ||
