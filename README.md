@@ -185,16 +185,18 @@ p strong {
 
 ```js
 {
-  // Class selectors for non-HTML tag names
-  header: {
-    backgroundColor: '#f5f5f5',
-    padding: '20px'
-  },
-
-  // Class on HTML tag using underscore prefix
-  p: {
-    _highlight: {
-      backgroundColor: 'yellow'
+  div: {
+    highlighted: {
+      // highlighted is not a tag
+      border: '1px solid red',
+    },
+    p: {
+      // p is a tag
+      fontSize: '16px',
+    },
+    _video: {
+      // video is a tag, but the class is meant
+      aspectRatio: 1.77,
     }
   }
 }

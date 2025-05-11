@@ -1,8 +1,41 @@
 import $theme from './$theme.mjs'
 
 export default {
+  // doc tests
+
+  'doc-tests': {
+    p: {
+      fontSize: '16px',
+      color: 'black',
+
+      a: {
+        color: 'blue',
+      },
+
+      strong: {
+        fontWeight: 'bold',
+      },
+
+      _highlight: {
+        backgroundColor: 'yellow',
+      },
+    },
+    header: {
+      backgroundColor: '#f5f5f5',
+      padding: '20px',
+    },
+  },
+
+  //
+
   '*': {
     boxSizing: 'border-box',
+  },
+  'div.should-handle-underscore': {
+    _video: {
+      // video is a tag, but the class of parent div is meant
+      aspectRatio: 1.77,
+    },
   },
   'div.should-use-var': {
     color: $theme.paper.bright,
