@@ -307,21 +307,9 @@ Use commas to target multiple selectors:
 }
 ```
 
-### T9: Content Property
-
-For the `content` property, use JavaScript unicode notation for special characters:
-
-```js
-{
-  '::before': {
-    content: '\u2022',  // Bullet character
-  }
-}
-```
-
 ## Layers
 
-CSS layers help manage specificity and provide better organization of styles. ESM Styles supports @layer directives:
+ESM Styles supports @layer directives:
 
 ```js
 {
@@ -551,12 +539,14 @@ The build process automatically generates modules like `$theme.mjs`:
 export default {
   colors: {
     background: {
-      var: '--colors-background',
+      var: 'var(--colors-background)',
+      name: '--colors-background',
       light: '#ffffff',
       dark: '#121212',
     },
     surface: {
-      var: '--colors-surface',
+      var: 'var(--colors-surface)',
+      name: '--colors-surface',
       light: '#f5f5f5',
       dark: '#222222',
     },
@@ -575,10 +565,11 @@ import $theme from './$theme.mjs'
 
 export default {
   button: {
-    backgroundColor: $theme.colors.primary,
+    backgroundColor: $theme.colors.primary, // automatically replaced with var(--colors-primary) by compiler
     color: $theme.colors.background,
     padding: '10px 20px',
     borderRadius: '4px',
+    border: `1px solid ${$theme.colors.surface.var}`, // in case of concatenation, use .var property, otherwise it will be [object Object], sorry
   },
 }
 ```
@@ -591,6 +582,7 @@ button {
   color: var(--colors-background);
   padding: 10px 20px;
   border-radius: 4px;
+  border: 1px solid var(--colors-surface);
 }
 ```
 

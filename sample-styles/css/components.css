@@ -1,6 +1,10 @@
 @layer components {
-a.div#main {
+a div#main {
   font-family: sans-serif;
+}
+
+a[disabled] {
+  cursor: not-allowed;
 }
 
 .card {

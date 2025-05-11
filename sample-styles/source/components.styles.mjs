@@ -7,6 +7,9 @@ export default {
     'div#main': {
       fontFamily: 'sans-serif',
     },
+    '[disabled]': {
+      cursor: 'not-allowed',
+    },
   },
 
   card: {

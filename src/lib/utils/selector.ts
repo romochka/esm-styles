@@ -248,6 +248,12 @@ export const joinSelectorPath = (path: string[][]): string[] => {
         if (match && isHtmlTag(match[1])) {
           return acc + (acc ? ' ' : '') + match[1] + '.' + match[2]
         }
+      } else if (/^([a-z][a-z0-9]*)#([\w-]+)$/.test(part)) {
+        // If part matches 'tag#id' and tag is an HTML tag
+        const match = part.match(/^([a-z][a-z0-9]*)#([\w-]+)$/)
+        if (match && isHtmlTag(match[1])) {
+          return acc + (acc ? ' ' : '') + match[1] + '#' + match[2]
+        }
       }
       // Not a tag, not a special selector: treat as class or custom element
       // If previous part is a root selector, insert a space
