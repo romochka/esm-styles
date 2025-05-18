@@ -8,6 +8,7 @@ a[disabled] {
 }
 
 .card {
+  container: card-panel / inline-size;
   display: flex;
 }
 
@@ -164,11 +165,23 @@ button,
   }
 }
 
+@media (orientation: portrait) {
+  button {
+    padding: 77px;
+  }
+}
+
 @media screen and (prefers-color-scheme: dark) {
 
   :root.auto button,
   :root.auto .player {
     background-color: var(--paper-tinted);
+  }
+}
+
+@container card-panel (min-width: 768px) {
+  button {
+    border: 5px solid blue;
   }
 }
 

@@ -13,6 +13,7 @@ export default {
   },
 
   card: {
+    container: 'card-panel / inline-size',
     display: 'flex',
 
     '@media (max-width: 768px)': {
@@ -20,6 +21,16 @@ export default {
 
       '@media (orientation: portrait)': {
         padding: '10px',
+      },
+    },
+  },
+
+  '@container card-panel (min-width: 768px)': {
+    button: {
+      border: '5px solid blue',
+
+      '@media (orientation: portrait)': {
+        padding: '77px',
       },
     },
   },

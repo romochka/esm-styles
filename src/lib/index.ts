@@ -28,6 +28,10 @@ interface FlatWalkResult {
   rules: { selector: string; declarations: CssRuleObject }[]
   media: Record<string, { selector: string; declarations: CssRuleObject }[]>
   layers: Record<string, FlatWalkResult>
+  containers: Record<
+    string,
+    { selector: string; declarations: CssRuleObject }[]
+  >
 }
 
 type SelectorPath = string[][]
@@ -35,9 +39,10 @@ type SelectorPath = string[][]
 function flatWalk(
   obj: CssJsObject,
   selectorPath: SelectorPath = [],
-  result: FlatWalkResult = { rules: [], media: {}, layers: {} },
+  result: FlatWalkResult = { rules: [], media: {}, layers: {}, containers: {} },
   options: GetCssOptions = {},
-  currentMedia: string[] = []
+  currentMedia: string[] = [],
+  currentContainers: string[] = []
 ): FlatWalkResult {
   const props: CssRuleObject = {}
   for (const key in obj) {
@@ -55,9 +60,10 @@ function flatWalk(
         const nested = flatWalk(
           value,
           selectorPath,
-          { rules: [], media: {}, layers: {} },
+          { rules: [], media: {}, layers: {}, containers: {} },
           options,
-          [...currentMedia, key]
+          [...currentMedia, key],
+          currentContainers
         )
         const mediaKey = [...currentMedia, key].join(' && ')
         if (!result.media[mediaKey]) result.media[mediaKey] = []
@@ -67,20 +73,71 @@ function flatWalk(
           if (!result.media[nestedMediaKey]) result.media[nestedMediaKey] = []
           result.media[nestedMediaKey].push(...nested.media[nestedMediaKey])
         }
+        // Merge nested containers
+        for (const nestedContainerKey in nested.containers) {
+          if (!result.containers[nestedContainerKey])
+            result.containers[nestedContainerKey] = []
+          result.containers[nestedContainerKey].push(
+            ...nested.containers[nestedContainerKey]
+          )
+        }
+      } else if (key.startsWith('@container')) {
+        // Recursively walk value, collecting rules for this container block
+        const nested = flatWalk(
+          value,
+          selectorPath,
+          { rules: [], media: {}, layers: {}, containers: {} },
+          options,
+          currentMedia,
+          [...currentContainers, key]
+        )
+        const containerKey = [...currentContainers, key].join(' && ')
+        if (!result.containers[containerKey])
+          result.containers[containerKey] = []
+        result.containers[containerKey].push(...nested.rules)
+        // Also merge any nested containers
+        for (const nestedContainerKey in nested.containers) {
+          if (!result.containers[nestedContainerKey])
+            result.containers[nestedContainerKey] = []
+          result.containers[nestedContainerKey].push(
+            ...nested.containers[nestedContainerKey]
+          )
+        }
+        // Merge nested media
+        for (const nestedMediaKey in nested.media) {
+          if (!result.media[nestedMediaKey]) result.media[nestedMediaKey] = []
+          result.media[nestedMediaKey].push(...nested.media[nestedMediaKey])
+        }
       } else if (key.startsWith('@layer ')) {
         if (!result.layers[key])
-          result.layers[key] = { rules: [], media: {}, layers: {} }
-        flatWalk(value, selectorPath, result.layers[key], options, currentMedia)
+          result.layers[key] = {
+            rules: [],
+            media: {},
+            layers: {},
+            containers: {},
+          }
+        flatWalk(
+          value,
+          selectorPath,
+          result.layers[key],
+          options,
+          currentMedia,
+          currentContainers
+        )
       } else if (key.startsWith('@')) {
         // Other special keys (shorthands, etc.)
         const shorthand = key.slice(1)
         let handled = false
         if (options.mediaQueries && options.mediaQueries[shorthand]) {
           const mediaKey = `@media ${options.mediaQueries[shorthand]}`
-          flatWalk(value, selectorPath, result, options, [
-            ...currentMedia,
-            mediaKey,
-          ])
+          flatWalk(
+            value,
+            selectorPath,
+            result,
+            options,
+            [...currentMedia, mediaKey],
+            currentContainers
+          )
           handled = true
         }
         if (
@@ -95,7 +152,8 @@ function flatWalk(
                 [[root + entry.selector], ...selectorPath],
                 result,
                 options,
-                currentMedia
+                currentMedia,
+                currentContainers
               )
               handled = true
             }
@@ -106,16 +164,21 @@ function flatWalk(
                 [[root + entry.selector], ...selectorPath],
                 result,
                 options,
-                [...currentMedia, mediaKey]
+                [...currentMedia, mediaKey],
+                currentContainers
               )
               handled = true
             }
             if (!entry.selector && entry.mediaQuery) {
               const mediaKey = `@media ${entry.mediaQuery}`
-              flatWalk(value, selectorPath, result, options, [
-                ...currentMedia,
-                mediaKey,
-              ])
+              flatWalk(
+                value,
+                selectorPath,
+                result,
+                options,
+                [...currentMedia, mediaKey],
+                currentContainers
+              )
               handled = true
             }
           }
@@ -130,14 +193,22 @@ function flatWalk(
               [...selectorPath, parts],
               result,
               options,
-              currentMedia
+              currentMedia,
+              currentContainers
             )
           }
         }
       } else {
         // Always treat as selector segment if not a special key
         const parts = key.split(',').map((k) => k.trim())
-        flatWalk(value, [...selectorPath, parts], result, options, currentMedia)
+        flatWalk(
+          value,
+          [...selectorPath, parts],
+          result,
+          options,
+          currentMedia,
+          currentContainers
+        )
       }
     }
   }
@@ -244,6 +315,63 @@ function renderFlatMedia(
   return css
 }
 
+function renderFlatContainers(
+  containers: Record<
+    string,
+    { selector: string; declarations: CssRuleObject }[]
+  >
+): string {
+  let css = ''
+  for (const key in containers) {
+    // If the key contains '&&', recursively nest the container blocks
+    const containerParts = key.split(' && ')
+    if (containerParts.length > 1) {
+      css += containerParts.reduceRight(
+        (inner, part) => `${part} {\n${inner}\n}`,
+        renderFlatContainers({ ['']: containers[key] })
+      )
+    } else if (key === '') {
+      // Render rules directly, no block
+      // Group rules by their declarations (stringified)
+      const groups: Record<string, string[]> = {}
+      for (const rule of containers[key]) {
+        const declKey = JSON.stringify(rule.declarations)
+        if (!groups[declKey]) groups[declKey] = []
+        groups[declKey].push(rule.selector)
+      }
+      for (const declKey in groups) {
+        const selectors = groups[declKey].join(', ')
+        const declarations: CssRuleObject = JSON.parse(declKey)
+        css += `${selectors} {\n`
+        for (const k in declarations) {
+          css += `  ${k}: ${declarations[k]};\n`
+        }
+        css += '}\n'
+      }
+    } else {
+      css += `${key} {\n`
+      // Group rules by their declarations (stringified)
+      const groups: Record<string, string[]> = {}
+      for (const rule of containers[key]) {
+        const declKey = JSON.stringify(rule.declarations)
+        if (!groups[declKey]) groups[declKey] = []
+        groups[declKey].push(rule.selector)
+      }
+      for (const declKey in groups) {
+        const selectors = groups[declKey].join(', ')
+        const declarations: CssRuleObject = JSON.parse(declKey)
+        css += `${selectors} {\n`
+        for (const k in declarations) {
+          css += `  ${k}: ${declarations[k]};\n`
+        }
+        css += '}\n'
+      }
+      css += '}\n'
+    }
+  }
+  return css
+}
+
 function mergeMedia(
   target: Record<string, { selector: string; declarations: CssRuleObject }[]>,
   source: Record<string, { selector: string; declarations: CssRuleObject }[]>
@@ -261,7 +389,7 @@ export function getCss(
   const result = flatWalk(
     styles,
     [],
-    { rules: [], media: {}, layers: {} },
+    { rules: [], media: {}, layers: {}, containers: {} },
     options
   )
   if (typeof console !== 'undefined') {
@@ -273,6 +401,7 @@ export function getCss(
   let css = ''
   css += renderRules(result.rules)
   css += renderFlatMedia(result.media)
+  css += renderFlatContainers(result.containers)
   css += renderLayers(result.layers)
   return utils.prettifyCssString(css)
 }
