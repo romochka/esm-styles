@@ -8,8 +8,7 @@ A CSS-in-JS solution for JavaScript/TypeScript projects.
 - Build CSS from organized source files with a simple CLI
 - CSS layering support for proper style encapsulation
 - Media query and device/theme selectors with shorthands
-- CSS variables with inheritance between themes
-- Supporting modules for easy CSS variable usage
+- CSS variable sets for different themes and devices
 
 ## Installation
 
@@ -21,26 +20,61 @@ npm install esm-styles
 
 ### Basic Concept
 
-ESM Styles lets you write CSS in JavaScript objects with a natural syntax that converts to proper CSS:
+ESM Styles lets you write and store styles in JavaScript this way:
 
 ```js
-// component.styles.mjs
-export default {
-  button: {
-    backgroundColor: '#4285f4',
-    color: 'white',
-    padding: '10px 20px',
-    borderRadius: '4px',
+// article.styles.mjs
+import $device from './$device.mjs'
+import $theme from './$theme.mjs'
+import { card } from './card.styles.mjs'
 
-    ':hover': {
-      backgroundColor: '#3367d6',
+export default {
+  article: {
+    display: 'flex',
+
+    card,
+
+    '@max-tablet': {
+      flexDirection: 'column',
     },
 
-    '@media (max-width: 768px)': {
-      padding: '8px 16px',
+    button: {
+      borderRadius: $device.radii.md,
+      backgroundColor: $theme.paper.tinted,
+
+      '@dark': {
+        fontWeight: 300,
+      },
     },
   },
 }
+```
+
+### Sample Directory Structure
+
+```
+monorepo/
+├── package.json
+└── packages/
+  ├── app/
+  │ ├── package.json
+  │ └── src/
+  │   ├── css/
+  │   ├── styles.css
+  │   └── components/
+  │     ├── article.tsx
+  │     ├── button.tsx
+  │     └── card.tsx
+  └── styles/
+    ├── $device.mjs
+    ├── $theme.mjs
+    ├── components/
+    │ ├── article.styles.mjs
+    │ ├── button.styles.mjs
+    │ └── card.styles.mjs
+    ├── components.styles.mjs
+    ├── esm-styles.config.js
+    └── package.json
 ```
 
 ### CLI Usage
