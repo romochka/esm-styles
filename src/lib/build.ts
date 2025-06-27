@@ -4,7 +4,7 @@ import { getMediaShorthands } from './utils/media-shorthand.js'
 import { isEndValue } from './utils/index.js'
 import path from 'node:path'
 import fs from 'node:fs/promises'
-import { inspect } from 'node:util'
+// import { inspect } from 'node:util'
 import _ from 'lodash'
 
 export async function build(

@@ -11,7 +11,17 @@ export default {
 
   // input
 
+  // old parameter:
   layers: ['defaults', 'components', 'layout'],
+
+  // new parameter:
+  floors: [
+    { source: 'defaults', layer: 'defaults' },
+    { source: 'components', layer: 'components' },
+    { source: 'layout', layer: 'layout' }, // wrapped in layer 'layout'
+    { source: 'test-nolayer' }, // not wrapped in any layer
+    { source: 'test-layout', layer: 'layout' }, // also wrapped in layer 'layout'
+  ],
 
   // output
 
