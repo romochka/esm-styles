@@ -85,6 +85,9 @@ export default {
   // Output
   mainCssFile: 'styles.css',
 
+  // floors to include in the main CSS file
+  importFloors: ['defaults', 'components', 'layout'],
+
   // CSS Variables configuration
   globalVariables: 'global',
   globalRootSelector: ':root',
