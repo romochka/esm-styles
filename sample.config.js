@@ -20,12 +20,14 @@ export default {
     { source: 'components', layer: 'components' },
     { source: 'layout', layer: 'layout' }, // wrapped in layer 'layout'
     { source: 'test-nolayer' }, // not wrapped in any layer
-    { source: 'test-layout', layer: 'layout' }, // also wrapped in layer 'layout'
+    { source: 'test-layout', layer: 'special-layout' }, // also wrapped in layer 'layout'
   ],
 
   // output
 
   mainCssFile: 'styles.css',
+
+  importFloors: ['defaults', 'components', 'layout'],
 
   globalVariables: 'global',
 

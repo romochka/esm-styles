@@ -7,6 +7,9 @@ import fs from 'node:fs/promises'
 // import { inspect } from 'node:util'
 import _ from 'lodash'
 
+// Type for floor file tracking
+type FloorFile = { file: string; layer?: string; source: string }
+
 export async function build(
   configPath = 'esm-styles.config.js'
 ): Promise<void> {
@@ -188,9 +191,12 @@ export async function build(
   }
 
   // 4. Process each floor (replaces legacy layers)
+  const importFloors =
+    config.importFloors || floors.map((f: FloorFile) => f.source)
+  // Track unique layer names in order of first appearance (for imported floors only)
   const uniqueLayers: string[] = []
   // Track output files for each floor
-  const floorFiles: { file: string; layer?: string }[] = []
+  const floorFiles: FloorFile[] = []
   for (const floor of floors) {
     const { source, layer } = floor
     const inputFile = path.join(sourcePath, `${source}${suffix}`)
@@ -202,31 +208,58 @@ export async function build(
       globalRootSelector: config.globalRootSelector,
     })
     let wrappedCss = css
+
     if (layer) {
-      wrappedCss = `@layer ${layer} {\n${css}\n}`
+      // add layer to order in any case, even if the floor is not imported
       if (!uniqueLayers.includes(layer)) {
         uniqueLayers.push(layer)
       }
+      wrappedCss = `@layer ${layer} {\n${css}\n}`
     }
     await fs.writeFile(outputFile, wrappedCss, 'utf8')
-    floorFiles.push({ file: `${source}.css`, layer })
+    floorFiles.push({ file: `${source}.css`, layer, source })
     cssFiles.push({ floor: source, file: `${source}.css`, layer })
   }
 
   // 5. Create main CSS file
   const mainCssPath = path.join(outputPath, mainCssFile)
+  // Type guard for cssFiles entries with type 'global' or 'media'
+  function isGlobalOrMedia(
+    f: any
+  ): f is { type: string; file: string; mediaQuery?: string } {
+    return (
+      (f.type === 'global' || f.type === 'media') && typeof f.file === 'string'
+    )
+  }
   // Compose imports for variable sets
-  const varImports = cssFiles
-    .filter((f) => f.type === 'global' || f.type === 'media')
-    .map((f) => {
-      if (f.mediaQuery) {
-        return `@import '${f.file}' ${f.mediaQuery};`
-      }
-      return `@import '${f.file}';`
-    })
+  function toImportStatement(f: {
+    type: string
+    file: string
+    mediaQuery?: string
+  }): string {
+    if (f.mediaQuery) {
+      return `@import '${f.file}' ${f.mediaQuery};`
+    }
+    return `@import '${f.file}';`
+  }
+  const varImports = (
+    cssFiles.filter(isGlobalOrMedia) as {
+      type: string
+      file: string
+      mediaQuery?: string
+    }[]
+  )
+    .map(toImportStatement)
     .join('\n')
-  // Compose imports for floors (in order)
-  const floorImports = floorFiles.map((f) => `@import '${f.file}';`).join('\n')
+  // Compose imports for floors (in order, only those in importFloors)
+  function isImportedFloor(f: FloorFile): boolean {
+    return importFloors.includes(f.source)
+  }
+  function importStatement(f: FloorFile): string {
+    return `@import '${f.file}';`
+  }
+  const importedFloorFiles = floorFiles.filter(isImportedFloor)
+  const floorImports = importedFloorFiles.map(importStatement).join('\n')
   const mainCss =
     [
       uniqueLayers.length ? `@layer ${uniqueLayers.join(', ')};` : '',
