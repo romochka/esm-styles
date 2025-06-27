@@ -73,8 +73,14 @@ export default {
   outputPath: 'css',
   sourceFilesSuffix: '.styles.mjs',
 
-  // Input layers - order matters
-  layers: ['defaults', 'components', 'layout'],
+  // Input files and their layers (order of layers matters)
+  floors: [
+    { source: 'defaults', layer: 'defaults' }, // wrap in layer 'defaults'
+    { source: 'components', layer: 'components' }, // wrap in layer 'components'
+    { source: 'layout', layer: 'layout' }, // wrap in layer 'layout'
+    { source: 'basic' }, // stay out of any layer
+    { source: 'more-layout', layer: 'layout' }, // wrap in layer 'layout'
+  ],
 
   // Output
   mainCssFile: 'styles.css',

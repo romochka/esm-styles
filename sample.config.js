@@ -12,7 +12,7 @@ export default {
   // input
 
   // old parameter:
-  layers: ['defaults', 'components', 'layout'],
+  // layers: ['defaults', 'components', 'layout'],
 
   // new parameter:
   floors: [
