@@ -25,7 +25,7 @@ export async function build(
   const sourcePath = path.join(basePath, config.sourcePath || '')
   const outputPath = path.join(basePath, config.outputPath || '')
   const suffix = config.sourceFilesSuffix || '.styles.mjs'
-  const layers = config.layers || []
+  const floors = config.floors || []
   const mainCssFile = config.mainCssFile || 'styles.css'
 
   // Merge media shorthands
@@ -187,20 +187,30 @@ export async function build(
     }
   }
 
-  // 4. Process each layer (legacy, keep for now)
-  for (const layer of layers) {
-    const inputFile = path.join(sourcePath, `${layer}${suffix}`)
-    const outputFile = path.join(outputPath, `${layer}.css`)
+  // 4. Process each floor (replaces legacy layers)
+  const uniqueLayers: string[] = []
+  // Track output files for each floor
+  const floorFiles: { file: string; layer?: string }[] = []
+  for (const floor of floors) {
+    const { source, layer } = floor
+    const inputFile = path.join(sourcePath, `${source}${suffix}`)
+    const outputFile = path.join(outputPath, `${source}.css`)
     const fileUrl = pathToFileUrl(inputFile).href + `?update=${Date.now()}`
     const stylesObj = (await import(fileUrl)).default
-    // Always call getCss for the layer object, so media queries are rendered
     const css = getCss(stylesObj, {
       ...mediaShorthands,
       globalRootSelector: config.globalRootSelector,
     })
-    const wrappedCss = `@layer ${layer} {\n${css}\n}`
+    let wrappedCss = css
+    if (layer) {
+      wrappedCss = `@layer ${layer} {\n${css}\n}`
+      if (!uniqueLayers.includes(layer)) {
+        uniqueLayers.push(layer)
+      }
+    }
     await fs.writeFile(outputFile, wrappedCss, 'utf8')
-    cssFiles.push({ layer, file: `${layer}.css` })
+    floorFiles.push({ file: `${source}.css`, layer })
+    cssFiles.push({ floor: source, file: `${source}.css`, layer })
   }
 
   // 5. Create main CSS file
@@ -215,15 +225,14 @@ export async function build(
       return `@import '${f.file}';`
     })
     .join('\n')
-  // Compose imports for layers
-  const layerFiles = cssFiles.filter((f) => f.layer).map((f) => f.file)
-  const layerNames = cssFiles
-    .filter((f) => f.layer)
-    .map((f) => f.layer)
-    .join(', ')
-  const layerImports = layerFiles.map((f) => `@import '${f}';`).join('\n')
+  // Compose imports for floors (in order)
+  const floorImports = floorFiles.map((f) => `@import '${f.file}';`).join('\n')
   const mainCss =
-    [layerNames ? `@layer ${layerNames};` : '', layerImports, varImports]
+    [
+      uniqueLayers.length ? `@layer ${uniqueLayers.join(', ')};` : '',
+      floorImports,
+      varImports,
+    ]
       .filter(Boolean)
       .join('\n') + '\n'
   await fs.writeFile(mainCssPath, mainCss, 'utf8')
