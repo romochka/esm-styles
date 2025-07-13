@@ -31,6 +31,17 @@ export async function build(
   const floors = config.floors || []
   const mainCssFile = config.mainCssFile || 'styles.css'
 
+  // Helper function to generate CSS comment header
+  const generateCssComment = (sourceName: string): string => {
+    const normalizedBasePath = (config.basePath || '.').replace(/^\.\//, '')
+    const sourceFilePath = path.join(
+      normalizedBasePath,
+      config.sourcePath || '',
+      `${sourceName}${suffix}`
+    )
+    return `/* This CSS was automatically generated from ${sourceFilePath}, do not edit directly */\n`
+  }
+
   // Merge media shorthands
   const mediaShorthands = getMediaShorthands(config)
 
@@ -50,7 +61,8 @@ export async function build(
     const varsObj = (await import(fileUrl)).default
     const cssVars = getCssVariables(varsObj)
     const rootSelector = config.globalRootSelector || ':root'
-    const wrappedCss = `${rootSelector} {\n${cssVars}\n}`
+    const comment = generateCssComment(config.globalVariables)
+    const wrappedCss = `${comment}${rootSelector} {\n${cssVars}\n}`
     await fs.writeFile(outputFile, wrappedCss, 'utf8')
     cssFiles.push({ type: 'global', file: 'global.css' })
   }
@@ -93,7 +105,8 @@ export async function build(
               fullSelector = `${rootSelector} ${selector}`
             }
           }
-          const block = `${fullSelector} {\n${cssVars}\n}`
+          const comment = generateCssComment(setName)
+          const block = `${comment}${fullSelector} {\n${cssVars}\n}`
           await fs.writeFile(outputFile, block, 'utf8')
           cssFiles.push({
             type: 'media',
@@ -207,14 +220,15 @@ export async function build(
       ...mediaShorthands,
       globalRootSelector: config.globalRootSelector,
     })
-    let wrappedCss = css
+    const comment = generateCssComment(source)
+    let wrappedCss = `${comment}${css}`
 
     if (layer) {
       // add layer to order in any case, even if the floor is not imported
       if (!uniqueLayers.includes(layer)) {
         uniqueLayers.push(layer)
       }
-      wrappedCss = `@layer ${layer} {\n${css}\n}`
+      wrappedCss = `${comment}@layer ${layer} {\n${css}\n}`
     }
     await fs.writeFile(outputFile, wrappedCss, 'utf8')
     floorFiles.push({ file: `${source}.css`, layer, source })
@@ -260,14 +274,18 @@ export async function build(
   }
   const importedFloorFiles = floorFiles.filter(isImportedFloor)
   const floorImports = importedFloorFiles.map(importStatement).join('\n')
+  const normalizedBasePath = (config.basePath || '.').replace(/^\.\//, '')
+  const mainCssComment = `/* This CSS was automatically generated as the main styles file from ${normalizedBasePath}, do not edit directly */\n`
   const mainCss =
+    mainCssComment +
     [
       uniqueLayers.length ? `@layer ${uniqueLayers.join(', ')};` : '',
       floorImports,
       varImports,
     ]
       .filter(Boolean)
-      .join('\n') + '\n'
+      .join('\n') +
+    '\n'
   await fs.writeFile(mainCssPath, mainCss, 'utf8')
 }
 
