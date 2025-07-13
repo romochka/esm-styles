@@ -8,7 +8,12 @@ import fs from 'node:fs/promises'
 import _ from 'lodash'
 
 // Type for floor file tracking
-type FloorFile = { file: string; layer?: string; source: string }
+type FloorFile = {
+  file: string
+  layer?: string
+  source: string
+  outputPath?: string
+}
 
 export async function build(
   configPath = 'esm-styles.config.js'
@@ -211,9 +216,18 @@ export async function build(
   // Track output files for each floor
   const floorFiles: FloorFile[] = []
   for (const floor of floors) {
-    const { source, layer } = floor
+    const { source, layer, outputPath: floorOutputPath } = floor
     const inputFile = path.join(sourcePath, `${source}${suffix}`)
-    const outputFile = path.join(outputPath, `${source}.css`)
+
+    // Use floor's outputPath if provided, otherwise use default
+    const floorOutputDir = floorOutputPath
+      ? path.join(basePath, floorOutputPath)
+      : outputPath
+
+    // Ensure the output directory exists
+    await fs.mkdir(floorOutputDir, { recursive: true })
+
+    const outputFile = path.join(floorOutputDir, `${source}.css`)
     const fileUrl = pathToFileUrl(inputFile).href + `?update=${Date.now()}`
     const stylesObj = (await import(fileUrl)).default
     const css = getCss(stylesObj, {
@@ -231,8 +245,19 @@ export async function build(
       wrappedCss = `${comment}@layer ${layer} {\n${css}\n}`
     }
     await fs.writeFile(outputFile, wrappedCss, 'utf8')
-    floorFiles.push({ file: `${source}.css`, layer, source })
-    cssFiles.push({ floor: source, file: `${source}.css`, layer })
+
+    // Calculate relative path from default output directory for imports
+    const relativePath = floorOutputPath
+      ? path.relative(outputPath, outputFile)
+      : `${source}.css`
+
+    floorFiles.push({
+      file: relativePath,
+      layer,
+      source,
+      outputPath: floorOutputPath,
+    })
+    cssFiles.push({ floor: source, file: relativePath, layer })
   }
 
   // 5. Create main CSS file
