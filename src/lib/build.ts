@@ -33,7 +33,7 @@ export async function build(
 
   // Helper function to generate CSS comment header
   const generateCssComment = (sourceName: string): string => {
-    const normalizedBasePath = (config.basePath || '.').replace(/^\.\//, '')
+    const normalizedBasePath = (config.basePath || '.').replace(/^\.*\//, '')
     const sourceFilePath = path.join(
       normalizedBasePath,
       config.sourcePath || '',
@@ -274,7 +274,7 @@ export async function build(
   }
   const importedFloorFiles = floorFiles.filter(isImportedFloor)
   const floorImports = importedFloorFiles.map(importStatement).join('\n')
-  const normalizedBasePath = (config.basePath || '.').replace(/^\.\//, '')
+  const normalizedBasePath = (config.basePath || '.').replace(/^\.*\//, '')
   const mainCssComment = `/* This CSS was automatically generated as the main styles file from ${normalizedBasePath}, do not edit directly */\n`
   const mainCss =
     mainCssComment +
