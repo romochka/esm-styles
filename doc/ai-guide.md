@@ -91,6 +91,28 @@ button {
 }
 ```
 
+### ⚠️ CRITICAL: Ampersand (&) Syntax is NOT Supported
+
+```js
+// ❌ WRONG: These will NOT work (common mistake from SCSS/Sass)
+{
+  button: {
+    '&:hover': { opacity: 0.9 },     // ❌ Ampersand not supported
+    '&.active': { color: 'red' },     // ❌ Will not work
+    '&[disabled]': { opacity: 0.5 }  // ❌ Will not work
+  }
+}
+
+// ✅ CORRECT: Use direct selectors instead
+{
+  button: {
+    ':hover': { opacity: 0.9 },      // ✅ Direct pseudo-class
+    active: { color: 'red' },         // ✅ Class name (if not HTML tag)
+    '[disabled]': { opacity: 0.5 }   // ✅ Direct attribute selector
+  }
+}
+```
+
 ### Multiple Selectors
 
 ```js
