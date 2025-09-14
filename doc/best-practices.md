@@ -119,6 +119,108 @@ export default {
 }
 ```
 
+### ❌ DON'T: Use ampersand (&) syntax
+
+```js
+// ❌ BAD: ampersand is not supported
+export default {
+  button: {
+    color: 'blue',
+
+    '&:hover': {     // This won't work!
+      color: 'red'
+    },
+
+    '&.active': {    // This won't work!
+      fontWeight: 'bold'
+    }
+  }
+}
+
+// ✅ GOOD: use direct selectors
+export default {
+  button: {
+    color: 'blue',
+
+    ':hover': {      // Direct pseudo-class
+      color: 'red'
+    },
+
+    active: {        // Class name (if not HTML tag)
+      fontWeight: 'bold'
+    }
+  }
+}
+```
+
+### ❌ DON'T: Use BEM-like naming
+
+```js
+// ❌ BAD: BEM-style naming
+export default {
+  card: {
+    padding: '20px',
+
+    card__header: {           // Avoid block__element
+      marginBottom: '16px'
+    },
+
+    card__title: {            // Repetitive naming
+      fontSize: '1.5rem'
+    },
+
+    'card--featured': {       // Avoid block--modifier
+      border: '2px solid gold'
+    }
+  }
+}
+
+// ✅ GOOD: semantic nesting
+export default {
+  card: {
+    padding: '20px',
+
+    header: {                 // Simple, semantic
+      marginBottom: '16px',
+
+      title: {                // Nested naturally
+        fontSize: '1.5rem'
+      }
+    },
+
+    featured: {               // Clear modifier
+      border: '2px solid gold'
+    }
+  }
+}
+```
+
+### ❌ DON'T: Use dashes in class names
+
+```js
+// ❌ BAD: dashes require quotes in JavaScript
+export default {
+  'navigation-menu': {        // Needs quotes
+    display: 'flex'
+  },
+
+  'user-profile': {           // Harder to work with in JS
+    padding: '20px'
+  }
+}
+
+// ✅ GOOD: use camelCase for easier JS handling
+export default {
+  navigationMenu: {           // No quotes needed
+    display: 'flex'
+  },
+
+  userProfile: {              // Easy to reference in JS
+    padding: '20px'
+  }
+}
+```
+
 ## Configuration
 
 ### ✅ DO: Order floors logically
@@ -171,31 +273,145 @@ media: {
 
 ## Style Structure
 
-### ✅ DO: Use logical nesting
+### ✅ DO: Use semantic HTML with logical nesting
 
 ```js
-// ✅ GOOD: clear hierarchy
+// ✅ GOOD: semantic tags with meaningful structure
 export default {
-  card: {
+  article: {
     padding: '20px',
     borderRadius: '8px',
 
     header: {
       marginBottom: '16px',
 
-      title: {
+      h2: {
+        // Semantic heading tag
         fontSize: '1.5rem',
         fontWeight: 'bold',
       },
+
+      time: {
+        // Semantic time element
+        fontSize: '0.9rem',
+        color: 'gray',
+      },
     },
 
-    content: {
+    p: {
+      // Content in paragraphs
       lineHeight: 1.6,
+      marginBottom: '1rem',
     },
 
     footer: {
       marginTop: '16px',
       textAlign: 'right',
+
+      button: {
+        // Semantic button
+        padding: '8px 16px',
+      },
+    },
+  },
+}
+```
+
+### ✅ DO: Rely on semantic elements over generic divs
+
+```js
+// ❌ BAD: everything is a div with classes
+export default {
+  'story-container': {
+    padding: '20px',
+
+    'story-header': {
+      marginBottom: '16px',
+    },
+
+    'story-title': {
+      fontSize: '1.5rem',
+    },
+
+    'story-content': {
+      lineHeight: 1.6,
+    },
+
+    'story-actions': {
+      marginTop: '16px',
+    },
+  },
+}
+
+// ✅ GOOD: semantic HTML structure
+export default {
+  section: {                        // Semantic section
+    story: {                        // Custom component class
+      padding: '20px',
+
+      header: {                     // Semantic header
+        marginBottom: '16px',
+
+        h3: {                       // Proper heading hierarchy
+          fontSize: '1.5rem',
+        },
+      },
+
+      main: {                       // Main content area
+        lineHeight: 1.6,
+
+        p: {                        // Paragraphs for text
+          marginBottom: '1rem',
+        },
+      },
+
+      nav: {                        // Navigation for actions
+        marginTop: '16px',
+
+        button: {                   // Semantic buttons
+          marginRight: '8px',
+        },
+      },
+    },
+  },
+}
+```
+
+### ❌ DON'T: Repeat class names or create redundant nesting
+
+```js
+// ❌ BAD: repetitive naming and poor structure
+export default {
+  'story-list': {
+    'story-item': {
+      'story-item-content': {
+        'story-item-title': {       // Too repetitive!
+          fontSize: '1.2rem',
+        },
+
+        'story-item-message': {     // div.story div.story_message
+          padding: '10px',
+        },
+      },
+    },
+  },
+}
+
+// ✅ GOOD: semantic structure without repetition
+export default {
+  section: {
+    story: {                        // section.story (semantic)
+      padding: '20px',
+
+      h3: {                         // story h3 (semantic heading)
+        fontSize: '1.2rem',
+      },
+
+      article: {                    // story article (semantic content)
+        message: {                  // story article.message
+          padding: '10px',
+        },
+      },
     },
   },
 }
@@ -563,6 +779,10 @@ export default {
 ## Summary
 
 - **Organize**: Use clear file structure and consistent naming
+- **Naming**: Use camelCase, avoid BEM, avoid dashes, prefer semantic names
+- **Structure**: Rely on semantic HTML tags over generic divs and classes
+- **Nesting**: Use logical nesting, avoid repetitive class names
+- **Syntax**: No ampersand (&) syntax, use direct selectors and pseudo-classes
 - **Compose**: Reuse common patterns and avoid duplication
 - **Configure**: Set up logical floors and meaningful breakpoints
 - **Variables**: Use semantic names and consistent theme structures
