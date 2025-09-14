@@ -549,6 +549,7 @@ export default {
   button: {
     backgroundColor: $theme.surface.primary,
     color: $theme.text.primary
+    border: `1px solid ${$theme.color.primary.var}` // in case of concatenation, use .var property of variable reference object
   }
 }
 ```

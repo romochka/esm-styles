@@ -172,6 +172,8 @@ export default {
     // Use variable references - gets converted to var(--color-primary)
     backgroundColor: $theme.color.primary,
     color: $theme.color.textOnPrimary,
+    // in case of concatenation, use .var property, otherwise it will be [object Object]
+    border: `1px solid ${$theme.color.primary.var}`,
   },
 }
 ```

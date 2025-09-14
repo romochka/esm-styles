@@ -74,6 +74,10 @@ div.should-use-var {
   border: 1px solid var(--paper-tinted);
 }
 
+div.should-use-var-object {
+  color: --paper-bright;
+}
+
 div.should-keep-text {
   content: attr(data-replicated-value) " ";
 }

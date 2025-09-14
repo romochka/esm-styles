@@ -104,6 +104,9 @@ export default {
     color: $theme.paper.bright,
     border: `1px solid ${$theme.paper.tinted.var}`, // should be replaced with var(--paper-bright)
   },
+  'div.should-use-var-object': {
+    color: { var: '--paper-bright' },
+  },
   'div.should-keep-text': {
     content: 'attr(data-replicated-value) " "',
   },

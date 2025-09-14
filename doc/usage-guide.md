@@ -649,4 +649,4 @@ button {
 The supporting modules provide:
 
 - Autocomplete for available variables in most code editors
-- The ability to see the actual values for each theme
+- The ability to see the actual values for each theme or device
