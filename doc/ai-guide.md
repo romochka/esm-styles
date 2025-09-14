@@ -184,7 +184,12 @@ export default {
   basePath: './src/styles',
   sourcePath: 'source',
   outputPath: 'css',
-  layers: ['base', 'components', 'utilities'],
+  floors: [
+    { source: 'base', layer: 'base' },
+    { source: 'components', layer: 'components' },
+    { source: 'utilities', layer: 'utilities' },
+  ],
+  importFloors: ['base', 'components', 'utilities'],
   mainCssFile: 'styles.css',
 
   // Media shorthand definitions

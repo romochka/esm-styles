@@ -73,13 +73,14 @@ export default {
   outputPath: 'css',
   sourceFilesSuffix: '.styles.mjs',
 
-  // Input files and their layers (order of layers matters)
+  // Input floors (replaces layers parameter)
   floors: [
     { source: 'defaults', layer: 'defaults' }, // wrap in layer 'defaults'
     { source: 'components', layer: 'components' }, // wrap in layer 'components'
     { source: 'layout', layer: 'layout' }, // wrap in layer 'layout'
     { source: 'basic' }, // stay out of any layer
     { source: 'more-layout', layer: 'layout' }, // wrap in layer 'layout'
+    { source: 'special', outputPath: 'alt' }, // output to custom path
   ],
 
   // Output
@@ -149,7 +150,8 @@ export default {
 | `sourcePath`         | Directory inside `basePath` containing source style files                 |
 | `outputPath`         | Directory inside `basePath` where output CSS files will be written        |
 | `sourceFilesSuffix`  | Suffix for source style files (default: `.styles.mjs`)                    |
-| `layers`             | Array of layer names, defining the order of CSS specificity               |
+| `floors`             | Array of floor configurations, defining sources, layers, and output paths |
+| `importFloors`       | Array of floor names to include in the main CSS file                      |
 | `mainCssFile`        | Name of the output CSS file that imports all layer and variable files     |
 | `globalVariables`    | Name of the file containing global CSS variables                          |
 | `globalRootSelector` | Root selector for CSS variables (default: `:root`)                        |
@@ -316,9 +318,13 @@ Use commas to target multiple selectors:
 }
 ```
 
-## Layers
+## Floors and Layers
 
-ESM Styles supports @layer directives:
+ESM Styles supports @layer directives through its floors configuration system.
+
+### Inline Layers
+
+You can still use inline @layer directives in your styles:
 
 ```js
 {
@@ -333,42 +339,87 @@ ESM Styles supports @layer directives:
 }
 ```
 
-Your configuration can define multiple layer files that will be automatically wrapped in their respective layer directives:
+### Floors Configuration
+
+The floors system replaces the old layers configuration and provides more flexibility:
+
+```js
+floors: [
+  { source: 'defaults', layer: 'defaults' },
+  { source: 'components', layer: 'components' },
+  { source: 'layout', layer: 'layout' },
+  { source: 'utilities' }, // No layer wrapper
+  { source: 'overrides', outputPath: 'special' }, // Custom output path
+]
+```
+
+Each floor can:
+
+- **source**: Name of the source file (required)
+- **layer**: CSS layer name to wrap the styles in (optional)
+- **outputPath**: Custom output directory for this floor's CSS (optional)
+
+### Floor Examples
 
 ```js
 // defaults.styles.mjs
 export default {
-  // Base styles
+  // Base styles - will be wrapped in @layer defaults
 }
 
 // components.styles.mjs
 export default {
-  // Component styles
+  // Component styles - will be wrapped in @layer components
 }
 
-// layout.styles.mjs
+// utilities.styles.mjs
 export default {
-  // Layout styles
+  // Utility styles - no layer wrapper
 }
 ```
 
-The build process generates:
+### Build Output
+
+The build process generates CSS files based on your floors configuration:
 
 ```css
+/* styles.css (main file) */
 @layer defaults, components, layout;
 
-@layer defaults {
-  /* defaults.css content */
-}
+@import url('./defaults.css');
+@import url('./components.css');
+@import url('./layout.css');
+@import url('./utilities.css'); /* no layer */
 
-@layer components {
-  /* components.css content */
-}
-
-@layer layout {
-  /* layout.css content */
-}
+/* Files with custom outputPath go to their specified directories */
 ```
+
+Each layered CSS file has its content wrapped in the appropriate layer:
+
+```css
+/* defaults.css */
+@layer defaults {
+  /* defaults styles content */
+}
+
+/* components.css */
+@layer components {
+  /* components styles content */
+}
+
+/* utilities.css (no layer) */
+/* utilities styles content directly, no layer wrapper */
+```
+
+### Import Control
+
+Use `importFloors` to control which floors are included in the main CSS file:
+
+```js
+importFloors: ['defaults', 'components', 'layout'], // utilities excluded from main CSS
+```
+
+This allows you to generate standalone CSS files that can be imported separately or conditionally.
 
 ## Media Queries
 

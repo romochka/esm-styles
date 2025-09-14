@@ -120,6 +120,12 @@ Represents a set of CSS property declarations.
 The `esm-styles.config.js` file exports a configuration object with the following structure:
 
 ```typescript
+interface FloorConfig {
+  source: string
+  layer?: string
+  outputPath?: string
+}
+
 interface ESMStylesConfig {
   // Paths
   basePath: string
@@ -128,7 +134,8 @@ interface ESMStylesConfig {
   sourceFilesSuffix?: string
 
   // Input
-  layers: string[]
+  floors: FloorConfig[]
+  importFloors?: string[]
 
   // Output
   mainCssFile: string
@@ -146,19 +153,28 @@ interface ESMStylesConfig {
 
 #### Properties
 
-| Property             | Type     | Description                   | Default       |
-| -------------------- | -------- | ----------------------------- | ------------- |
-| `basePath`           | string   | Base directory for styles     | -             |
-| `sourcePath`         | string   | Source files directory        | -             |
-| `outputPath`         | string   | Output CSS directory          | -             |
-| `sourceFilesSuffix`  | string   | Suffix for source files       | '.styles.mjs' |
-| `layers`             | string[] | Array of layer names          | -             |
-| `mainCssFile`        | string   | Output CSS file name          | -             |
-| `globalVariables`    | string   | Global variables file name    | -             |
-| `globalRootSelector` | string   | Root selector for variables   | ':root'       |
-| `media`              | object   | Media types and variables     | -             |
-| `mediaSelectors`     | object   | Media selector configurations | -             |
-| `mediaQueries`       | object   | Named media query shorthands  | -             |
+| Property             | Type          | Description                        | Default       |
+| -------------------- | ------------- | ---------------------------------- | ------------- |
+| `basePath`           | string        | Base directory for styles          | -             |
+| `sourcePath`         | string        | Source files directory             | -             |
+| `outputPath`         | string        | Output CSS directory               | -             |
+| `sourceFilesSuffix`  | string        | Suffix for source files            | '.styles.mjs' |
+| `floors`             | FloorConfig[] | Array of floor configurations      | -             |
+| `importFloors`       | string[]      | Floor names to include in main CSS | -             |
+| `mainCssFile`        | string        | Output CSS file name               | -             |
+| `globalVariables`    | string        | Global variables file name         | -             |
+| `globalRootSelector` | string        | Root selector for variables        | ':root'       |
+| `media`              | object        | Media types and variables          | -             |
+| `mediaSelectors`     | object        | Media selector configurations      | -             |
+| `mediaQueries`       | object        | Named media query shorthands       | -             |
+
+#### FloorConfig Properties
+
+| Property     | Type   | Description                                  | Default |
+| ------------ | ------ | -------------------------------------------- | ------- |
+| `source`     | string | Source file name (without suffix)            | -       |
+| `layer`      | string | CSS layer name to wrap the floor styles in   | -       |
+| `outputPath` | string | Custom output path for this floor's CSS file | -       |
 
 ### Media Selectors
 

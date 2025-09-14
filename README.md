@@ -108,8 +108,15 @@ export default {
   outputPath: 'css',
   sourceFilesSuffix: '.styles.mjs',
 
-  // Input layers
-  layers: ['defaults', 'components', 'layout'],
+  // Input floors (replaces layers)
+  floors: [
+    { source: 'defaults', layer: 'defaults' },
+    { source: 'components', layer: 'components' },
+    { source: 'layout', layer: 'layout' },
+  ],
+
+  // Specify which floors to include in main CSS
+  importFloors: ['defaults', 'components', 'layout'],
 
   // Output
   mainCssFile: 'styles.css',
@@ -417,15 +424,28 @@ export default {
 
 ## Advanced Features
 
-### Layering
+### Layering with Floors
 
-Organize your styles in layers for better control over specificity:
+Organize your styles in floors for better control over specificity and output:
 
 ```js
-// defaults.styles.mjs, components.styles.mjs, layout.styles.mjs
+// Configuration example
+floors: [
+  { source: 'defaults', layer: 'defaults' },
+  { source: 'components', layer: 'components' },
+  { source: 'layout', layer: 'layout' },
+  { source: 'utilities' }, // No layer wrapper
+  { source: 'overrides', outputPath: 'special' }, // Custom output path
+]
 ```
 
-The build process wraps each in an appropriate layer and generates a main CSS file with proper import order.
+Each floor can:
+
+- Be wrapped in a CSS layer (optional)
+- Have a custom output path (optional)
+- Be included or excluded from the main CSS file via `importFloors`
+
+The build process wraps floors in their respective layers and generates a main CSS file with proper import order.
 
 ### CSS Variable Inheritance
 
