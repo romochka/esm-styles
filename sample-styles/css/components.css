@@ -13,6 +13,13 @@ a[disabled] {
   display: flex;
 }
 
+button.video,
+.btn.video,
+.doc-tests div.video,
+div.should-handle-underscore.video {
+  aspect-ratio: 1.77;
+}
+
 button,
 .btn {
   padding: 10px 20px;
@@ -56,11 +63,6 @@ input[type="email"] {
 
 .doc-tests div p {
   font-size: 16px;
-}
-
-.doc-tests div.video,
-div.should-handle-underscore.video {
-  aspect-ratio: 1.77;
 }
 
 * {

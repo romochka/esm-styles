@@ -31,7 +31,7 @@ button {
   p: { fontSize: '16px' },       // -> p { font-size: 16px; }
 
   // Non-HTML tags become class selectors
-  header: { display: 'flex' },   // -> .header { display: flex; }
+  heading: { display: 'flex' },   // -> .heading { display: flex; }
   card: { padding: '20px' }      // -> .card { padding: 20px; }
 }
 ```

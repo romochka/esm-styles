@@ -37,6 +37,10 @@ export default {
 
   'button, .btn': {
     padding: '10px 20px',
+
+    _video: {
+      aspectRatio: 1.77,
+    },
   },
 
   'input[type="text"], input[type="email"]': {
