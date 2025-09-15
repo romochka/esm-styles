@@ -76,6 +76,7 @@ div.should-use-var {
 
 div.should-use-var-object {
   color: --paper-bright;
+  font-size: 12px;
 }
 
 div.should-keep-text {

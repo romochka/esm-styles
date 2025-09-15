@@ -106,6 +106,7 @@ export default {
   },
   'div.should-use-var-object': {
     color: { var: '--paper-bright' },
+    fontSize: '12px',
   },
   'div.should-keep-text': {
     content: 'attr(data-replicated-value) " "',
