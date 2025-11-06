@@ -12,6 +12,14 @@ export default {
     },
   },
 
+  article: {
+    message: {
+      _picture: {
+        aspectRatio: 1.77,
+      },
+    },
+  },
+
   card: {
     container: 'card-panel / inline-size',
     display: 'flex',
@@ -106,7 +114,7 @@ export default {
   },
   'div.should-use-var-object': {
     color: { var: '--paper-bright' },
-    fontSize: '12px',
+    fontSize: '13px',
   },
   'div.should-keep-text': {
     content: 'attr(data-replicated-value) " "',

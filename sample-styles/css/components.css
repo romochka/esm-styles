@@ -8,16 +8,17 @@ a[disabled] {
   cursor: not-allowed;
 }
 
-.card {
-  container: card-panel / inline-size;
-  display: flex;
-}
-
+article.message.picture,
 button.video,
 .btn.video,
 .doc-tests div.video,
 div.should-handle-underscore.video {
   aspect-ratio: 1.77;
+}
+
+.card {
+  container: card-panel / inline-size;
+  display: flex;
 }
 
 button,
@@ -76,7 +77,7 @@ div.should-use-var {
 
 div.should-use-var-object {
   color: --paper-bright;
-  font-size: 12px;
+  font-size: 13px;
 }
 
 div.should-keep-text {
