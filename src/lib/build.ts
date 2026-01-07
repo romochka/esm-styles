@@ -315,7 +315,7 @@ export async function build(
 
   // 6. Create timestamp file
   const timestampPath = path.join(
-    normalizedBasePath,
+    config.basePath || '.',
     config.timestampOutputPath || '',
     'timestamp.mjs'
   )
