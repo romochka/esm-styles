@@ -312,6 +312,14 @@ export async function build(
       .join('\n') +
     '\n'
   await fs.writeFile(mainCssPath, mainCss, 'utf8')
+
+  // 6. Create timestamp file
+  const timestampPath = path.join(
+    normalizedBasePath,
+    config.timestampOutputPath || '',
+    'timestamp.mjs'
+  )
+  await fs.writeFile(timestampPath, `export default ${Date.now()}`, 'utf8')
 }
 
 // Helper for file URL import

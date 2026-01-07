@@ -66,6 +66,10 @@ input[type="email"] {
   font-size: 16px;
 }
 
+.another-test {
+  color: violet;
+}
+
 * {
   box-sizing: border-box;
 }

@@ -34,6 +34,8 @@ export default {
 
   globalRootSelector: ':root',
 
+  timestampOutputPath: 'source', // put timestamp.mjs file in basePath/source (if not specified, timestamp.mjs will be put in basePath)
+
   // media
 
   media: {

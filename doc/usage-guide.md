@@ -144,20 +144,21 @@ export default {
 
 ### Configuration Properties
 
-| Property             | Description                                                               |
-| -------------------- | ------------------------------------------------------------------------- |
-| `basePath`           | Base directory for all styles, relative to where the build command is run |
-| `sourcePath`         | Directory inside `basePath` containing source style files                 |
-| `outputPath`         | Directory inside `basePath` where output CSS files will be written        |
-| `sourceFilesSuffix`  | Suffix for source style files (default: `.styles.mjs`)                    |
-| `floors`             | Array of floor configurations, defining sources, layers, and output paths |
-| `importFloors`       | Array of floor names to include in the main CSS file                      |
-| `mainCssFile`        | Name of the output CSS file that imports all layer and variable files     |
-| `globalVariables`    | Name of the file containing global CSS variables                          |
-| `globalRootSelector` | Root selector for CSS variables (default: `:root`)                        |
-| `media`              | Object defining media types and their variable sets                       |
-| `mediaSelectors`     | Configuration for applying media types with selectors/queries             |
-| `mediaQueries`       | Object defining shorthand names for media queries                         |
+| Property              | Description                                                               |
+| --------------------- | ------------------------------------------------------------------------- |
+| `basePath`            | Base directory for all styles, relative to where the build command is run |
+| `sourcePath`          | Directory inside `basePath` containing source style files                 |
+| `outputPath`          | Directory inside `basePath` where output CSS files will be written        |
+| `sourceFilesSuffix`   | Suffix for source style files (default: `.styles.mjs`)                    |
+| `floors`              | Array of floor configurations, defining sources, layers, and output paths |
+| `importFloors`        | Array of floor names to include in the main CSS file                      |
+| `mainCssFile`         | Name of the output CSS file that imports all layer and variable files     |
+| `globalVariables`     | Name of the file containing global CSS variables                          |
+| `globalRootSelector`  | Root selector for CSS variables (default: `:root`)                        |
+| `media`               | Object defining media types and their variable sets                       |
+| `mediaSelectors`      | Configuration for applying media types with selectors/queries             |
+| `mediaQueries`        | Object defining shorthand names for media queries                         |
+| `timestampOutputPath` | Path where timestamp.mjs file will be written (default: `basePath`)       |
 
 ## JS to CSS Translation Rules
 

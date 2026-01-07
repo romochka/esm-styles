@@ -99,6 +99,11 @@ export default {
 
   //
 
+  // 0.3.5 tests
+  'another-test': {
+    color: 'violet',
+  },
+
   '*': {
     boxSizing: 'border-box',
   },
