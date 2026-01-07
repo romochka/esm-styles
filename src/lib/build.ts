@@ -6,6 +6,7 @@ import path from 'node:path'
 import fs from 'node:fs/promises'
 // import { inspect } from 'node:util'
 import _ from 'lodash'
+import CleanCSS from 'clean-css'
 
 // Type for floor file tracking
 type FloorFile = {
@@ -216,7 +217,7 @@ export async function build(
   // Track output files for each floor
   const floorFiles: FloorFile[] = []
   for (const floor of floors) {
-    const { source, layer, outputPath: floorOutputPath } = floor
+    const { source, layer, outputPath: floorOutputPath, minify } = floor
     const inputFile = path.join(sourcePath, `${source}${suffix}`)
 
     // Use floor's outputPath if provided, otherwise use default
@@ -244,6 +245,12 @@ export async function build(
       }
       wrappedCss = `${comment}@layer ${layer} {\n${css}\n}`
     }
+
+    // if floor should be minified, minify wrappedCss string
+    if (minify) {
+      wrappedCss = new CleanCSS().minify(wrappedCss).styles
+    }
+
     await fs.writeFile(outputFile, wrappedCss, 'utf8')
 
     // Calculate relative path from default output directory for imports

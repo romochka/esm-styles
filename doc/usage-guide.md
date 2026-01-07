@@ -351,6 +351,7 @@ floors: [
   { source: 'layout', layer: 'layout' },
   { source: 'utilities' }, // No layer wrapper
   { source: 'overrides', outputPath: 'special' }, // Custom output path
+  { source: 'minified', minify: true }, // Minify CSS file
 ]
 ```
 
