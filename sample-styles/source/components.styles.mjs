@@ -22,6 +22,14 @@ export default {
     // should be converted to .kebab-case-test#id:hover > .another-kebab-case::before div.third-kebab-case
     color: 'violet',
   },
+  Capitalized: {
+    // this should be ".Capitalized"
+    color: 'violet',
+  },
+  PascalCase: {
+    // this should be ".PascalCase"
+    color: 'violet',
+  },
 
   // doc tests
 

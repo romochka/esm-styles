@@ -198,9 +198,16 @@ export const isClassSelector: IsClassSelector = (key) => {
   return key.startsWith('_')
 }
 
+const processClass = (cls: string): string => {
+  if (/^[A-Z]/.test(cls)) {
+    return cls
+  }
+  return kebabCase(cls)
+}
+
 const transformExplicitClasses = (selector: string): string => {
   return selector.replace(/\.([a-zA-Z0-9_-]+)/g, (_, cls) => {
-    return '.' + kebabCase(cls)
+    return '.' + processClass(cls)
   })
 }
 
@@ -220,7 +227,7 @@ export const joinSelectorPath = (path: string[][]): string[] => {
           return acc + (acc ? ' ' : '') + '*'
 
         case part.startsWith('__'):
-          return acc + (acc ? ' ' : '') + '.' + kebabCase(part.slice(2))
+          return acc + (acc ? ' ' : '') + '.' + processClass(part.slice(2))
 
         case part.startsWith('_'): {
           // Attach class directly to previous part unless prev is combinator or root
@@ -228,10 +235,10 @@ export const joinSelectorPath = (path: string[][]): string[] => {
           const isPrevCombinator =
             prev && combinators.some((c) => prev.startsWith(c))
           if (isPrevRoot || isPrevCombinator || !acc) {
-            return acc + (acc ? ' ' : '') + '.' + kebabCase(part.slice(1))
+            return acc + (acc ? ' ' : '') + '.' + processClass(part.slice(1))
           }
           // Attach directly (no space)
-          return acc + '.' + kebabCase(part.slice(1))
+          return acc + '.' + processClass(part.slice(1))
         }
 
         case part.startsWith('>') ||
@@ -271,7 +278,7 @@ export const joinSelectorPath = (path: string[][]): string[] => {
           const match = part.match(/^([a-zA-Z0-9_-]+)(.*)$/)
           if (match) {
             processedPart =
-              kebabCase(match[1]) + transformExplicitClasses(match[2])
+              processClass(match[1]) + transformExplicitClasses(match[2])
           } else {
             processedPart = transformExplicitClasses(part)
           }
