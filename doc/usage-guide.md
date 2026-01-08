@@ -144,21 +144,21 @@ export default {
 
 ### Configuration Properties
 
-| Property              | Description                                                               |
-| --------------------- | ------------------------------------------------------------------------- |
-| `basePath`            | Base directory for all styles, relative to where the build command is run |
-| `sourcePath`          | Directory inside `basePath` containing source style files                 |
-| `outputPath`          | Directory inside `basePath` where output CSS files will be written        |
-| `sourceFilesSuffix`   | Suffix for source style files (default: `.styles.mjs`)                    |
-| `floors`              | Array of floor configurations, defining sources, layers, and output paths |
-| `importFloors`        | Array of floor names to include in the main CSS file                      |
-| `mainCssFile`         | Name of the output CSS file that imports all layer and variable files     |
-| `globalVariables`     | Name of the file containing global CSS variables                          |
-| `globalRootSelector`  | Root selector for CSS variables (default: `:root`)                        |
-| `media`               | Object defining media types and their variable sets                       |
-| `mediaSelectors`      | Configuration for applying media types with selectors/queries             |
-| `mediaQueries`        | Object defining shorthand names for media queries                         |
-| `timestampOutputPath` | Path where timestamp.mjs file will be written (default: `basePath`)       |
+| Property             | Description                                                                     |
+| -------------------- | ------------------------------------------------------------------------------- |
+| `basePath`           | Base directory for all styles, relative to where the build command is run       |
+| `sourcePath`         | Directory inside `basePath` containing source style files                       |
+| `outputPath`         | Directory inside `basePath` where output CSS files will be written              |
+| `sourceFilesSuffix`  | Suffix for source style files (default: `.styles.mjs`)                          |
+| `floors`             | Array of floor configurations, defining sources, layers, and output paths       |
+| `importFloors`       | Array of floor names to include in the main CSS file                            |
+| `mainCssFile`        | Name of the output CSS file that imports all layer and variable files           |
+| `globalVariables`    | Name of the file containing global CSS variables                                |
+| `globalRootSelector` | Root selector for CSS variables (default: `:root`)                              |
+| `media`              | Object defining media types and their variable sets                             |
+| `mediaSelectors`     | Configuration for applying media types with selectors/queries                   |
+| `mediaQueries`       | Object defining shorthand names for media queries                               |
+| `timestamp`          | Configuration for timestamp.mjs file (default: `basePath` and `.mjs` extension) |
 
 ## JS to CSS Translation Rules
 
@@ -315,6 +315,24 @@ Use commas to target multiple selectors:
 {
   'button, .btn': {
     padding: '10px 20px'
+  }
+}
+```
+
+### T9: Automatic Kebab-case Conversion
+
+Class names in selectors are automatically converted from camelCase to kebab-case, unless they are PascalCase (starting with an uppercase letter), in which case they are preserved as-is.
+
+```js
+{
+  myClass: {          // Becomes .my-class
+    color: 'red'
+  },
+  'myClass:hover': {  // Becomes .my-class:hover
+    color: 'blue'
+  },
+  MyComponent: {      // Becomes .MyComponent (preserved)
+    color: 'green'
   }
 }
 ```
@@ -652,3 +670,12 @@ The supporting modules provide:
 
 - Autocomplete for available variables in most code editors
 - The ability to see the actual values for each theme or device
+
+## Timestamp file
+
+ESM Styles generate a timestamp file to track the last build time. This can be useful for caching and versioning.
+
+```js
+// timestamp.mjs (generated)
+export default 1767867956228
+```

@@ -34,7 +34,9 @@ export default {
 
   globalRootSelector: ':root',
 
-  timestampOutputPath: 'source', // put timestamp.mjs file in basePath/source (if not specified, timestamp.mjs will be put in basePath)
+  // put timestamp.mjs file in [basePath]/source (if not specified, timestamp.mjs will be put in basePath)
+  // ass ".ts" extension to the file (if not specified, ".mjs" will be used)
+  timestamp: { outputPath: 'source', extension: 'ts' },
 
   // media
 

@@ -321,10 +321,12 @@ export async function build(
   await fs.writeFile(mainCssPath, mainCss, 'utf8')
 
   // 6. Create timestamp file
+  const { outputPath: timestampOutputPath, extension: timestampExtension } =
+    config.timestamp || { outputPath: '', extension: 'mjs' }
   const timestampPath = path.join(
     config.basePath || '.',
-    config.timestampOutputPath || '',
-    'timestamp.mjs'
+    timestampOutputPath,
+    'timestamp.' + timestampExtension
   )
   await fs.writeFile(timestampPath, `export default ${Date.now()}`, 'utf8')
 }
