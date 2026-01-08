@@ -26,8 +26,8 @@ export default {
     // this should be ".Capitalized"
     color: 'violet',
   },
-  PascalCase: {
-    // this should be ".PascalCase"
+  'PascalCase:hover > div.kebabCaseTest::before': {
+    // this should be ".PascalCase:hover > div.kebab-case-test::before"
     color: 'violet',
   },
 

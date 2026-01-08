@@ -6,7 +6,7 @@
 .kebab-case-test#id,
 .kebab-case-test#id:hover>.another-kebab-case::before div.third-kebab-case,
 .Capitalized,
-.PascalCase {
+.PascalCase:hover>div.kebab-case-test::before {
   color: violet;
 }
 
