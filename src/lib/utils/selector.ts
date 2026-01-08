@@ -202,7 +202,15 @@ const processClass = (cls: string): string => {
   if (/^[A-Z]/.test(cls)) {
     return cls
   }
-  return kebabCase(cls)
+  // Custom kebab conversion:
+  // 1. Handle camelCase (e.g. myClass -> my-Class)
+  // 2. Handle snake_case (e.g. my_class -> my-class)
+  // 3. Lowercase everything (my-Class -> my-class)
+  // We do NOT use lodash/kebabCase because it splits numbers (i1 -> i-1), which is undesirable
+  return cls
+    .replace(/([a-z0-9])([A-Z])/g, '$1-$2')
+    .replace(/_/g, '-')
+    .toLowerCase()
 }
 
 const transformExplicitClasses = (selector: string): string => {
@@ -226,19 +234,39 @@ export const joinSelectorPath = (path: string[][]): string[] => {
           // Universal selector
           return acc + (acc ? ' ' : '') + '*'
 
-        case part.startsWith('__'):
-          return acc + (acc ? ' ' : '') + '.' + processClass(part.slice(2))
+        case part.startsWith('__'): {
+          const content = part.slice(2)
+          const match = content.match(/^([a-zA-Z0-9_-]+)(.*)$/)
+          let processed = ''
+          if (match) {
+            processed =
+              processClass(match[1]) + transformExplicitClasses(match[2])
+          } else {
+            processed = processClass(content)
+          }
+          return acc + (acc ? ' ' : '') + '.' + processed
+        }
 
         case part.startsWith('_'): {
           // Attach class directly to previous part unless prev is combinator or root
+          const content = part.slice(1)
+          const match = content.match(/^([a-zA-Z0-9_-]+)(.*)$/)
+          let processed = ''
+          if (match) {
+            processed =
+              processClass(match[1]) + transformExplicitClasses(match[2])
+          } else {
+            processed = processClass(content)
+          }
+
           const combinators = ['>', '+', '~']
           const isPrevCombinator =
             prev && combinators.some((c) => prev.startsWith(c))
           if (isPrevRoot || isPrevCombinator || !acc) {
-            return acc + (acc ? ' ' : '') + '.' + processClass(part.slice(1))
+            return acc + (acc ? ' ' : '') + '.' + processed
           }
           // Attach directly (no space)
-          return acc + '.' + processClass(part.slice(1))
+          return acc + '.' + processed
         }
 
         case part.startsWith('>') ||

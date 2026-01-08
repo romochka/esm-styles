@@ -1,5 +1,11 @@
 /* This CSS was automatically generated from sample-styles/source/components.styles.mjs, do not edit directly */
 @layer components {
+div .scroll-cut .cut,
+span.i1,
+span.i2 {
+  color: pink;
+}
+
 .kebab-case-test,
 .kebab-case-test>.another-kebab-case,
 .kebab-case-test:hover,
