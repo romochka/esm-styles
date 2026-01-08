@@ -673,9 +673,18 @@ The supporting modules provide:
 
 ## Timestamp file
 
-ESM Styles generate a timestamp file to track the last build time. This can be useful for caching and versioning.
+ESM Styles generate a timestamp file to track the last build time. This can be useful for caching and versioning, or to trigger HMR when in development mode.
 
 ```js
 // timestamp.mjs (generated)
 export default 1767867956228
+```
+
+### Configuration in esm-styles.config.mjs
+
+By default, the timestamp file is put to the root of the `basePath` directory with `.mjs` extension.
+
+```js
+  // put timestamp file to [basePath]/source folder with .ts extension
+  timestamp: { outputPath: 'source', extension: 'ts' },
 ```
