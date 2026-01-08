@@ -273,7 +273,7 @@ export const joinSelectorPath = (path: string[][]): string[] => {
           part.startsWith('+') ||
           part.startsWith('~'):
           // Combinators: always join with a space
-          return acc + ' ' + part
+          return acc + ' ' + transformExplicitClasses(part)
 
         case part.startsWith(':') ||
           part.startsWith('::') ||

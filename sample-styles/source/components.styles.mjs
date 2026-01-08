@@ -3,22 +3,28 @@ import $theme from './$theme.mjs'
 export default {
   // kebabCase tests
 
-  // need to be fixed:
+  // need to fix:
 
-  // 1.
+  kebabCase: {
+    '> .secondKebabCase': { color: 'pink' },
+  },
+  // converts to '.kebab-case>.secondKebabCase'
+  // instead of '.kebab-case>.second-kebab-case'
+
+  // previously fixed:
   div: {
     '__scroll_cut .cut': {
       color: 'pink',
     },
   },
-  // converts to 'div .scroll-cut-cut' instead of 'div .scroll-cut .cut'
+  // converts to 'div .scroll-cut .cut'§
 
   // 2.
   span: {
     i1: { color: 'pink' },
     i2: { color: 'pink' },
   },
-  // converts to 'span.i-1, span.i-2' instead of 'span.i1, span.i2'
+  // converts to 'span.i1, span.i2'
 
   kebabCaseTest: {
     // selector should be converted to .kebab-case-test
