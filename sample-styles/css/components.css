@@ -1,5 +1,13 @@
 /* This CSS was automatically generated from sample-styles/source/components.styles.mjs, do not edit directly */
 @layer components {
+.kebab-case-test,
+.kebab-case-test-another-kebab-case,
+.kebab-case-test-hover,
+.another-test,
+.kebab-case-test {
+  color: violet;
+}
+
 a div#main {
   font-family: sans-serif;
 }
@@ -64,10 +72,6 @@ input[type="email"] {
 
 .doc-tests div p {
   font-size: 16px;
-}
-
-.another-test {
-  color: violet;
 }
 
 * {

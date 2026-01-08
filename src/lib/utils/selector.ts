@@ -8,6 +8,7 @@ import type {
 } from '../types/index.js'
 import { CartesianProduct } from '../types/index.js'
 import * as utils from './cartesian.js'
+import kebabCase from 'lodash/kebabCase.js'
 
 const svgTags = [
   'circle',
@@ -256,6 +257,7 @@ export const joinSelectorPath = (path: string[][]): string[] => {
         }
       }
       // Not a tag, not a special selector: treat as class or custom element
+
       // If previous part is a root selector, insert a space
       if (isPrevRoot) {
         return acc + ' ' + '.' + part

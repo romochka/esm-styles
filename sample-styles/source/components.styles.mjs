@@ -1,6 +1,24 @@
 import $theme from './$theme.mjs'
 
 export default {
+  // kebabCase tests
+  kebabCaseTest: {
+    // passed
+    color: 'violet',
+  },
+  'kebabCaseTest > anotherKebabCase': {
+    // failed
+    color: 'violet',
+  },
+  'kebabCaseTest:hover': {
+    // failed
+    color: 'violet',
+  },
+  'kebabCaseTest#id': {
+    // failed
+    color: 'violet',
+  },
+
   // doc tests
 
   a: {
@@ -95,13 +113,6 @@ export default {
         aspectRatio: 1.77,
       },
     },
-  },
-
-  //
-
-  // 0.3.5 tests
-  'another-test': {
-    color: 'violet',
   },
 
   '*': {
