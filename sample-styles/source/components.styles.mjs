@@ -3,9 +3,10 @@ import $theme from './$theme.mjs'
 export default {
   // kebabCase tests
   kebabCaseTest: {
+    // selector should be converted to .kebab-case-test
     color: 'violet',
   },
-  'kebabCaseTest > anotherKebabCase': {
+  'kebabCaseTest > .anotherKebabCase': {
     // should be converted to .kebab-case-test > .another-kebab-case
     color: 'violet',
   },
@@ -17,9 +18,9 @@ export default {
     // should be converted to .kebab-case-test#id
     color: 'violet',
   },
-  'kebabCaseTest#id:hover > anotherKebabCase::before thirdKebabCase': {
+  'kebabCaseTest#id:hover > .anotherKebabCase::before .thirdKebabCase': {
     // should be converted to .kebab-case-test#id:hover > .another-kebab-case::before .third-kebab-case
-    content: 'violet',
+    color: 'violet',
   },
 
   // doc tests

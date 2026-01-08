@@ -1,9 +1,10 @@
 /* This CSS was automatically generated from sample-styles/source/components.styles.mjs, do not edit directly */
 @layer components {
 .kebabCaseTest,
-.kebabCaseTest>anotherKebabCase,
+.kebabCaseTest>.anotherKebabCase,
 .kebabCaseTest:hover,
-.kebabCaseTest#id {
+.kebabCaseTest#id,
+.kebabCaseTest#id:hover>.anotherKebabCase::before .thirdKebabCase {
   color: violet;
 }
 
