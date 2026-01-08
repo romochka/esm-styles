@@ -3,20 +3,23 @@ import $theme from './$theme.mjs'
 export default {
   // kebabCase tests
   kebabCaseTest: {
-    // passed
     color: 'violet',
   },
   'kebabCaseTest > anotherKebabCase': {
-    // failed
+    // should be converted to .kebab-case-test > .another-kebab-case
     color: 'violet',
   },
   'kebabCaseTest:hover': {
-    // failed
+    // should be converted to .kebab-case-test:hover
     color: 'violet',
   },
   'kebabCaseTest#id': {
-    // failed
+    // should be converted to .kebab-case-test#id
     color: 'violet',
+  },
+  'kebabCaseTest#id:hover > anotherKebabCase::before thirdKebabCase': {
+    // should be converted to .kebab-case-test#id:hover > .another-kebab-case::before .third-kebab-case
+    content: 'violet',
   },
 
   // doc tests

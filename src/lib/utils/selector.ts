@@ -207,62 +207,66 @@ export const joinSelectorPath = (path: string[][]): string[] => {
       // Check if previous part is a root selector
       const prev = idx > 0 ? parts[idx - 1] : null
       const isPrevRoot = prev && (prev === ':root' || prev.startsWith(':root.'))
-      if (part === '*') {
-        // Universal selector
-        return acc + (acc ? ' ' : '') + '*'
-      } else if (part.startsWith('__')) {
-        return acc + (acc ? ' ' : '') + '.' + part.slice(2)
-      } else if (part.startsWith('_')) {
-        // Attach class directly to previous part unless prev is combinator or root
-        const combinators = ['>', '+', '~']
-        const isPrevCombinator =
-          prev && combinators.some((c) => prev.startsWith(c))
-        if (isPrevRoot || isPrevCombinator || !acc) {
-          return acc + (acc ? ' ' : '') + '.' + part.slice(1)
-        } else {
+
+      switch (true) {
+        case part === '*':
+          // Universal selector
+          return acc + (acc ? ' ' : '') + '*'
+
+        case part.startsWith('__'):
+          return acc + (acc ? ' ' : '') + '.' + part.slice(2)
+
+        case part.startsWith('_'): {
+          // Attach class directly to previous part unless prev is combinator or root
+          const combinators = ['>', '+', '~']
+          const isPrevCombinator =
+            prev && combinators.some((c) => prev.startsWith(c))
+          if (isPrevRoot || isPrevCombinator || !acc) {
+            return acc + (acc ? ' ' : '') + '.' + part.slice(1)
+          }
           // Attach directly (no space)
           return acc + '.' + part.slice(1)
         }
-      } else if (
-        part.startsWith('>') ||
-        part.startsWith('+') ||
-        part.startsWith('~')
-      ) {
-        // Combinators: always join with a space
-        return acc + ' ' + part
-      } else if (
-        part.startsWith(':') ||
-        part.startsWith('::') ||
-        part.startsWith('#') ||
-        part.startsWith('[') ||
-        part.startsWith('.')
-      ) {
-        return acc + part
-      } else if (isHtmlTag(part)) {
-        return acc + (acc ? ' ' : '') + part
-      } else if (startsWithHtmlTag(part)) {
-        // Handle compound selectors that start with HTML tags (e.g., 'div > *')
-        return acc + (acc ? ' ' : '') + part
-      } else if (/^([a-z][a-z0-9]*)\.(.+)/.test(part)) {
-        // If part matches 'tag.class...' and tag is an HTML tag
-        const match = part.match(/^([a-z][a-z0-9]*)\.(.+)/)
-        if (match && isHtmlTag(match[1])) {
-          return acc + (acc ? ' ' : '') + match[1] + '.' + match[2]
-        }
-      } else if (/^([a-z][a-z0-9]*)#([\w-]+)$/.test(part)) {
-        // If part matches 'tag#id' and tag is an HTML tag
-        const match = part.match(/^([a-z][a-z0-9]*)#([\w-]+)$/)
-        if (match && isHtmlTag(match[1])) {
-          return acc + (acc ? ' ' : '') + match[1] + '#' + match[2]
-        }
-      }
-      // Not a tag, not a special selector: treat as class or custom element
 
-      // If previous part is a root selector, insert a space
-      if (isPrevRoot) {
-        return acc + ' ' + '.' + part
+        case part.startsWith('>') ||
+          part.startsWith('+') ||
+          part.startsWith('~'):
+          // Combinators: always join with a space
+          return acc + ' ' + part
+
+        case part.startsWith(':') ||
+          part.startsWith('::') ||
+          part.startsWith('#') ||
+          part.startsWith('[') ||
+          part.startsWith('.'):
+          return acc + part
+
+        case isHtmlTag(part):
+          return acc + (acc ? ' ' : '') + part
+
+        case startsWithHtmlTag(part):
+          // Handle compound selectors that start with HTML tags (e.g., 'div > *')
+          return acc + (acc ? ' ' : '') + part
+
+        case /^[a-z][a-z0-9]*\.(.+)/.test(part) &&
+          isHtmlTag(part.split('.')[0]):
+          // If part matches 'tag.class...' and tag is an HTML tag
+          return acc + (acc ? ' ' : '') + part
+
+        case /^[a-z][a-z0-9]*#[\w-]+$/.test(part) &&
+          isHtmlTag(part.split('#')[0]):
+          // If part matches 'tag#id' and tag is an HTML tag
+          return acc + (acc ? ' ' : '') + part
+
+        default:
+          // Not a tag, not a special selector: treat as class or custom element
+
+          // If previous part is a root selector, insert a space
+          if (isPrevRoot) {
+            return acc + ' ' + '.' + part
+          }
+          return acc + '.' + part
       }
-      return acc + (acc ? '' : '') + '.' + part
     }, '')
   )
 }
