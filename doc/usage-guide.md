@@ -321,7 +321,7 @@ Use commas to target multiple selectors:
 
 ### T9: Automatic Kebab-case Conversion
 
-Class names in selectors are automatically converted from camelCase to kebab-case, unless they are PascalCase (starting with an uppercase letter), in which case they are preserved as-is.
+Class names in selectors are automatically converted from camelCase and snake_case to kebab-case. The PascalCase class names (starting with an uppercase letter) are preserved as-is.
 
 ```js
 {
