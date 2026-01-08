@@ -198,6 +198,12 @@ export const isClassSelector: IsClassSelector = (key) => {
   return key.startsWith('_')
 }
 
+const transformExplicitClasses = (selector: string): string => {
+  return selector.replace(/\.([a-zA-Z0-9_-]+)/g, (_, cls) => {
+    return '.' + kebabCase(cls)
+  })
+}
+
 export const joinSelectorPath = (path: string[][]): string[] => {
   // Compute cartesian product of all segments
   const combos = utils.cartesianProduct(path)
@@ -214,7 +220,7 @@ export const joinSelectorPath = (path: string[][]): string[] => {
           return acc + (acc ? ' ' : '') + '*'
 
         case part.startsWith('__'):
-          return acc + (acc ? ' ' : '') + '.' + part.slice(2)
+          return acc + (acc ? ' ' : '') + '.' + kebabCase(part.slice(2))
 
         case part.startsWith('_'): {
           // Attach class directly to previous part unless prev is combinator or root
@@ -222,10 +228,10 @@ export const joinSelectorPath = (path: string[][]): string[] => {
           const isPrevCombinator =
             prev && combinators.some((c) => prev.startsWith(c))
           if (isPrevRoot || isPrevCombinator || !acc) {
-            return acc + (acc ? ' ' : '') + '.' + part.slice(1)
+            return acc + (acc ? ' ' : '') + '.' + kebabCase(part.slice(1))
           }
           // Attach directly (no space)
-          return acc + '.' + part.slice(1)
+          return acc + '.' + kebabCase(part.slice(1))
         }
 
         case part.startsWith('>') ||
@@ -239,33 +245,42 @@ export const joinSelectorPath = (path: string[][]): string[] => {
           part.startsWith('#') ||
           part.startsWith('[') ||
           part.startsWith('.'):
-          return acc + part
+          return acc + transformExplicitClasses(part)
 
         case isHtmlTag(part):
           return acc + (acc ? ' ' : '') + part
 
         case startsWithHtmlTag(part):
           // Handle compound selectors that start with HTML tags (e.g., 'div > *')
-          return acc + (acc ? ' ' : '') + part
+          return acc + (acc ? ' ' : '') + transformExplicitClasses(part)
 
         case /^[a-z][a-z0-9]*\.(.+)/.test(part) &&
           isHtmlTag(part.split('.')[0]):
           // If part matches 'tag.class...' and tag is an HTML tag
-          return acc + (acc ? ' ' : '') + part
+          return acc + (acc ? ' ' : '') + transformExplicitClasses(part)
 
         case /^[a-z][a-z0-9]*#[\w-]+$/.test(part) &&
           isHtmlTag(part.split('#')[0]):
           // If part matches 'tag#id' and tag is an HTML tag
+          // ID should technically not be kebab-cased, and regex ensures no classes.
           return acc + (acc ? ' ' : '') + part
 
         default:
           // Not a tag, not a special selector: treat as class or custom element
+          let processedPart = part
+          const match = part.match(/^([a-zA-Z0-9_-]+)(.*)$/)
+          if (match) {
+            processedPart =
+              kebabCase(match[1]) + transformExplicitClasses(match[2])
+          } else {
+            processedPart = transformExplicitClasses(part)
+          }
 
           // If previous part is a root selector, insert a space
           if (isPrevRoot) {
-            return acc + ' ' + '.' + part
+            return acc + ' ' + '.' + processedPart
           }
-          return acc + '.' + part
+          return acc + '.' + processedPart
       }
     }, '')
   )

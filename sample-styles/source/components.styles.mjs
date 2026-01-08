@@ -18,8 +18,8 @@ export default {
     // should be converted to .kebab-case-test#id
     color: 'violet',
   },
-  'kebabCaseTest#id:hover > .anotherKebabCase::before .thirdKebabCase': {
-    // should be converted to .kebab-case-test#id:hover > .another-kebab-case::before .third-kebab-case
+  'kebabCaseTest#id:hover > .anotherKebabCase::before div.thirdKebabCase': {
+    // should be converted to .kebab-case-test#id:hover > .another-kebab-case::before div.third-kebab-case
     color: 'violet',
   },
 
