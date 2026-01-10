@@ -24,14 +24,14 @@ import { toCssValue } from './utils/to-css-value.js'
 
 // --- FLATTENED MEDIA COLLECTION ---
 
+type CssRule = { selector: string; declarations: CssRuleObject }
+type RuleOrDirective = CssRule | string
+
 interface FlatWalkResult {
-  rules: { selector: string; declarations: CssRuleObject }[]
-  media: Record<string, { selector: string; declarations: CssRuleObject }[]>
+  rules: RuleOrDirective[]
+  media: Record<string, RuleOrDirective[]>
   layers: Record<string, FlatWalkResult>
-  containers: Record<
-    string,
-    { selector: string; declarations: CssRuleObject }[]
-  >
+  containers: Record<string, RuleOrDirective[]>
 }
 
 type SelectorPath = string[][]
@@ -47,6 +47,18 @@ function flatWalk(
   const props: CssRuleObject = {}
   for (const key in obj) {
     const value = obj[key]
+    if (key === '@layer' && typeof value === 'string') {
+      const directive = `@layer ${value};`
+      if (currentMedia.length > 0) {
+        const mediaKey = currentMedia.join(' && ')
+        if (!result.media[mediaKey]) result.media[mediaKey] = []
+        result.media[mediaKey].push(directive)
+      } else {
+        result.rules.push(directive)
+      }
+      continue
+    }
+
     if (utils.isEndValue(value)) {
       const cssKey = utils.jsKeyToCssKey(key)
       if (cssKey === 'content') {
@@ -227,12 +239,17 @@ function flatWalk(
   return result
 }
 
-function renderRules(
-  rules: { selector: string; declarations: CssRuleObject }[]
-): string {
+function renderRules(rules: RuleOrDirective[]): string {
   let css = ''
+  const directives = rules.filter((r) => typeof r === 'string') as string[]
+  const normalRules = rules.filter((r) => typeof r !== 'string') as CssRule[]
+
+  if (directives.length > 0) {
+    css += directives.join('\n') + '\n'
+  }
+
   const groups: Record<string, string[]> = {}
-  for (const rule of rules) {
+  for (const rule of normalRules) {
     const declKey = JSON.stringify(rule.declarations)
     if (!groups[declKey]) groups[declKey] = []
     groups[declKey].push(rule.selector)
@@ -261,9 +278,7 @@ function renderLayers(layers: Record<string, FlatWalkResult>): string {
   return css
 }
 
-function renderFlatMedia(
-  media: Record<string, { selector: string; declarations: CssRuleObject }[]>
-): string {
+function renderFlatMedia(media: Record<string, RuleOrDirective[]>): string {
   let css = ''
   for (const key in media) {
     // If the key contains '&&', recursively nest the media blocks
@@ -275,40 +290,10 @@ function renderFlatMedia(
       )
     } else if (key === '') {
       // Render rules directly, no block
-      // Group rules by their declarations (stringified)
-      const groups: Record<string, string[]> = {}
-      for (const rule of media[key]) {
-        const declKey = JSON.stringify(rule.declarations)
-        if (!groups[declKey]) groups[declKey] = []
-        groups[declKey].push(rule.selector)
-      }
-      for (const declKey in groups) {
-        const selectors = groups[declKey].join(', ')
-        const declarations: CssRuleObject = JSON.parse(declKey)
-        css += `${selectors} {\n`
-        for (const k in declarations) {
-          css += `  ${k}: ${declarations[k]};\n`
-        }
-        css += '}\n'
-      }
+      css += renderRules(media[key])
     } else {
       css += `${key} {\n`
-      // Group rules by their declarations (stringified)
-      const groups: Record<string, string[]> = {}
-      for (const rule of media[key]) {
-        const declKey = JSON.stringify(rule.declarations)
-        if (!groups[declKey]) groups[declKey] = []
-        groups[declKey].push(rule.selector)
-      }
-      for (const declKey in groups) {
-        const selectors = groups[declKey].join(', ')
-        const declarations: CssRuleObject = JSON.parse(declKey)
-        css += `${selectors} {\n`
-        for (const k in declarations) {
-          css += `  ${k}: ${declarations[k]};\n`
-        }
-        css += '}\n'
-      }
+      css += renderRules(media[key])
       css += '}\n'
     }
   }
@@ -316,10 +301,7 @@ function renderFlatMedia(
 }
 
 function renderFlatContainers(
-  containers: Record<
-    string,
-    { selector: string; declarations: CssRuleObject }[]
-  >
+  containers: Record<string, RuleOrDirective[]>
 ): string {
   let css = ''
   for (const key in containers) {
@@ -332,40 +314,10 @@ function renderFlatContainers(
       )
     } else if (key === '') {
       // Render rules directly, no block
-      // Group rules by their declarations (stringified)
-      const groups: Record<string, string[]> = {}
-      for (const rule of containers[key]) {
-        const declKey = JSON.stringify(rule.declarations)
-        if (!groups[declKey]) groups[declKey] = []
-        groups[declKey].push(rule.selector)
-      }
-      for (const declKey in groups) {
-        const selectors = groups[declKey].join(', ')
-        const declarations: CssRuleObject = JSON.parse(declKey)
-        css += `${selectors} {\n`
-        for (const k in declarations) {
-          css += `  ${k}: ${declarations[k]};\n`
-        }
-        css += '}\n'
-      }
+      css += renderRules(containers[key])
     } else {
       css += `${key} {\n`
-      // Group rules by their declarations (stringified)
-      const groups: Record<string, string[]> = {}
-      for (const rule of containers[key]) {
-        const declKey = JSON.stringify(rule.declarations)
-        if (!groups[declKey]) groups[declKey] = []
-        groups[declKey].push(rule.selector)
-      }
-      for (const declKey in groups) {
-        const selectors = groups[declKey].join(', ')
-        const declarations: CssRuleObject = JSON.parse(declKey)
-        css += `${selectors} {\n`
-        for (const k in declarations) {
-          css += `  ${k}: ${declarations[k]};\n`
-        }
-        css += '}\n'
-      }
+      css += renderRules(containers[key])
       css += '}\n'
     }
   }
@@ -373,8 +325,8 @@ function renderFlatContainers(
 }
 
 function mergeMedia(
-  target: Record<string, { selector: string; declarations: CssRuleObject }[]>,
-  source: Record<string, { selector: string; declarations: CssRuleObject }[]>
+  target: Record<string, RuleOrDirective[]>,
+  source: Record<string, RuleOrDirective[]>
 ) {
   for (const key in source) {
     if (!target[key]) target[key] = []

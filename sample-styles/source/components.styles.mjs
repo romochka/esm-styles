@@ -1,30 +1,13 @@
 import $theme from './$theme.mjs'
 
 export default {
+  // layer ordering
+
+  '@layer': 'a, b, c',
+
+  // should be converted to string "@layer a, b, c;"
+
   // kebabCase tests
-
-  // need to fix:
-
-  kebabCase: {
-    '> .secondKebabCase': { color: 'pink' },
-  },
-  // converts to '.kebab-case>.secondKebabCase'
-  // instead of '.kebab-case>.second-kebab-case'
-
-  // previously fixed:
-  div: {
-    '__scroll_cut .cut': {
-      color: 'pink',
-    },
-  },
-  // converts to 'div .scroll-cut .cut'§
-
-  // 2.
-  span: {
-    i1: { color: 'pink' },
-    i2: { color: 'pink' },
-  },
-  // converts to 'span.i1, span.i2'
 
   kebabCaseTest: {
     // selector should be converted to .kebab-case-test

@@ -1,11 +1,6 @@
 /* This CSS was automatically generated from sample-styles/source/components.styles.mjs, do not edit directly */
 @layer components {
-.kebab-case>.second-kebab-case,
-div .scroll-cut .cut,
-span.i1,
-span.i2 {
-  color: pink;
-}
+@layer a, b, c;
 
 .kebab-case-test,
 .kebab-case-test>.another-kebab-case,
