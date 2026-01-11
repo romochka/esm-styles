@@ -18,7 +18,7 @@ export default {
   floors: [
     { source: 'dummy', outputPath: 'alt', minify: true }, // put generated css in basePath/alt/dummy.css
     { source: 'defaults', layer: 'defaults' },
-    { source: 'components', layer: 'components' },
+    { source: 'components', layer: 'components', minify: true },
     { source: 'layout', layer: 'layout' }, // wrapped in layer 'layout'
     { source: 'test-nolayer' }, // not wrapped in any layer
     { source: 'test-layout', layer: 'special-layout' }, // also wrapped in layer 'layout'

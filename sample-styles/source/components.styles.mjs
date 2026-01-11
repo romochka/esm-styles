@@ -1,6 +1,23 @@
 import $theme from './$theme.mjs'
 
 export default {
+  // minify bug check
+
+  someClassName: {
+    color: '#ffcc00',
+    // if minify=true the ::before block does not exist in the ouput CSS, if minify=false, everything is okay
+    '::before': {
+      content: 'y',
+    },
+    ':hover': {
+      color: '#ff6600',
+    },
+    '::after': {
+      // the ::after block works as should
+      content: 'z',
+    },
+  },
+
   // layer ordering
 
   '@layer': 'a, b, c',

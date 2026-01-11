@@ -6,7 +6,7 @@ import path from 'node:path'
 import fs from 'node:fs/promises'
 // import { inspect } from 'node:util'
 import _ from 'lodash'
-import CleanCSS from 'clean-css'
+import * as esbuild from 'esbuild'
 
 // Type for floor file tracking
 type FloorFile = {
@@ -248,7 +248,13 @@ export async function build(
 
     // if floor should be minified, minify wrappedCss string
     if (minify) {
-      wrappedCss = new CleanCSS().minify(wrappedCss).styles
+      const result = await esbuild.transform(wrappedCss, {
+        loader: 'css',
+        minifyWhitespace: true,
+        minifyIdentifiers: true,
+        minifySyntax: false,
+      })
+      wrappedCss = result.code
     }
 
     await fs.writeFile(outputFile, wrappedCss, 'utf8')
