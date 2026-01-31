@@ -6,6 +6,7 @@ Complete guide to `esm-styles.config.js`.
 
 - [Basic Configuration](#basic-configuration)
 - [Paths](#paths)
+- [Import Aliases](#import-aliases)
 - [Floors](#floors)
 - [CSS Variables](#css-variables)
 - [Media Configuration](#media-configuration)
@@ -70,6 +71,60 @@ src/styles/           ← basePath
     ├── components.css
     └── layout.css
 ```
+
+## Import Aliases
+
+Simplify imports in your style files by configuring path aliases:
+
+```js
+aliases: {
+  '@': '.',                    // @ resolves to sourcePath
+  '@components': './components',
+  '@shared': '../shared',
+}
+```
+
+| Property | Description |
+|----------|-------------|
+| `aliases` | Object mapping alias prefixes to paths (optional) |
+
+Alias paths are resolved relative to the `sourcePath` directory.
+
+### Usage example
+
+```js
+// Before (relative paths)
+import $theme from '../../$theme.mjs'
+import { button } from '../components/button.styles.mjs'
+
+// After (with aliases)
+import $theme from '@/$theme.mjs'
+import { button } from '@components/button.styles.mjs'
+```
+
+### How it works
+
+When aliases are configured, the build process uses esbuild to resolve imports before loading each style file. This adds minimal overhead but provides familiar path resolution similar to other build tools.
+
+Without aliases configured, files are imported directly using Node.js native ESM resolution.
+
+### IDE support
+
+To enable Cmd+click navigation and IntelliSense for aliased imports in VSCode/Cursor, create a `jsconfig.json` in your styles source directory:
+
+```json
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"],
+      "@components/*": ["./components/*"]
+    }
+  }
+}
+```
+
+The `paths` entries should match your `aliases` configuration.
 
 ## Floors
 

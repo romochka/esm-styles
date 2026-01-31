@@ -181,6 +181,11 @@ export default {
     hover: '(hover: hover)',
     // ...whatever you want
   },
+
+  // Import aliases (optional) - replace long relative paths with short prefixes
+  aliases: {
+    '@': '.', // resolves relative to sourcePath
+  },
 }
 ```
 
@@ -450,6 +455,50 @@ The build process wraps floors in their respective layers and generates a main C
 ### CSS Variable Inheritance
 
 Missing variables in one theme automatically inherit from the previous theme in the configuration.
+
+### Import Aliases
+
+Simplify imports in your style files by configuring path aliases:
+
+```js
+// esm-styles.config.js
+export default {
+  // ...
+  aliases: {
+    '@': '.',           // @ resolves to sourcePath
+    '@components': './components',
+  },
+}
+```
+
+Then use in your style files:
+
+```js
+// Before (relative paths)
+import $theme from '../../$theme.mjs'
+import { button } from '../components/button.styles.mjs'
+
+// After (with aliases)
+import $theme from '@/$theme.mjs'
+import { button } from '@components/button.styles.mjs'
+```
+
+Alias paths are resolved relative to the `sourcePath` directory. This feature uses esbuild internally for fast module resolution.
+
+#### IDE Support for Aliases
+
+To enable Cmd+click navigation and IntelliSense for aliased imports, create a `jsconfig.json` in your styles source directory with matching path mappings:
+
+```json
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"]
+    }
+  }
+}
+```
 
 ## Additional documentation
 

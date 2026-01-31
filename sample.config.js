@@ -9,6 +9,11 @@ export default {
   outputPath: 'css', // prefixed with basePath
   sourceFilesSuffix: '.styles.mjs',
 
+  // Import aliases - resolve @/ to the source directory
+  aliases: {
+    '@': '.', // resolves relative to sourcePath (./sample-styles/source)
+  },
+
   // input
 
   // old parameter:

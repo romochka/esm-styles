@@ -1,4 +1,4 @@
-import $theme from './$theme.mjs'
+import $theme from '@/$theme.mjs'
 
 export default {
   // minify bug check

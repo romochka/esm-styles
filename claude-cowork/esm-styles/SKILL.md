@@ -113,16 +113,26 @@ export const Modal = {
 }
 ```
 
-### Relative imports only
+### Import Aliases
 
-No path aliases. Use relative paths:
+Path aliases can be configured in `esm-styles.config.js` (see `sample.config.js` in repo root):
 
 ```js
-// ❌ No aliases
-import $theme from '@styles/$theme.mjs'
+aliases: {
+  '@': '.',
+  '@components': './components',
+}
+```
 
-// ✅ Relative paths only
-import $theme from '../../$theme.mjs'
+For IDE support (autocomplete, Cmd+click), add `jsconfig.json` to `sourcePath` folder (see `sample-styles/source/jsconfig.json`):
+
+```json
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": { "@/*": ["./*"] }
+  }
+}
 ```
 
 ## Project Conventions

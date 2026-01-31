@@ -1,6 +1,8 @@
+import $theme from '@/$theme.mjs'
+
 export const app = {
   display: 'flex',
-  flexDirection: 'column',
+  flexDirection: 'row',
   minHeight: '100vh',
 
   'main, aside': {
@@ -8,7 +10,7 @@ export const app = {
   },
 
   '@media screen and (prefers-color-scheme: light)': {
-    backgroundColor: 'green',
+    backgroundColor: $theme.paper.toilet,
   },
 
   '@media (max-width: 499px)': {

@@ -1,3 +1,5 @@
+import { app } from '@/layout/app.styles.mjs'
+
 export default {
   main: {
     fontSize: '16px',
@@ -50,4 +52,6 @@ export default {
       padding: '30px',
     },
   },
+
+  app,
 }

@@ -16,6 +16,48 @@ type FloorFile = {
   outputPath?: string
 }
 
+// Type for import aliases configuration
+type AliasConfig = Record<string, string>
+
+/**
+ * Import a module with alias resolution using esbuild.
+ * Falls back to direct import when no aliases are configured.
+ */
+async function importWithAliases(
+  filePath: string,
+  aliases: AliasConfig | undefined,
+  sourcePath: string
+): Promise<any> {
+  // If no aliases configured, use direct import with cache-busting
+  if (!aliases || Object.keys(aliases).length === 0) {
+    const fileUrl = pathToFileUrl(filePath).href + `?update=${Date.now()}`
+    return import(fileUrl)
+  }
+
+  // Resolve aliases relative to sourcePath
+  const resolvedAliases: Record<string, string> = {}
+  for (const [key, value] of Object.entries(aliases)) {
+    resolvedAliases[key] = path.resolve(sourcePath, value)
+  }
+
+  // Use esbuild to bundle with alias resolution
+  const result = await esbuild.build({
+    entryPoints: [filePath],
+    bundle: true,
+    write: false,
+    format: 'esm',
+    platform: 'node',
+    alias: resolvedAliases,
+    // Prevent esbuild from trying to resolve node_modules
+    packages: 'external',
+  })
+
+  // Import from data URL to avoid filesystem caching
+  const code = result.outputFiles[0].text
+  const dataUrl = `data:text/javascript;base64,${Buffer.from(code).toString('base64')}`
+  return import(dataUrl)
+}
+
 export async function build(
   configPath = 'esm-styles.config.js'
 ): Promise<void> {
@@ -36,6 +78,7 @@ export async function build(
   const suffix = config.sourceFilesSuffix || '.styles.mjs'
   const floors = config.floors || []
   const mainCssFile = config.mainCssFile || 'styles.css'
+  const aliases: AliasConfig | undefined = config.aliases
 
   // Helper function to generate CSS comment header
   const generateCssComment = (sourceName: string): string => {
@@ -63,8 +106,8 @@ export async function build(
       `${config.globalVariables}${suffix}`
     )
     const outputFile = path.join(outputPath, `global.css`)
-    const fileUrl = pathToFileUrl(inputFile).href + `?update=${Date.now()}`
-    const varsObj = (await import(fileUrl)).default
+    const varsObj = (await importWithAliases(inputFile, aliases, sourcePath))
+      .default
     const cssVars = getCssVariables(varsObj)
     const rootSelector = config.globalRootSelector || ':root'
     const comment = generateCssComment(config.globalVariables)
@@ -83,11 +126,10 @@ export async function build(
       for (const setName of sets) {
         // Inheritance: merge with previous
         const inputFile = path.join(sourcePath, `${setName}${suffix}`)
-        const fileUrl = pathToFileUrl(inputFile).href + `?update=${Date.now()}`
         const varsObj = _.merge(
           {},
           prevVarsObj,
-          (await import(fileUrl)).default
+          (await importWithAliases(inputFile, aliases, sourcePath)).default
         )
         prevVarsObj = varsObj
         mergedSets[setName] = _.cloneDeep(varsObj)
@@ -229,8 +271,8 @@ export async function build(
     await fs.mkdir(floorOutputDir, { recursive: true })
 
     const outputFile = path.join(floorOutputDir, `${source}.css`)
-    const fileUrl = pathToFileUrl(inputFile).href + `?update=${Date.now()}`
-    const stylesObj = (await import(fileUrl)).default
+    const stylesObj = (await importWithAliases(inputFile, aliases, sourcePath))
+      .default
     const css = getCss(stylesObj, {
       ...mediaShorthands,
       globalRootSelector: config.globalRootSelector,
