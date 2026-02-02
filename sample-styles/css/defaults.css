@@ -1,11 +1,11 @@
 /* This CSS was automatically generated from sample-styles/source/defaults.styles.mjs, do not edit directly */
 @layer defaults {
 button {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   outline: none;
   border: none;
   background: none;
   cursor: pointer;
-  font-family: inherit;
   font-size: inherit;
   font-weight: inherit;
   color: inherit;

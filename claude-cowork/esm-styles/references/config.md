@@ -231,9 +231,26 @@ media: { theme: ['light', 'twilight', 'dark'] }
 
 If `twilight.styles.mjs` doesn't define `ink.accent`, it inherits from `light`.
 
-### Generated $theme module
+### Generated variable modules
 
-Build process generates `$theme.mjs`:
+For each key in `media`, the build process generates a helper module `$<key>.mjs`:
+
+```js
+media: {
+  theme: ['light', 'dark'],
+  device: ['mobile', 'tablet', 'desktop'],
+}
+// → generates $theme.mjs and $device.mjs
+```
+
+These modules provide:
+- Variable tree with IDE autocomplete
+- Absolute values for each media variant
+- `.var` property for string concatenation
+
+Without them, you'd write `var(--paper-bright)` manually.
+
+Example `$theme.mjs`:
 
 ```js
 export default {
@@ -247,6 +264,22 @@ export default {
   }
 }
 ```
+
+Usage:
+
+```js
+import $theme from '@/$theme.mjs'
+import $device from '@/$device.mjs'
+
+export default {
+  card: {
+    color: $theme.ink.bright,
+    padding: $device.spacing.md
+  }
+}
+```
+
+**Note:** `global.styles.mjs` does NOT generate a helper module — it's a plain file for media-independent variables. Import it directly where needed.
 
 ## Media Configuration
 
@@ -326,21 +359,23 @@ Usage in styles:
 
 ## CLI Usage
 
+Commands run from the folder where esm-styles is installed (e.g. `packages/styles`).
+
 ### Build
 
 ```bash
 # Default config (esm-styles.config.js)
-npx esm-styles build
+npx build
 
 # Custom config
-npx esm-styles build path/to/config.js
+npx build path/to/config.js
 ```
 
 ### Watch
 
 ```bash
-npx esm-styles watch
-npx esm-styles watch path/to/config.js
+npx watch
+npx watch path/to/config.js
 ```
 
 ### Timestamp file

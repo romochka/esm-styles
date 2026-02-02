@@ -80,17 +80,25 @@ Tags are recognized automatically. Non-tags become classes:
 
 ### CSS Variables
 
+For each key in `media` config, a helper module `$<key>.mjs` is generated:
+
 ```js
+// media: { theme: [...], device: [...] } → $theme.mjs, $device.mjs
+
 import $theme from './$theme.mjs'
+import $device from './$device.mjs'
 
 export default {
   button: {
     backgroundColor: $theme.paper.bright,
+    padding: $device.spacing.md,
     // For concatenation, use .var:
     border: `1px solid ${$theme.paper.tinted.var}`
   }
 }
 ```
+
+These modules give IDE autocomplete and show values. Without them → manual `var(--name)`.
 
 ## Limitations
 
@@ -173,10 +181,12 @@ export const layout = {
 ## Build
 
 Before running build commands, ask the user:
-- "Is `npx esm-styles watch` already running?"
+- "Is `npx watch` already running?"
 
 If yes → styles compile automatically on save, no action needed.
-If no → run `npx esm-styles build` when needed.
+If no → run `npx build` from the esm-styles package folder.
+
+**Note:** Commands run from the folder where esm-styles is installed (e.g. `packages/styles`).
 
 ## References
 
