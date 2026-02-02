@@ -4,5 +4,6 @@
     "paths": {
       "@/*": ["./*"]
     }
-  }
+  },
+  "include": ["globals.d.ts", "**/*.styles.ts"]
 }

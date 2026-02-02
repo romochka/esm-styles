@@ -2,6 +2,9 @@
  * Type definitions for the CSS in JS library
  */
 
+// Style authoring types (for users writing .styles.ts files)
+export * from './styles.js'
+
 export type CssJsObject = Record<string, any>
 
 export interface GetCssOptions {
