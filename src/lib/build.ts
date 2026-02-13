@@ -20,6 +20,49 @@ type FloorFile = {
 type AliasConfig = Record<string, string>
 
 /**
+ * Create an esbuild plugin for path alias resolution.
+ * Handles prefixes like '@/' -> './source/'
+ */
+function createAliasPlugin(
+  aliases: AliasConfig,
+  sourcePath: string
+): esbuild.Plugin {
+  // Sort aliases by length (longest first) to match most specific first
+  const sortedAliases = Object.entries(aliases).sort(
+    ([a], [b]) => b.length - a.length
+  )
+
+  return {
+    name: 'esm-styles-alias',
+    setup(build) {
+      // Match any import that starts with one of our alias prefixes
+      const aliasPattern = new RegExp(
+        `^(${sortedAliases.map(([key]) => escapeRegex(key)).join('|')})(/.*)?$`
+      )
+
+      build.onResolve({ filter: aliasPattern }, (args) => {
+        for (const [alias, target] of sortedAliases) {
+          if (args.path === alias || args.path.startsWith(alias + '/')) {
+            const rest = args.path.slice(alias.length) // includes leading '/' or empty
+            const resolvedTarget = path.resolve(sourcePath, target)
+            const resolvedPath = path.join(resolvedTarget, rest)
+            return { path: resolvedPath }
+          }
+        }
+        return null
+      })
+    },
+  }
+}
+
+/**
+ * Escape special regex characters in a string
+ */
+function escapeRegex(str: string): string {
+  return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
+/**
  * Import a module with alias resolution using esbuild.
  * Falls back to direct import when no aliases are configured.
  */
@@ -34,20 +77,14 @@ async function importWithAliases(
     return import(fileUrl)
   }
 
-  // Resolve aliases relative to sourcePath
-  const resolvedAliases: Record<string, string> = {}
-  for (const [key, value] of Object.entries(aliases)) {
-    resolvedAliases[key] = path.resolve(sourcePath, value)
-  }
-
-  // Use esbuild to bundle with alias resolution
+  // Use esbuild to bundle with alias resolution via plugin
   const result = await esbuild.build({
     entryPoints: [filePath],
     bundle: true,
     write: false,
     format: 'esm',
     platform: 'node',
-    alias: resolvedAliases,
+    plugins: [createAliasPlugin(aliases, sourcePath)],
     // Prevent esbuild from trying to resolve node_modules
     packages: 'external',
   })
