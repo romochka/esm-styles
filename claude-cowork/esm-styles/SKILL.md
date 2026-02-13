@@ -42,6 +42,22 @@ Tags are recognized automatically. Non-tags become classes:
 }
 ```
 
+### camelCase → kebab-case
+
+Class names in camelCase are converted to kebab-case in CSS output:
+
+```js
+{ __sideContent: { ... } }  // → .side-content in CSS
+```
+
+```jsx
+// In JSX, use kebab-case to match:
+<div className="side-content">  // ✅ correct
+<div className="sideContent">   // ❌ won't match
+```
+
+**Exception:** PascalCase names (starting with uppercase) are preserved as-is.
+
 ### Underscore Conventions
 
 ```js
@@ -49,6 +65,27 @@ Tags are recognized automatically. Non-tags become classes:
   modal: {
     _button: { ... },   // → .modal.button (single _ = class with tag name)
     __close: { ... }    // → .modal .close (double __ = descendant class)
+  }
+}
+```
+
+### State Modifiers with Descendants
+
+Nest state modifiers inside the parent component. Do NOT create separate exports for states:
+
+```js
+// ❌ WRONG - creates separate .Panel and .PanelOpen selectors
+export const Panel = { ... }
+export const PanelOpen = {
+  __content: { ... }  // → .PanelOpen .content (wrong!)
+}
+
+// ✅ CORRECT - creates .Panel.open .content
+export const Panel = {
+  __content: { opacity: 0 },
+
+  open: {                    // → .Panel.open
+    __content: { opacity: 1 }  // → .Panel.open .content
   }
 }
 ```
@@ -192,4 +229,4 @@ If no → run `npx build` from the esm-styles package folder.
 
 - **Compiler rules**: See [references/compiler.md](references/compiler.md) for complete JS→CSS translation
 - **Configuration**: See [references/config.md](references/config.md) for esm-styles.config.js
-- **Project structure**: See [references/conventions.md](references/conventions.md) for file organization
+- **Project structure & best practices**: See [references/conventions.md](references/conventions.md) for file organization, semantic HTML, naming
