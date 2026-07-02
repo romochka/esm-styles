@@ -1,6 +1,6 @@
 {
   "name": "esm-styles",
-  "version": "0.4.1",
+  "version": "0.4.2",
   "description": "A library for working with ESM styles",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -50,7 +50,7 @@
   },
   "dependencies": {
     "csstype": "^3.2.3",
-    "esbuild": "^0.27.2",
+    "esbuild": "^0.28.1",
     "js-beautify": "^1.15.4"
   },
   "repository": {
