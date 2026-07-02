@@ -63,6 +63,22 @@ function escapeRegex(str: string): string {
 }
 
 /**
+ * Write a file atomically: write to a temp file in the same directory, then
+ * rename it over the target. rename() is atomic on the same filesystem and
+ * swaps the inode, so file watchers (Vite, Cursor) reliably pick up a single
+ * clean replacement instead of observing a truncate-then-write mid-flight.
+ */
+async function writeAtomic(
+  filePath: string,
+  data: string,
+  encoding: BufferEncoding = 'utf8'
+): Promise<void> {
+  const tmpPath = `${filePath}.tmp`
+  await fs.writeFile(tmpPath, data, encoding)
+  await fs.rename(tmpPath, filePath)
+}
+
+/**
  * Import a module with alias resolution using esbuild.
  * Falls back to direct import when no aliases are configured.
  */
@@ -149,7 +165,7 @@ export async function build(
     const rootSelector = config.globalRootSelector || ':root'
     const comment = generateCssComment(config.globalVariables)
     const wrappedCss = `${comment}${rootSelector} {\n${cssVars}\n}`
-    await fs.writeFile(outputFile, wrappedCss, 'utf8')
+    await writeAtomic(outputFile, wrappedCss)
     cssFiles.push({ type: 'global', file: 'global.css' })
   }
 
@@ -192,7 +208,7 @@ export async function build(
           }
           const comment = generateCssComment(setName)
           const block = `${comment}${fullSelector} {\n${cssVars}\n}`
-          await fs.writeFile(outputFile, block, 'utf8')
+          await writeAtomic(outputFile, block)
           cssFiles.push({
             type: 'media',
             file: fileName,
@@ -284,7 +300,7 @@ export async function build(
         null,
         2
       )}\n`
-      await fs.writeFile(supportingModulePath, moduleContent, 'utf8')
+      await writeAtomic(supportingModulePath, moduleContent)
     }
   }
 
@@ -336,7 +352,7 @@ export async function build(
       wrappedCss = result.code
     }
 
-    await fs.writeFile(outputFile, wrappedCss, 'utf8')
+    await writeAtomic(outputFile, wrappedCss)
 
     // Calculate relative path from default output directory for imports
     const relativePath = floorOutputPath
@@ -403,7 +419,7 @@ export async function build(
       .filter(Boolean)
       .join('\n') +
     '\n'
-  await fs.writeFile(mainCssPath, mainCss, 'utf8')
+  await writeAtomic(mainCssPath, mainCss)
 
   // 6. Create timestamp file
   const { outputPath: timestampOutputPath, extension: timestampExtension } =
@@ -413,13 +429,7 @@ export async function build(
     timestampOutputPath,
     'timestamp.' + timestampExtension
   )
-  // Write atomically: write to a temp file in the same directory, then rename
-  // over the target. rename() is atomic on the same filesystem and swaps the
-  // inode, so file watchers (Vite, Cursor) reliably pick up the change instead
-  // of observing a truncate-then-write mid-flight.
-  const timestampTmpPath = `${timestampPath}.tmp`
-  await fs.writeFile(timestampTmpPath, `export default ${Date.now()}`, 'utf8')
-  await fs.rename(timestampTmpPath, timestampPath)
+  await writeAtomic(timestampPath, `export default ${Date.now()}`)
 }
 
 // Helper for file URL import
