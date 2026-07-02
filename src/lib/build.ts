@@ -413,7 +413,13 @@ export async function build(
     timestampOutputPath,
     'timestamp.' + timestampExtension
   )
-  await fs.writeFile(timestampPath, `export default ${Date.now()}`, 'utf8')
+  // Write atomically: write to a temp file in the same directory, then rename
+  // over the target. rename() is atomic on the same filesystem and swaps the
+  // inode, so file watchers (Vite, Cursor) reliably pick up the change instead
+  // of observing a truncate-then-write mid-flight.
+  const timestampTmpPath = `${timestampPath}.tmp`
+  await fs.writeFile(timestampTmpPath, `export default ${Date.now()}`, 'utf8')
+  await fs.rename(timestampTmpPath, timestampPath)
 }
 
 // Helper for file URL import
