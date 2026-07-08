@@ -5,6 +5,8 @@ export default {
 
   someClassName: {
     WebkitUserSelect: 'none',
+    userSelect: 'none',
+    MozUserSelect: 'none',
 
     color: 'violet',
     // if minify=true the ::before block does not exist in the ouput CSS, if minify=false, everything is okay

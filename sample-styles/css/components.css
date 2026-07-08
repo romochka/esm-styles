@@ -15,7 +15,9 @@
 }
 
 .some-class-name {
-  webkit-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  -moz-user-select: none;
   color: violet;
 }
 

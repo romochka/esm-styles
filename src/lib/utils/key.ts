@@ -3,8 +3,11 @@ import type { JsKeyToCssKey } from '../types/index.js'
 
 export const jsKeyToCssKey: JsKeyToCssKey = (key) => {
   // Convert camelCase or PascalCase to kebab-case
-  return key
+  const kebab = key
     .replace(/([a-z0-9])([A-Z])/g, '$1-$2')
     .replace(/([A-Z])([A-Z][a-z])/g, '$1-$2')
     .toLowerCase()
+  // Keys written in PascalCase (leading uppercase) denote vendor-prefixed
+  // properties, e.g. WebkitUserSelect -> -webkit-user-select
+  return /^[A-Z]/.test(key) ? `-${kebab}` : kebab
 }
