@@ -63,19 +63,33 @@ function escapeRegex(str: string): string {
 }
 
 /**
- * Write a file atomically: write to a temp file in the same directory, then
- * rename it over the target. rename() is atomic on the same filesystem and
- * swaps the inode, so file watchers (Vite, Cursor) reliably pick up a single
- * clean replacement instead of observing a truncate-then-write mid-flight.
+ * Write a file atomically, skipping the write when the on-disk content already
+ * matches. Reads the current file first; if it is identical there is no write,
+ * no temp file, and no inode swap, so file watchers (Vite, Cursor) stay quiet
+ * and no needless HMR reload is triggered.
+ *
+ * When the content differs (or the file is missing) it writes to a temp file in
+ * the same directory and renames it over the target. rename() is atomic on the
+ * same filesystem and swaps the inode, so watchers pick up a single clean
+ * replacement instead of observing a truncate-then-write mid-flight.
+ *
+ * Returns true if the file was written, false if it was unchanged and skipped.
  */
 async function writeAtomic(
   filePath: string,
   data: string,
   encoding: BufferEncoding = 'utf8'
-): Promise<void> {
+): Promise<boolean> {
+  try {
+    const existing = await fs.readFile(filePath, encoding)
+    if (existing === data) return false
+  } catch {
+    // File does not exist (or is unreadable) -> fall through and write it.
+  }
   const tmpPath = `${filePath}.tmp`
   await fs.writeFile(tmpPath, data, encoding)
   await fs.rename(tmpPath, filePath)
+  return true
 }
 
 /**
@@ -152,6 +166,10 @@ export async function build(
 
   const cssFiles = []
 
+  // Track whether any output file actually changed on disk. Used to decide
+  // whether the timestamp (an HMR trigger) needs to be bumped at the end.
+  let changed = false
+
   // 2. Process globalVariables
   if (config.globalVariables) {
     const inputFile = path.join(
@@ -165,7 +183,7 @@ export async function build(
     const rootSelector = config.globalRootSelector || ':root'
     const comment = generateCssComment(config.globalVariables)
     const wrappedCss = `${comment}${rootSelector} {\n${cssVars}\n}`
-    await writeAtomic(outputFile, wrappedCss)
+    changed = (await writeAtomic(outputFile, wrappedCss)) || changed
     cssFiles.push({ type: 'global', file: 'global.css' })
   }
 
@@ -208,7 +226,7 @@ export async function build(
           }
           const comment = generateCssComment(setName)
           const block = `${comment}${fullSelector} {\n${cssVars}\n}`
-          await writeAtomic(outputFile, block)
+          changed = (await writeAtomic(outputFile, block)) || changed
           cssFiles.push({
             type: 'media',
             file: fileName,
@@ -300,7 +318,7 @@ export async function build(
         null,
         2
       )}\n`
-      await writeAtomic(supportingModulePath, moduleContent)
+      changed = (await writeAtomic(supportingModulePath, moduleContent)) || changed
     }
   }
 
@@ -352,7 +370,7 @@ export async function build(
       wrappedCss = result.code
     }
 
-    await writeAtomic(outputFile, wrappedCss)
+    changed = (await writeAtomic(outputFile, wrappedCss)) || changed
 
     // Calculate relative path from default output directory for imports
     const relativePath = floorOutputPath
@@ -419,17 +437,22 @@ export async function build(
       .filter(Boolean)
       .join('\n') +
     '\n'
-  await writeAtomic(mainCssPath, mainCss)
+  changed = (await writeAtomic(mainCssPath, mainCss)) || changed
 
-  // 6. Create timestamp file
-  const { outputPath: timestampOutputPath, extension: timestampExtension } =
-    config.timestamp || { outputPath: '', extension: 'mjs' }
-  const timestampPath = path.join(
-    config.basePath || '.',
-    timestampOutputPath,
-    'timestamp.' + timestampExtension
-  )
-  await writeAtomic(timestampPath, `export default ${Date.now()}`)
+  // 6. Create timestamp file.
+  // The timestamp embeds Date.now() and is the HMR trigger, so only bump it
+  // when at least one output actually changed. A no-op rebuild leaves every
+  // file (including the timestamp) untouched and triggers no reload.
+  if (changed) {
+    const { outputPath: timestampOutputPath, extension: timestampExtension } =
+      config.timestamp || { outputPath: '', extension: 'mjs' }
+    const timestampPath = path.join(
+      config.basePath || '.',
+      timestampOutputPath,
+      'timestamp.' + timestampExtension
+    )
+    await writeAtomic(timestampPath, `export default ${Date.now()}`)
+  }
 }
 
 // Helper for file URL import

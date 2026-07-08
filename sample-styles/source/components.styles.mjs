@@ -4,7 +4,9 @@ export default {
   // minify bug check
 
   someClassName: {
-    color: '#ffcc00',
+    WebkitUserSelect: 'none',
+
+    color: 'violet',
     // if minify=true the ::before block does not exist in the ouput CSS, if minify=false, everything is okay
     '::before': {
       content: 'y',

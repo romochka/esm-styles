@@ -15,7 +15,8 @@
 }
 
 .some-class-name {
-  color: #ffcc00;
+  webkit-user-select: none;
+  color: violet;
 }
 
 .kebab-case-test,
