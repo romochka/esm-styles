@@ -22,10 +22,69 @@ export const variantAndSpecials = {
   },
 } satisfies StyleOf<Markup.Story>
 
-// Свободная зона: body в Layout содержит {children} — валидация выключена.
-export const freeZone = {
-  body: { anythingGoesHere: { color: 'red' } },
+// {children} — непрозрачный слот: валидацию владельца НЕ ослабляет.
+// main приносят страницы, Layout его не стилизует.
+export const slotStaysStrict = {
+  body: {
+    // @ts-expect-error main не принадлежит разметке Layout
+    main: { padding: '1rem' },
+  },
 } satisfies StyleOf<Markup.Layout>
+
+// Зона контента (data-content): ключи-селекторы свободны — разметка
+// внутри prose неизвестна (markdown)…
+export const contentZone = {
+  main: {
+    section: {
+      prose: {
+        h2: { fontSize: '1.3rem' },
+        table: { borderCollapse: 'collapse' },
+      },
+    },
+  },
+} satisfies StyleOf<Markup.StoryPage>
+
+// …но значения свойств проверяются даже внутри зоны контента.
+export const contentZoneValues = {
+  main: {
+    section: {
+      prose: {
+        // @ts-expect-error boolean не бывает CSS-значением и в зоне контента
+        h2: { fontSize: true },
+      },
+    },
+  },
+} satisfies StyleOf<Markup.StoryPage>
+
+// Прозрачный субкомпонент: <SubComponent/> (без своего класса на корне)
+// вклеен в скелет Story — его div стилизуется как часть Story.
+export const transparentSub = {
+  article: { main: { div: { color: 'red' } } },
+} satisfies StyleOf<Markup.Story>
+
+// @ts-expect-error у прозрачного субкомпонента нет собственного скелета
+export type NoSubComponentMarkup = Markup.SubComponent
+
+// Дети, переданные прозрачной обёртке, вклеиваются в её {children}-слот:
+// <SubWrapper><FullComponent/></SubWrapper> → main > div > FullComponent.
+// FullComponent несёт свой класс → это граница, позиционировать можно…
+export const slottedChildren = {
+  article: { main: { div: { FullComponent: { marginTop: '1rem' } } } },
+} satisfies StyleOf<Markup.Story>
+
+// …а внутрь нельзя.
+export const slottedBoundary = {
+  article: {
+    main: {
+      div: {
+        FullComponent: {
+          // @ts-expect-error внутрь FullComponent из Story лезть нельзя
+          div: { color: 'red' },
+        },
+      },
+    },
+  },
+} satisfies StyleOf<Markup.Story>
 
 // --- красное (макет story.error.styles.mjs) --------------------------------
 

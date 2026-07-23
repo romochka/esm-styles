@@ -17,10 +17,15 @@ const story: StoryData = {
 const images: string[] = []
 const related: StoryData[] = []
 
+const renderMarkdown = (markdown: string) => markdown // вообразим рендерер
+
 const StoryPage = () => {
   return (
     <main className="StoryPage">
       <Story {...story} />
+      <section className="prose" data-content>
+        {renderMarkdown(story.snippet)}
+      </section>
       <Gallery images={images} caption="Field photos" />
       <nav className="related">
         <h3>Related</h3>

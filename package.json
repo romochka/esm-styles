@@ -20,7 +20,8 @@
     "prepublishOnly": "npm run build",
     "watch": "node watch.js",
     "check:v2": "tsc -p v2",
-    "gen:v2": "node v2/src/gen.ts"
+    "gen:v2": "node v2/src/gen.ts",
+    "lint:v2": "node v2/src/lint.ts"
   },
   "keywords": [
     "esm",

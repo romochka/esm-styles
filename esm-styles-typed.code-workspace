@@ -1,0 +1,22 @@
+{
+  "folders": [
+    {
+      "path": "."
+    }
+  ],
+  "settings": {
+    "workbench.colorCustomizations": {
+      "folderPathColor.custom1": "#db62c1",
+      "folderPathColor.custom2": "#dba505",
+      "folderPathColor.custom3": "#349610",
+      "folderPathColor.custom4": "#6189a8",
+      "folderPathColor.custom5": "#749ffa",
+      "folderPathColor.custom6": "#92638c"
+    },
+    "folder-path-color.folders": [
+      { "path": "v2/dream/app", "color": "custom1" },
+      { "path": "v2/dream/styles", "color": "custom2" },
+      { "path": "v2/dream/components", "color": "custom3" }
+    ]
+  }
+}

@@ -4,18 +4,32 @@
 
 import ts from 'typescript'
 
+/** Использование компонента в разметке; slot — JSX-дети места использования
+ *  ('#slot'-псевдоузел), нужны для вклейки в прозрачные обёртки. */
+export type ComponentUsage = {
+  name: string
+  slot?: SkeletonNode
+}
+
 export type SkeletonNode = {
   tag: string
   classes: string[]
   children: SkeletonNode[]
-  components: string[]
-  /** содержит {children} / dangerouslySetInnerHTML → свободный режим */
+  components: ComponentUsage[]
+  /** зона контента (dangerouslySetInnerHTML / data-content):
+   *  внутренняя разметка неизвестна, ключи не проверяются по скелету */
   free: boolean
+  /** элемент, в который рендерятся {children} владельца */
+  slot: boolean
 }
 
 export type ComponentSkeleton = {
   name: string
+  /** tag === '#fragment', если корень — React.Fragment */
   root: SkeletonNode
+  /** корень несёт одноимённый PascalCase-класс → граница стилей;
+   *  иначе компонент прозрачен и вклеивается в скелет владельца */
+  styled: boolean
 }
 
 const kebabToCamel = (s: string): string =>
@@ -67,15 +81,6 @@ const resolveClassNameSource = (initializer: ts.Node): ts.Node => {
   return resolved ?? initializer
 }
 
-const containsChildrenIdentifier = (node: ts.Node): boolean => {
-  if (ts.isIdentifier(node) && node.text === 'children') return true
-  let found = false
-  node.forEachChild((child) => {
-    if (!found) found = containsChildrenIdentifier(child)
-  })
-  return found
-}
-
 /** Находит JSX-элементы верхнего уровня внутри произвольного выражения
  *  ({cond && <el/>}, {list.map(() => <el/>)}, …), не заходя внутрь них. */
 const collectJsxIn = (
@@ -89,18 +94,34 @@ const collectJsxIn = (
   node.forEachChild((child) => collectJsxIn(child, out))
 }
 
-const mergeNode = (target: SkeletonNode, source: SkeletonNode): void => {
+export const mergeNode = (target: SkeletonNode, source: SkeletonNode): void => {
   for (const cls of source.classes)
     if (!target.classes.includes(cls)) target.classes.push(cls)
-  for (const comp of source.components)
-    if (!target.components.includes(comp)) target.components.push(comp)
+  for (const usage of source.components) {
+    const existing = target.components.find((u) => u.name === usage.name)
+    if (!existing) target.components.push(usage)
+    else if (usage.slot) {
+      if (existing.slot) mergeNode(existing.slot, usage.slot)
+      else existing.slot = usage.slot
+    }
+  }
   target.free = target.free || source.free
+  target.slot = target.slot || source.slot
   for (const child of source.children) {
     const existing = target.children.find((c) => c.tag === child.tag)
     if (existing) mergeNode(existing, child)
     else target.children.push(child)
   }
 }
+
+const emptyNode = (tag: string): SkeletonNode => ({
+  tag,
+  classes: [],
+  children: [],
+  components: [],
+  free: false,
+  slot: false,
+})
 
 const attachElement = (
   el: ts.JsxElement | ts.JsxSelfClosingElement,
@@ -109,7 +130,20 @@ const attachElement = (
   const opening = ts.isJsxElement(el) ? el.openingElement : el
   const tag = opening.tagName.getText()
   if (/^[A-Z]/.test(tag)) {
-    if (!parent.components.includes(tag)) parent.components.push(tag)
+    // JSX-дети места использования — на случай прозрачной обёртки
+    let slot: SkeletonNode | undefined
+    if (ts.isJsxElement(el) && el.children.length) {
+      const content = emptyNode('#slot')
+      for (const child of el.children) visitJsxChild(child, content)
+      if (content.children.length || content.components.length || content.free)
+        slot = content
+    }
+    const existing = parent.components.find((u) => u.name === tag)
+    if (!existing) parent.components.push({ name: tag, slot })
+    else if (slot) {
+      if (existing.slot) mergeNode(existing.slot, slot)
+      else existing.slot = slot
+    }
     return
   }
   const node = buildNode(el)
@@ -129,7 +163,16 @@ const visitJsxChild = (child: ts.Node, parent: SkeletonNode): void => {
     return
   }
   if (ts.isJsxExpression(child) && child.expression) {
-    if (containsChildrenIdentifier(child.expression)) parent.free = true
+    // {children} — слот: валидацию владельца не ослабляет, но помечаем
+    // элемент — сюда вклеиваются JSX-дети места использования,
+    // если компонент прозрачный
+    if (
+      ts.isIdentifier(child.expression) &&
+      child.expression.text === 'children'
+    ) {
+      parent.slot = true
+      return
+    }
     const found: (ts.JsxElement | ts.JsxSelfClosingElement)[] = []
     collectJsxIn(child.expression, found)
     for (const el of found) attachElement(el, parent)
@@ -137,20 +180,13 @@ const visitJsxChild = (child: ts.Node, parent: SkeletonNode): void => {
 }
 
 const buildNode = (
-  jsx: ts.JsxElement | ts.JsxSelfClosingElement,
-  dropClass?: string
+  jsx: ts.JsxElement | ts.JsxSelfClosingElement
 ): SkeletonNode | undefined => {
   const opening = ts.isJsxElement(jsx) ? jsx.openingElement : jsx
   const tag = opening.tagName.getText()
   if (/^[A-Z]/.test(tag)) return undefined
 
-  const node: SkeletonNode = {
-    tag,
-    classes: [],
-    children: [],
-    components: [],
-    free: false,
-  }
+  const node = emptyNode(tag)
 
   for (const attr of opening.attributes.properties) {
     if (!ts.isJsxAttribute(attr)) continue
@@ -160,12 +196,12 @@ const buildNode = (
       collectClassWords(resolveClassNameSource(attr.initializer), raw)
       node.classes.push(...raw)
     }
-    if (attrName === 'dangerouslySetInnerHTML') node.free = true
+    // зона контента: внутренняя разметка принципиально неизвестна
+    if (attrName === 'dangerouslySetInnerHTML' || attrName === 'data-content')
+      node.free = true
   }
 
-  node.classes = [...new Set(node.classes)]
-    .filter((c) => c !== dropClass)
-    .map(kebabToCamel)
+  node.classes = [...new Set(node.classes)].map(kebabToCamel)
 
   if (ts.isJsxElement(jsx)) {
     for (const child of jsx.children) visitJsxChild(child, node)
@@ -175,16 +211,17 @@ const buildNode = (
 
 const unwrapJsx = (
   expr: ts.Expression
-): ts.JsxElement | ts.JsxSelfClosingElement | undefined => {
+): ts.JsxElement | ts.JsxSelfClosingElement | ts.JsxFragment | undefined => {
   let e = expr
   while (ts.isParenthesizedExpression(e)) e = e.expression
-  if (ts.isJsxElement(e) || ts.isJsxSelfClosingElement(e)) return e
+  if (ts.isJsxElement(e) || ts.isJsxSelfClosingElement(e) || ts.isJsxFragment(e))
+    return e
   return undefined
 }
 
 const findRootJsx = (
   fn: ts.ArrowFunction | ts.FunctionDeclaration
-): ts.JsxElement | ts.JsxSelfClosingElement | undefined => {
+): ts.JsxElement | ts.JsxSelfClosingElement | ts.JsxFragment | undefined => {
   const body = fn.body
   if (!body) return undefined
   if (ts.isBlock(body)) {
@@ -238,9 +275,19 @@ export const extractComponents = (
     if (!/^[A-Z]/.test(name)) continue
     const jsx = findRootJsx(fn)
     if (!jsx) continue
-    const root = buildNode(jsx, name)
+
+    if (ts.isJsxFragment(jsx)) {
+      const root = emptyNode('#fragment')
+      for (const child of jsx.children) visitJsxChild(child, root)
+      skeletons.push({ name, root, styled: false })
+      continue
+    }
+
+    const root = buildNode(jsx)
     if (!root) continue
-    skeletons.push({ name, root })
+    const styled = root.classes.includes(name)
+    if (styled) root.classes = root.classes.filter((c) => c !== name)
+    skeletons.push({ name, root, styled })
   }
   return skeletons
 }

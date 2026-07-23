@@ -4,6 +4,19 @@ export const StoryPage = {
     margin: '0 auto',
     padding: '2rem',
 
+    section: {
+      prose: {
+        p: { lineHeight: 1.6 },
+        h2: { fontSize: '1.3rem' },
+        a: { color: $theme.accent },
+        blockquote: {
+          borderLeft: `3px solid ${$theme.ink.faint}`,
+          paddingLeft: '1rem',
+          color: $theme.ink.mild,
+        },
+      },
+    },
+
     Gallery: {
       marginTop: '3rem',
     },

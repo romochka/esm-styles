@@ -14,6 +14,18 @@ interface StoryProps extends StoryData {
   urgent?: boolean
 }
 
+const SubComponent = () => {
+  return <div>test</div>
+}
+
+const FullComponent = () => {
+  return <div className="FullComponent">test</div>
+}
+
+const SubWrapper = ({ children }: { children: React.ReactNode }) => {
+  return <div>{children}</div>
+}
+
 const Story = ({
   title,
   subtitle,
@@ -24,11 +36,7 @@ const Story = ({
   compact,
   urgent,
 }: StoryProps) => {
-  const className = [
-    'Story',
-    compact && 'compact',
-    urgent && 'urgent',
-  ]
+  const className = ['Story', compact && 'compact', urgent && 'urgent']
     .filter(Boolean)
     .join(' ')
 
@@ -42,6 +50,9 @@ const Story = ({
       <main>
         <img src={image} alt={title} />
         <p>{snippet}</p>
+        <SubWrapper>
+          <FullComponent />
+        </SubWrapper>
       </main>
       <footer>
         <a href={link} target="_blank" rel="noopener noreferrer">

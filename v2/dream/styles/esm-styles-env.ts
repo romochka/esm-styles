@@ -5,7 +5,7 @@
 // 2. Markup — скелеты разметки, извлечённые из .tsx-половинок пар.
 //    Нотация та же, что в стилях: тег — элемент, camelCase — класс,
 //    PascalCase — граница компонента. Скелет — это стиль без свойств.
-//    Сокращённые пути развёрнуты; зоны {children} — в свободном режиме.
+//    Сокращённые пути развёрнуты; зоны контента — в свободном режиме.
 
 declare const $device: (typeof import('./$device'))['default']
 declare const $theme: (typeof import('./$theme'))['default']
@@ -15,8 +15,10 @@ type GlobalStyle = import('../../src/types').GlobalStyle
 
 declare namespace Markup {
   type Css = import('../../src/types').CssProperties
+  type CssValue = import('../../src/types').CssValue
   type Special<S> = import('../../src/types').SpecialKeys<S>
   type Boundary = import('../../src/types').Boundary
+  type Free = import('../../src/types').Style
 
   /** app/archive/page.tsx */
   interface ArchivePage { main: ArchivePage.main }
@@ -56,7 +58,6 @@ declare namespace Markup {
   interface Layout { body: Layout.body }
   namespace Layout {
     interface body extends Css, Special<body> {
-      [key: string]: unknown
       header?: body_header
       footer?: body_footer
       a?: body_header_a
@@ -95,8 +96,13 @@ declare namespace Markup {
     interface main extends Css, Special<main> {
       Story?: Boundary
       Gallery?: Boundary
+      section?: main_section
       nav?: main_nav
       h3?: main_nav_h3
+    }
+    interface main_section extends Css, Special<main_section> {
+      [key: string]: Free | CssValue | main_section | undefined
+      prose?: main_section
     }
     interface main_nav extends Css, Special<main_nav> {
       related?: main_nav
@@ -154,6 +160,12 @@ declare namespace Markup {
   }
 
   /** components/story.tsx */
+  interface FullComponent { div: FullComponent.div }
+  namespace FullComponent {
+    interface div extends Css, Special<div> {}
+  }
+
+  /** components/story.tsx */
   interface Story { article: Story.article }
   namespace Story {
     interface article extends Css, Special<article> {
@@ -166,6 +178,7 @@ declare namespace Markup {
       h1?: article_header_h1
       p?: article_header_p | article_main_p
       img?: article_main_img
+      div?: article_main_div
       a?: article_footer_a
     }
     interface article_header extends Css, Special<article_header> {
@@ -177,9 +190,13 @@ declare namespace Markup {
     interface article_main extends Css, Special<article_main> {
       img?: article_main_img
       p?: article_main_p
+      div?: article_main_div
     }
     interface article_main_img extends Css, Special<article_main_img> {}
     interface article_main_p extends Css, Special<article_main_p> {}
+    interface article_main_div extends Css, Special<article_main_div> {
+      FullComponent?: Boundary
+    }
     interface article_footer extends Css, Special<article_footer> {
       a?: article_footer_a
     }
