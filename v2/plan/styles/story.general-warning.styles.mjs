@@ -1,6 +1,7 @@
-// valid style
+// style with general warning
 
 export const Story = {
+  // object name highlighted in yellow because footer style is missing
   article: {
     display: 'flex',
     flexDirection: 'column',
@@ -20,15 +21,6 @@ export const Story = {
         width: '100%',
         height: 'auto',
         objectFit: 'cover',
-      },
-    },
-
-    footer: {
-      fontSize: '0.8rem',
-
-      a: {
-        textDecoration: 'none',
-        color: 'blue',
       },
     },
   },

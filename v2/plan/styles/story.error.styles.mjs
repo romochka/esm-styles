@@ -1,7 +1,6 @@
-// valid style
-
 export const Story = {
-  article: {
+  div: {
+    // div highlighted in red because component's root container is not a `div` element
     display: 'flex',
     flexDirection: 'column',
     gap: '1rem',

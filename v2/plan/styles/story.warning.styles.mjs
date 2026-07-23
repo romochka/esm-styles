@@ -1,4 +1,4 @@
-// valid style
+// style with warning
 
 export const Story = {
   article: {
@@ -21,6 +21,11 @@ export const Story = {
         height: 'auto',
         objectFit: 'cover',
       },
+    },
+
+    aside: {
+      // key highlighted in yellow because component does not return a `article aside` element
+      width: '25%',
     },
 
     footer: {
