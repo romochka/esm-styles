@@ -19,7 +19,8 @@
     "test:coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage",
     "prepublishOnly": "npm run build",
     "watch": "node watch.js",
-    "check:v2": "tsc -p v2"
+    "check:v2": "tsc -p v2",
+    "gen:v2": "node v2/src/gen.ts"
   },
   "keywords": [
     "esm",

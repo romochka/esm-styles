@@ -21,10 +21,10 @@ export const valid = {
   },
 } satisfies Style
 
-// StyleOf пропускает то же самое (слой 1 — заглушка по структуре).
+// StyleOf — тождество: скелет сам задаёт форму допустимого объекта.
 export const validComponent = {
   article: { display: 'grid' },
-} satisfies StyleOf<{ article: {} }>
+} satisfies StyleOf<{ article: Style }>
 
 export const validGlobal = {
   body: { margin: 0 },

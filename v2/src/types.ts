@@ -1,6 +1,6 @@
-// esm-styles v2 — слой 1: типы значений.
-// Даёт автодополнение имён CSS-свойств и проверку значений через csstype.
-// Структурная строгость (ключи-селекторы по скелету разметки) — слой 2.
+// esm-styles v2 — типы.
+// Слой 1: значения свойств (csstype). Слой 2: структура по скелету разметки
+// (скелеты генерирует v2/src/gen.ts в esm-styles-env.d.ts).
 
 import type * as CSS from 'csstype'
 
@@ -11,24 +11,39 @@ export type CssValue = string | number
 export type CssProperties = CSS.Properties<CssValue>
 
 /**
- * Узел стиля: CSS-свойства плюс произвольные вложенные ключи-селекторы
- * (теги, camelCase-классы, PascalCase-границы, ':…', '[…]', '@…', '.x').
- *
- * Известное ограничение слоя 1: опечатка в имени свойства (colr: 'red')
- * не ловится — index signature читает её как вложенный селектор.
- * Её поймает слой 2, когда ключи будут ограничены скелетом разметки.
+ * Свободный узел стиля: свойства плюс произвольные вложенные селекторы.
+ * Используется там, где разметка неизвестна (зоны {children}, markdown)
+ * и в стилях без скелета. Опечатки в именах свойств здесь не ловятся.
  */
 export interface Style extends CssProperties {
   [selector: string]: Style | CssValue | undefined
 }
 
 /**
- * Подпись стиля компонента: satisfies StyleOf<Markup.X>.
- * Слой 1 — заглушка: параметр M пока не используется, проверяются только
- * свойства и значения. В слое 2 M (скелет разметки из esm-styles-env.d.ts)
- * начнёт ограничивать допустимые ключи-селекторы на каждом уровне.
+ * Служебные ключи, допустимые на любом узле скелета:
+ * ':hover'/'::before', '@mobile'/'@dark', '[disabled]', '.tag-like-class'.
+ * Содержимое — тот же узел (внутри ':hover' доступны те же дети и классы).
  */
-export type StyleOf<_M> = Style
+export type SpecialKeys<Self> = {
+  [k: `:${string}`]: Self | undefined
+  [k: `@${string}`]: Self | undefined
+  [k: `[${string}`]: Self | undefined
+  [k: `.${string}`]: Self | undefined
+}
+
+/**
+ * Граница дочернего компонента (PascalCase-ключ): позиционировать можно,
+ * ключей-потомков нет — заход внутрь чужой разметки даёт ошибку типов.
+ */
+export type Boundary = CssProperties & SpecialKeys<CssProperties>
+
+/**
+ * Подпись стиля компонента: satisfies StyleOf<Markup.X>.
+ * Слой 2: M — сгенерированный скелет разметки, уже имеющий форму
+ * допустимого объекта стилей; StyleOf — тождество, оставленное как
+ * стабильная точка API (слой 1 подставлял сюда свободный Style).
+ */
+export type StyleOf<M> = M
 
 /** Глобальные стили: ключи верхнего уровня — теги и селекторы. */
 export type GlobalStyle = {
