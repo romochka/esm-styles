@@ -1,7 +1,8 @@
 /* Сгенерировано esm-styles v2 — не редактировать */
 
-@layer global, layout, components, pages;
+@layer tokens, global, layout, components, pages;
 
+@import url('./tokens.css');
 @import url('./global.css');
 @import url('./layout.css');
 @import url('./components.css');

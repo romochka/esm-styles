@@ -62,3 +62,53 @@ export type PropertyRule = {
 export type GlobalStyle = {
   [selector: string]: Style | Keyframes | PropertyRule
 }
+
+// --- конфиг ------------------------------------------------------------------
+
+/** Одна активация режима: И между полями, ИЛИ между записями списка on. */
+export type ModeActivation = {
+  media?: string
+  selector?: string
+}
+
+export type Mode = ModeActivation & {
+  /** полная форма для экзотики (v1: «.auto ∧ prefers-dark») */
+  on?: ModeActivation[]
+  /** от кого наследовать токены; по умолчанию — предыдущий режим */
+  inherits?: string
+}
+
+export type TokenValues = {
+  [token: string]: string | number | TokenValues
+}
+
+/** Коллекция («медиаобъект», в Figma — variable collection с modes):
+ *  именованный набор токенов с режимами. Первый режим — дефолт (:root)
+ *  и канон структуры. Значения живут НЕ в конфиге, а по одному модулю
+ *  на режим: <tokensPath>/<mode>.<collection>.ts — формат обмена с Figma
+ *  (одна collection.mode → один файл). Файлы токенов — чистые данные:
+ *  без импортов и без satisfies, конвертер может перезаписывать их
+ *  целиком; согласованность режимов проверяет зрячий линтер. */
+export type Collection = {
+  /** светло-тёмная ось: цвета через light-dark(), режимы — однострочники
+   *  color-scheme, «auto» — нативное поведение, не режим */
+  colorScheme?: boolean
+  modes: { [mode: string]: Mode }
+}
+
+export type EsmStylesConfig = {
+  /** база всех путей; по умолчанию — папка самого конфига */
+  basePath?: string
+  /** пары и стили; по умолчанию './styles' */
+  stylesPath?: string
+  /** модули токенов <mode>.<collection>.ts; по умолчанию './tokens' */
+  tokensPath?: string
+  /** куда класть CSS; по умолчанию './css' */
+  outputPath?: string
+  mainCssFile?: string
+  /** пути include относительны stylesPath */
+  floors?: { name: string; include: string }[]
+  /** '@шорткат' → at-правило или селектор-предок */
+  shortcuts?: Record<string, string>
+  collections?: { [name: string]: Collection }
+}

@@ -1,0 +1,46 @@
+/* Сгенерировано esm-styles v2, слой «tokens» — не редактировать */
+
+@layer tokens {
+  /* коллекция theme */
+  :root {
+    color-scheme: light dark;
+    --theme-paper-bright: light-dark(#ffffff, #16161a);
+    --theme-paper-tinted: light-dark(#f4f1ea, #1e1e24);
+    --theme-ink-strong: light-dark(#1a1a1a, #ececf1);
+    --theme-ink-mild: light-dark(#6b6b6b, #9a9aa3);
+    --theme-ink-faint: light-dark(#dcdcd4, #2c2c33);
+    --theme-accent: light-dark(#c24d2c, #e07a5f);
+  }
+
+  :root[data-theme="light"] {
+    color-scheme: light;
+  }
+
+  :root[data-theme="dark"] {
+    color-scheme: dark;
+  }
+
+  :root[data-theme="twilight"] {
+    color-scheme: dark;
+    --theme-paper-bright: #1a1430;
+    --theme-paper-tinted: #241b3e;
+    --theme-accent: #9f7aea;
+  }
+
+  /* коллекция device */
+  :root {
+    --device-radius-sm: 3px;
+    --device-radius-xl: 8px;
+    --device-spacing-md: 0.75rem;
+    --device-spacing-lg: 1.25rem;
+  }
+
+  @media (min-width: 768px) {
+    :root {
+      --device-radius-sm: 4px;
+      --device-radius-xl: 12px;
+      --device-spacing-md: 1rem;
+      --device-spacing-lg: 2rem;
+    }
+  }
+}

@@ -21,6 +21,8 @@ export type CssOptions = {
   mainCssFile: string
   media: Record<string, string>
   floors: { name: string; include: string }[]
+  /** содержимое tokens.css (генератор коллекций) — первый слой каскада */
+  tokensCss?: string
 }
 
 export type CssResult = {
@@ -63,8 +65,20 @@ export const emitCss = async (
   fs.mkdirSync(opts.cssDir, { recursive: true })
   const files: string[] = []
   let changed = false
+  const layerNames: string[] = []
 
-  // 2. Этажи
+  // 2. Токены — первый слой каскада
+  if (opts.tokensCss) {
+    const css =
+      `/* Сгенерировано esm-styles v2, слой «tokens» — не редактировать */\n\n` +
+      `@layer tokens {\n${opts.tokensCss.trimEnd().replace(/^(?!$)/gm, '  ')}\n}\n`
+    const file = path.join(opts.cssDir, 'tokens.css')
+    changed = writeIfChanged(file, css) || changed
+    files.push(file)
+    layerNames.push('tokens')
+  }
+
+  // 3. Этажи
   for (const floor of opts.floors) {
     const members = styleFiles.filter(
       (f) => f === floor.include || f.startsWith(floor.include)
@@ -95,13 +109,14 @@ export const emitCss = async (
     const file = path.join(opts.cssDir, `${floor.name}.css`)
     changed = writeIfChanged(file, css) || changed
     files.push(file)
+    layerNames.push(floor.name)
   }
 
-  // 3. Главный файл: порядок слоёв + импорты
+  // 4. Главный файл: порядок слоёв + импорты
   const main =
     `/* Сгенерировано esm-styles v2 — не редактировать */\n\n` +
-    `@layer ${opts.floors.map((f) => f.name).join(', ')};\n\n` +
-    opts.floors.map((f) => `@import url('./${f.name}.css');`).join('\n') +
+    `@layer ${layerNames.join(', ')};\n\n` +
+    layerNames.map((name) => `@import url('./${name}.css');`).join('\n') +
     '\n'
   const mainFile = path.join(opts.cssDir, opts.mainCssFile)
   changed = writeIfChanged(mainFile, main) || changed

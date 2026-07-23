@@ -1,11 +1,21 @@
 // esm-styles v2 — CLI: разовый прогон зрячего линтера (жёлтый уровень).
-// Ядро — pipeline.ts (скелеты) + lint-core.ts (проверки).
+// Стили против скелетов (lint-core) + согласованность режимов коллекций.
 // Запуск: npm run lint:v2. Непрерывный режим: npm run watch:v2.
 
+import { loadConfig } from './config.ts'
+import { loadCollections, checkCollections } from './collections.ts'
 import { loadProject } from './pipeline.ts'
 import { lintProject, formatWarnings } from './lint-core.ts'
-import { appRoot, stylesDir } from './paths.ts'
 
-const project = loadProject(appRoot)
-const warnings = lintProject(project, { appRoot, stylesDir })
+const config = await loadConfig()
+const collections = await loadCollections(config)
+const project = loadProject(config.appRoot)
+
+const warnings = [
+  ...checkCollections(collections),
+  ...lintProject(project, {
+    appRoot: config.appRoot,
+    stylesDir: config.stylesDir,
+  }),
+]
 console.log(formatWarnings(warnings))
