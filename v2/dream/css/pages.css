@@ -1,0 +1,124 @@
+/* Сгенерировано esm-styles v2, этаж «pages» — не редактировать */
+
+@layer pages {
+  main.ArchivePage {
+    max-width: 42rem;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  main.ArchivePage > section > h3 {
+    color: var(--theme-ink-mild);
+    border-bottom: 1px solid var(--theme-ink-faint);
+    padding-bottom: 0.5rem;
+  }
+
+  main.ArchivePage > section > ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  main.ArchivePage > section > ul > li {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.4rem 0;
+  }
+
+  main.ArchivePage > section > ul > li > a {
+    text-decoration: none;
+  }
+
+  main.ArchivePage > section > ul > li > a:hover {
+    color: var(--theme-accent);
+  }
+
+  main.ArchivePage > section > ul > li > time {
+    color: var(--theme-ink-mild);
+    font-size: 0.85rem;
+    white-space: nowrap;
+  }
+
+  main.HomePage {
+    max-width: 64rem;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  main.HomePage > h2 {
+    font-size: 1.4rem;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+  }
+
+  main.HomePage > h2::after {
+    content: "";
+    display: block;
+    width: 3rem;
+    border-bottom: 2px solid var(--theme-accent);
+    margin-top: 0.4rem;
+  }
+
+  main.HomePage > section.feed {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
+    gap: 2rem;
+    container-type: inline-size;
+  }
+
+  @container (min-width: 48rem) {
+    main.HomePage > section.feed {
+      gap: 3rem;
+    }
+  }
+
+  @media (max-width: 767px) {
+    main.HomePage > section.feed {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  main.StoryPage {
+    max-width: 42rem;
+    margin: 0 auto;
+    padding: 2rem;
+  }
+
+  main.StoryPage > section.prose p {
+    line-height: 1.6;
+  }
+
+  main.StoryPage > section.prose h2 {
+    font-size: 1.3rem;
+  }
+
+  main.StoryPage > section.prose a {
+    color: var(--theme-accent);
+  }
+
+  main.StoryPage > section.prose blockquote {
+    border-left: 3px solid var(--theme-ink-faint);
+    padding-left: 1rem;
+    color: var(--theme-ink-mild);
+  }
+
+  main.StoryPage > .Gallery {
+    margin-top: 3rem;
+  }
+
+  main.StoryPage > nav.related {
+    margin-top: 3rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--theme-ink-faint);
+  }
+
+  main.StoryPage > nav.related > h3 {
+    font-size: 1rem;
+    color: var(--theme-ink-mild);
+  }
+
+  main.StoryPage > nav.related > .Story {
+    margin-top: 1.5rem;
+  }
+}

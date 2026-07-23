@@ -1,0 +1,30 @@
+/* Сгенерировано esm-styles v2, этаж «global» — не редактировать */
+
+@layer global {
+  @property --content-gap {
+    syntax: "<length>";
+    inherits: true;
+    initial-value: 1rem;
+  }
+
+  h1, h2, h3 {
+    font-weight: 650;
+    letter-spacing: -0.01em;
+  }
+
+  body {
+    margin: 0;
+    font-family: Charter, Georgia, serif;
+    background-color: var(--theme-paper-bright);
+    color: var(--theme-ink-strong);
+  }
+
+  a {
+    color: inherit;
+  }
+
+  img {
+    display: block;
+    max-width: 100%;
+  }
+}

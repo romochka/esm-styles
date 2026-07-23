@@ -8,6 +8,14 @@ export const HomePage = {
       fontSize: '1.4rem',
       letterSpacing: '0.02em',
       textTransform: 'uppercase',
+
+      '::after': {
+        content: '',
+        display: 'block',
+        width: '3rem',
+        borderBottom: `2px solid ${$theme.accent}`,
+        marginTop: '0.4rem',
+      },
     },
 
     section: {
@@ -15,6 +23,11 @@ export const HomePage = {
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fill, minmax(20rem, 1fr))',
         gap: '2rem',
+        containerType: 'inline-size',
+
+        '@container (min-width: 48rem)': {
+          gap: '3rem',
+        },
 
         '@mobile': {
           gridTemplateColumns: '1fr',

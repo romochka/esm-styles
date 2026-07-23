@@ -86,6 +86,39 @@ export const slottedBoundary = {
   },
 } satisfies StyleOf<Markup.Story>
 
+// Запятые внутри компонента: ключ законен по образцу `${string},${string}`,
+// значения проверяются против union узлов; состав частей проверяет линтер.
+export const commaKeys = {
+  figure: { 'img, figcaption': { margin: 0 } },
+} satisfies StyleOf<Markup.Gallery>
+
+export const commaValues = {
+  figure: {
+    'img, figcaption': {
+      // @ts-expect-error значения в комма-группе тоже проверяются
+      display: 0,
+    },
+  },
+} satisfies StyleOf<Markup.Gallery>
+
+// @keyframes на корне экспорта: кадры типизированы как CssProperties.
+export const keyframesOk = {
+  article: { opacity: 1 },
+  '@keyframes pulse': {
+    from: { opacity: 0.5 },
+    '50%': { opacity: 0.8 },
+    to: { opacity: 1 },
+  },
+} satisfies StyleOf<Markup.Story>
+
+export const keyframesValues = {
+  article: {},
+  '@keyframes broken': {
+    // @ts-expect-error значения кадров проверяются как обычные свойства
+    from: { display: 0 },
+  },
+} satisfies StyleOf<Markup.Story>
+
 // --- красное (макет story.error.styles.mjs) --------------------------------
 
 export const wrongRootTag = {

@@ -1,8 +1,14 @@
 export const Story = {
+  '@keyframes storyAppear': {
+    from: { opacity: 0, translate: '0 8px' },
+    to: { opacity: 1, translate: '0 0' },
+  },
+
   article: {
     display: 'flex',
     flexDirection: 'column',
     gap: '1rem',
+    animation: 'storyAppear 0.3s ease-out',
 
     header: {
       h1: {

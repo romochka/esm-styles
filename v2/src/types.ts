@@ -45,7 +45,20 @@ export type Boundary = CssProperties & SpecialKeys<CssProperties>
  */
 export type StyleOf<M> = M
 
-/** Глобальные стили: ключи верхнего уровня — теги и селекторы. */
+/** Кадры @keyframes: from / to / проценты → только свойства. */
+export type Keyframes = {
+  [step: string]: CssProperties
+}
+
+/** Дескрипторы @property; initialValue → initial-value, syntax
+ *  можно писать без кавычек — компилятор процитирует сам. */
+export type PropertyRule = {
+  syntax?: string
+  inherits?: boolean
+  initialValue?: CssValue
+}
+
+/** Глобальные стили: ключи верхнего уровня — теги, селекторы, at-правила. */
 export type GlobalStyle = {
-  [selector: string]: Style
+  [selector: string]: Style | Keyframes | PropertyRule
 }
